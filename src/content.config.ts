@@ -24,6 +24,23 @@ const papers = defineCollection({
   }),
 });
 
-export const collections = { papers };
+const projects = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/projects' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.object({
+      en: z.string(),
+      nl: z.string(),
+    }),
+    repo: z.string().url().optional(),
+    demo: z.string().url().optional(),
+    year: z.union([z.number().int(), z.string()]),
+    sortKey: z.number().int(),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { papers, projects };
 export const THEMES = themes;
 export type Theme = (typeof themes)[number];

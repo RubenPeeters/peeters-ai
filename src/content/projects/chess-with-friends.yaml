@@ -1,0 +1,10 @@
+title: "Chess with Friends"
+description:
+  en: "A small multiplayer chess web app built so a group of friends could play each other in one place."
+  nl: "Een kleine multiplayer-schaakapp, gebouwd zodat een groep vrienden op één plek tegen elkaar kon spelen."
+repo: "https://github.com/RubenPeeters/chess-with-friends"
+year: 2026
+sortKey: 202604
+tags:
+  - JavaScript
+  - Full-stack web
