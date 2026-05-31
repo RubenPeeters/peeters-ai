@@ -1,0 +1,43 @@
+---
+import Base from '~/layouts/Base.astro';
+import PaperList from '~/components/PaperList.astro';
+import { t } from '~/i18n/strings';
+
+const locale = 'nl' as const;
+const s = t(locale);
+---
+<Base locale={locale} routeKey="research" title={s.research.title} description={s.research.intro}>
+  <article class="container research">
+    <p class="eyebrow">{s.research.title}</p>
+    <p class="intro">{s.research.intro}</p>
+
+    <PaperList locale={locale} />
+
+    <p class="scholar-link">
+      <a href="https://scholar.google.com/citations?user=BRoMOlMAAAAJ&hl=nl" class="ext" rel="noopener">
+        {s.research.scholarLink}
+      </a>
+    </p>
+  </article>
+
+  <style>
+    .research {
+      padding-block: var(--space-32) var(--space-96);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-48);
+    }
+    .research .eyebrow { margin: 0; }
+    .intro {
+      font-family: var(--font-serif);
+      font-size: var(--text-tagline);
+      line-height: 1.35;
+      color: var(--color-text);
+      max-width: 36ch;
+    }
+    .scholar-link {
+      font-size: var(--text-small);
+      color: var(--color-text-muted);
+    }
+  </style>
+</Base>

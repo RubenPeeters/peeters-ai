@@ -29,7 +29,7 @@ export const routes: Record<RouteKey, RouteDef> = {
   research: {
     paths: { en: '/research', nl: '/nl/onderzoek' },
     navLabel: { en: 'Research', nl: 'Onderzoek' },
-    published: false,
+    published: true,
   },
   projects: {
     paths: { en: '/projects', nl: '/nl/projecten' },
@@ -66,6 +66,16 @@ type AboutCopy = {
   paragraphs: string[];
 };
 
+type ResearchCopy = {
+  title: string;
+  intro: string;
+  themeLabels: Record<'cultural-heritage' | 'knowledge-graphs' | 'biomonitoring' | 'network-security', string>;
+  statusLabels: Record<'published' | 'accepted' | 'preprint', string>;
+  authors: string;
+  readLink: { doi: string; pdf: string; scholar: string; url: string };
+  scholarLink: string;
+};
+
 type Strings = {
   siteName: string;
   eyebrow: string;
@@ -81,6 +91,7 @@ type Strings = {
     source: string;
   };
   about: AboutCopy;
+  research: ResearchCopy;
 };
 
 function joinTagline(parts: TaglineParts): string {
@@ -117,6 +128,25 @@ const en: Strings = {
       'I’m always happy to talk to students looking for a thesis topic, collaborators on knowledge-graph or cultural-heritage work, and anyone with an interesting dataset and a question they can’t quite get to.',
     ],
   },
+  research: {
+    title: 'Research',
+    intro:
+      'Selected papers and talks. Most live at the intersection of knowledge graphs, multimodal machine learning, and cultural heritage; one thread runs through human biomonitoring data.',
+    themeLabels: {
+      'cultural-heritage': 'Cultural heritage',
+      'knowledge-graphs': 'Knowledge graphs',
+      biomonitoring: 'Biomonitoring',
+      'network-security': 'Network security',
+    },
+    statusLabels: {
+      published: 'Published',
+      accepted: 'Accepted',
+      preprint: 'Preprint',
+    },
+    authors: 'Authors',
+    readLink: { doi: 'DOI', pdf: 'PDF', scholar: 'Scholar', url: 'Link' },
+    scholarLink: 'Full list on Google Scholar',
+  },
 };
 
 const nl: Strings = {
@@ -137,6 +167,25 @@ const nl: Strings = {
       'Naast het doctoraat bouw ik kleine projecten om bij te leren — sportanalytics, schaakengines, vastgoeddashboards. De rode draad is steeds dezelfde: rommelige, echte data nemen en er een vorm voor vinden waarmee je nieuwe vragen kunt stellen.',
       'Ik praat graag met studenten op zoek naar een thesisonderwerp, met mogelijke collaborators rond kennisgrafen of cultureel erfgoed, en met iedereen die een interessante dataset heeft en een vraag waar ze niet helemaal bij komen.',
     ],
+  },
+  research: {
+    title: 'Onderzoek',
+    intro:
+      'Een selectie van papers en lezingen. Het meeste bevindt zich op het snijvlak van kennisgrafen, multimodale machine learning en cultureel erfgoed; één lijn loopt door human-biomonitoring-data.',
+    themeLabels: {
+      'cultural-heritage': 'Cultureel erfgoed',
+      'knowledge-graphs': 'Kennisgrafen',
+      biomonitoring: 'Biomonitoring',
+      'network-security': 'Netwerkbeveiliging',
+    },
+    statusLabels: {
+      published: 'Verschenen',
+      accepted: 'Aanvaard',
+      preprint: 'Preprint',
+    },
+    authors: 'Auteurs',
+    readLink: { doi: 'DOI', pdf: 'PDF', scholar: 'Scholar', url: 'Link' },
+    scholarLink: 'Volledige lijst op Google Scholar',
   },
 };
 
