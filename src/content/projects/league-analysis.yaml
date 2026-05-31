@@ -1,0 +1,11 @@
+title: "League Analysis"
+description:
+  en: "Exploratory analysis of League of Legends match data — patches, builds, and a slow excuse to keep my Python sharp."
+  nl: "Verkennende analyse van League of Legends-matchdata — patches, builds, en een trage smoes om mijn Python scherp te houden."
+repo: "https://github.com/RubenPeeters/league-analysis"
+year: 2025
+sortKey: 202512
+tags:
+  - Python
+  - Data analysis
+featured: true

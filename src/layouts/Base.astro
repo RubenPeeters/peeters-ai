@@ -1,43 +1,112 @@
 ---
 import '~/styles/global.css';
-import { t, pathFor, type Locale } from '~/i18n/strings';
+import {
+  t,
+  pathFor,
+  publishedNavRoutes,
+  routes,
+  type Locale,
+  type RouteKey,
+} from '~/i18n/strings';
 
 type Props = {
   locale: Locale;
+  routeKey: RouteKey;
   title?: string;
   description?: string;
-  path?: string;
 };
 
-const { locale, title, description, path = '' } = Astro.props;
+const { locale, routeKey, title, description } = Astro.props;
 const s = t(locale);
 
 const pageTitle = title ? `${title} — ${s.siteName}` : s.siteName;
 const pageDescription = description ?? s.tagline;
 
 const otherLocale: Locale = locale === 'en' ? 'nl' : 'en';
-const otherHref = pathFor(otherLocale, path);
+const otherHref = pathFor(routeKey, otherLocale);
+
+const navKeys = publishedNavRoutes();
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const otherUrl = new URL(otherHref, Astro.site).href;
+const ogImage = new URL('/og-image.svg', Astro.site).href;
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Ruben Peeters',
+  jobTitle: 'PhD candidate',
+  affiliation: { '@type': 'Organization', name: 'KU Leuven' },
+  url: 'https://peeters.ai',
+  email: 'mailto:ruben@fampeeters.be',
+  sameAs: [
+    'https://github.com/RubenPeeters',
+    'https://scholar.google.com/citations?user=BRoMOlMAAAAJ',
+  ],
+};
+
+const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to content';
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f2f0e8" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={s.siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={locale === 'nl' ? 'nl_BE' : 'en_US'} />
+    <meta property="og:locale:alternate" content={otherLocale === 'nl' ? 'nl_BE' : 'en_US'} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="alternate" hreflang={locale} href={canonicalUrl} />
+    <link rel="alternate" hreflang={otherLocale} href={otherUrl} />
+    <link rel="alternate" hreflang="x-default" href={new URL(pathFor(routeKey, 'en'), Astro.site).href} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
-    <link rel="alternate" hreflang={locale} href={Astro.url.href} />
-    <link rel="alternate" hreflang={otherLocale} href={new URL(otherHref, Astro.site).href} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   </head>
   <body>
+    <a href="#main" class="skip-link">{skipToMainLabel}</a>
+
     <header class="container site-header">
-      <a href={pathFor(locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+      <a href={pathFor('home', locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+      {navKeys.length > 0 && (
+        <nav class="site-nav" aria-label="Sections">
+          <ul>
+            {navKeys.map((key) => (
+              <li>
+                <a
+                  href={pathFor(key, locale)}
+                  aria-current={key === routeKey ? 'page' : undefined}
+                >
+                  {routes[key].navLabel[locale]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
       <nav aria-label={s.langSwitch.label} class="lang-switch">
         <a
           href={otherHref}
@@ -50,7 +119,7 @@ const otherHref = pathFor(otherLocale, path);
       </nav>
     </header>
 
-    <main>
+    <main id="main">
       <slot />
     </main>
 
@@ -62,16 +131,54 @@ const otherHref = pathFor(otherLocale, path);
     </footer>
 
     <style>
+      .skip-link {
+        position: absolute;
+        top: var(--space-12);
+        left: var(--space-12);
+        padding: var(--space-8) var(--space-16);
+        background: var(--color-text);
+        color: var(--color-bg);
+        border: none;
+        font-family: var(--font-mono);
+        font-size: var(--text-mono);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        transform: translateY(-200%);
+        transition: transform var(--dur) var(--ease);
+        z-index: 100;
+      }
+      .skip-link:focus-visible {
+        transform: translateY(0);
+        color: var(--color-bg);
+      }
+
       .site-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding-block: var(--space-32) var(--space-96);
         gap: var(--space-16);
+        flex-wrap: wrap;
       }
       .brand {
         font-weight: 500;
       }
+      .site-nav ul {
+        display: flex;
+        gap: var(--space-24);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .site-nav a {
+        color: var(--color-text-muted);
+        border: none;
+        font-size: var(--text-small);
+        transition: color var(--dur) var(--ease);
+      }
+      .site-nav a:hover { color: var(--color-accent); }
+      .site-nav a[aria-current='page'] { color: var(--color-text); }
       .lang-switch {
         display: flex;
         gap: var(--space-8);
@@ -84,6 +191,11 @@ const otherHref = pathFor(otherLocale, path);
         margin-top: var(--space-96);
       }
       .site-footer p { max-width: none; }
+
+      @media (max-width: 480px) {
+        .site-nav { order: 3; flex-basis: 100%; }
+        .site-nav ul { justify-content: flex-start; }
+      }
     </style>
   </body>
 </html>
