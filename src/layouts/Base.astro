@@ -1,0 +1,89 @@
+---
+import '~/styles/global.css';
+import { t, pathFor, type Locale } from '~/i18n/strings';
+
+type Props = {
+  locale: Locale;
+  title?: string;
+  description?: string;
+  path?: string;
+};
+
+const { locale, title, description, path = '' } = Astro.props;
+const s = t(locale);
+
+const pageTitle = title ? `${title} — ${s.siteName}` : s.siteName;
+const pageDescription = description ?? s.tagline;
+
+const otherLocale: Locale = locale === 'en' ? 'nl' : 'en';
+const otherHref = pathFor(otherLocale, path);
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap"
+    />
+    <link rel="alternate" hreflang={locale} href={Astro.url.href} />
+    <link rel="alternate" hreflang={otherLocale} href={new URL(otherHref, Astro.site).href} />
+  </head>
+  <body>
+    <header class="container site-header">
+      <a class="brand" href={pathFor(locale)}>{s.siteName}</a>
+      <nav aria-label={s.langSwitch.label} class="lang-switch">
+        <a
+          href={otherHref}
+          hreflang={otherLocale}
+          aria-label={`${s.langSwitch.label}: ${s.langSwitch[otherLocale]}`}
+        >
+          {s.langSwitch[otherLocale]}
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="container site-footer">
+      <p>{s.footer.builtWith} <a href="https://github.com/RubenPeeters/peeters-ai">{s.footer.source}</a>.</p>
+    </footer>
+
+    <style>
+      .site-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-block: var(--space-8) var(--space-12);
+      }
+      .brand {
+        font-family: var(--font-serif);
+        font-size: var(--text-lg);
+        color: var(--color-text);
+        border: none;
+      }
+      .brand:hover { color: var(--color-accent); }
+      .lang-switch a {
+        font-size: var(--text-sm);
+        letter-spacing: 0.06em;
+        color: var(--color-text-muted);
+      }
+      .lang-switch a:hover { color: var(--color-accent); }
+      .site-footer {
+        padding-block: var(--space-16) var(--space-8);
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+        border-top: 1px solid var(--color-border);
+        margin-top: var(--space-24);
+      }
+    </style>
+  </body>
+</html>

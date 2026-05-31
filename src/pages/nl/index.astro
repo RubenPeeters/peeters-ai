@@ -1,0 +1,25 @@
+---
+import Base from '~/layouts/Base.astro';
+import { t } from '~/i18n/strings';
+
+const locale = 'nl' as const;
+const s = t(locale);
+---
+<Base locale={locale}>
+  <section class="container hero">
+    <h1>{s.siteName}</h1>
+    <p class="tagline">{s.tagline}</p>
+  </section>
+
+  <style>
+    .hero {
+      padding-block: var(--space-12) var(--space-16);
+    }
+    .tagline {
+      margin-top: var(--space-6);
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      max-width: 32rem;
+    }
+  </style>
+</Base>
