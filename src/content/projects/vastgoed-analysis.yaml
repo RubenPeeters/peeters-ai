@@ -1,0 +1,10 @@
+title: "Vastgoed Analysis"
+description:
+  en: "Notebook exploring Belgian real-estate listings — price per region, time on market, the usual ‘should we buy’ questions."
+  nl: "Notebook over Belgisch vastgoedaanbod — prijs per regio, tijd op de markt, de gebruikelijke ‘zouden we kopen’-vragen."
+repo: "https://github.com/RubenPeeters/vastgoed-analysis"
+year: 2025
+sortKey: 202509
+tags:
+  - Jupyter
+  - Python

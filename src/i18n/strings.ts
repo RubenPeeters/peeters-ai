@@ -34,7 +34,7 @@ export const routes: Record<RouteKey, RouteDef> = {
   projects: {
     paths: { en: '/projects', nl: '/nl/projecten' },
     navLabel: { en: 'Projects', nl: 'Projecten' },
-    published: false,
+    published: true,
   },
   contact: {
     paths: { en: '/contact', nl: '/nl/contact' },
@@ -92,6 +92,14 @@ type Strings = {
   };
   about: AboutCopy;
   research: ResearchCopy;
+  projects: ProjectsCopy;
+};
+
+type ProjectsCopy = {
+  title: string;
+  intro: string;
+  labels: { repo: string; demo: string };
+  more: string;
 };
 
 function joinTagline(parts: TaglineParts): string {
@@ -147,6 +155,13 @@ const en: Strings = {
     readLink: { doi: 'DOI', pdf: 'PDF', scholar: 'Scholar', url: 'Link' },
     scholarLink: 'Full list on Google Scholar',
   },
+  projects: {
+    title: 'Projects',
+    intro:
+      'Side projects I build to learn from. The throughline is the same as the day job: take messy data, find a shape that lets you ask new questions of it.',
+    labels: { repo: 'Repo', demo: 'Live' },
+    more: 'More on GitHub',
+  },
 };
 
 const nl: Strings = {
@@ -186,6 +201,13 @@ const nl: Strings = {
     authors: 'Auteurs',
     readLink: { doi: 'DOI', pdf: 'PDF', scholar: 'Scholar', url: 'Link' },
     scholarLink: 'Volledige lijst op Google Scholar',
+  },
+  projects: {
+    title: 'Projecten',
+    intro:
+      'Bijprojecten die ik bouw om bij te leren. De rode draad is dezelfde als die van het doctoraat: rommelige data nemen en een vorm vinden waarmee je er nieuwe vragen aan kunt stellen.',
+    labels: { repo: 'Repo', demo: 'Live' },
+    more: 'Meer op GitHub',
   },
 };
 
