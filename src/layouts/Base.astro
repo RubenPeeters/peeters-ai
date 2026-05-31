@@ -1,22 +1,31 @@
 ---
 import '~/styles/global.css';
-import { t, pathFor, type Locale } from '~/i18n/strings';
+import {
+  t,
+  pathFor,
+  publishedNavRoutes,
+  routes,
+  type Locale,
+  type RouteKey,
+} from '~/i18n/strings';
 
 type Props = {
   locale: Locale;
+  routeKey: RouteKey;
   title?: string;
   description?: string;
-  path?: string;
 };
 
-const { locale, title, description, path = '' } = Astro.props;
+const { locale, routeKey, title, description } = Astro.props;
 const s = t(locale);
 
 const pageTitle = title ? `${title} — ${s.siteName}` : s.siteName;
 const pageDescription = description ?? s.tagline;
 
 const otherLocale: Locale = locale === 'en' ? 'nl' : 'en';
-const otherHref = pathFor(otherLocale, path);
+const otherHref = pathFor(routeKey, otherLocale);
+
+const navKeys = publishedNavRoutes();
 ---
 <!doctype html>
 <html lang={locale}>
@@ -37,7 +46,23 @@ const otherHref = pathFor(otherLocale, path);
   </head>
   <body>
     <header class="container site-header">
-      <a href={pathFor(locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+      <a href={pathFor('home', locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+      {navKeys.length > 0 && (
+        <nav class="site-nav" aria-label="Sections">
+          <ul>
+            {navKeys.map((key) => (
+              <li>
+                <a
+                  href={pathFor(key, locale)}
+                  aria-current={key === routeKey ? 'page' : undefined}
+                >
+                  {routes[key].navLabel[locale]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
       <nav aria-label={s.langSwitch.label} class="lang-switch">
         <a
           href={otherHref}
@@ -68,10 +93,26 @@ const otherHref = pathFor(otherLocale, path);
         justify-content: space-between;
         padding-block: var(--space-32) var(--space-96);
         gap: var(--space-16);
+        flex-wrap: wrap;
       }
       .brand {
         font-weight: 500;
       }
+      .site-nav ul {
+        display: flex;
+        gap: var(--space-24);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .site-nav a {
+        color: var(--color-text-muted);
+        border: none;
+        font-size: var(--text-small);
+        transition: color var(--dur) var(--ease);
+      }
+      .site-nav a:hover { color: var(--color-accent); }
+      .site-nav a[aria-current='page'] { color: var(--color-text); }
       .lang-switch {
         display: flex;
         gap: var(--space-8);
@@ -84,6 +125,11 @@ const otherHref = pathFor(otherLocale, path);
         margin-top: var(--space-96);
       }
       .site-footer p { max-width: none; }
+
+      @media (max-width: 480px) {
+        .site-nav { order: 3; flex-basis: 100%; }
+        .site-nav ul { justify-content: flex-start; }
+      }
     </style>
   </body>
 </html>
