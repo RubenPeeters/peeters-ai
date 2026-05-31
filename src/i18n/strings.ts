@@ -39,7 +39,7 @@ export const routes: Record<RouteKey, RouteDef> = {
   contact: {
     paths: { en: '/contact', nl: '/nl/contact' },
     navLabel: { en: 'Contact', nl: 'Contact' },
-    published: false,
+    published: true,
   },
 };
 
@@ -93,6 +93,7 @@ type Strings = {
   about: AboutCopy;
   research: ResearchCopy;
   projects: ProjectsCopy;
+  contact: ContactCopy;
 };
 
 type ProjectsCopy = {
@@ -100,6 +101,19 @@ type ProjectsCopy = {
   intro: string;
   labels: { repo: string; demo: string };
   more: string;
+};
+
+type ContactCopy = {
+  title: string;
+  intro: string;
+  emailLabel: string;
+  elsewhere: string;
+  links: { github: string; scholar: string };
+  students: {
+    eyebrow: string;
+    title: string;
+    body: string;
+  };
 };
 
 function joinTagline(parts: TaglineParts): string {
@@ -162,6 +176,20 @@ const en: Strings = {
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'More on GitHub',
   },
+  contact: {
+    title: 'Contact',
+    intro:
+      'The fastest way to reach me is email. I read it daily and reply within a day or two.',
+    emailLabel: 'ruben@fampeeters.be',
+    elsewhere: 'Elsewhere',
+    links: { github: 'GitHub', scholar: 'Google Scholar' },
+    students: {
+      eyebrow: 'For students',
+      title: 'Looking for a thesis topic?',
+      body:
+        'If you’re interested in knowledge graphs, multimodal machine learning, or cultural-heritage data, send me a short note about what draws you to the area and I’ll get back to you with options or a chat.',
+    },
+  },
 };
 
 const nl: Strings = {
@@ -208,6 +236,20 @@ const nl: Strings = {
       'Bijprojecten die ik bouw om bij te leren. De rode draad is dezelfde als die van het doctoraat: rommelige data nemen en een vorm vinden waarmee je er nieuwe vragen aan kunt stellen.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'Meer op GitHub',
+  },
+  contact: {
+    title: 'Contact',
+    intro:
+      'De snelste weg is een e-mail. Ik lees mijn inbox dagelijks en antwoord meestal binnen één à twee dagen.',
+    emailLabel: 'ruben@fampeeters.be',
+    elsewhere: 'Elders',
+    links: { github: 'GitHub', scholar: 'Google Scholar' },
+    students: {
+      eyebrow: 'Voor studenten',
+      title: 'Op zoek naar een thesisonderwerp?',
+      body:
+        'Heb je interesse in kennisgrafen, multimodale machine learning of data rond cultureel erfgoed? Stuur een korte mail met wat je in dat domein aanspreekt, dan kom ik bij je terug met een paar mogelijkheden of een afspraak voor een gesprek.',
+    },
   },
 };
 

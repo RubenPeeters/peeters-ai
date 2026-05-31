@@ -1,0 +1,73 @@
+---
+import Base from '~/layouts/Base.astro';
+import { t } from '~/i18n/strings';
+
+const locale = 'nl' as const;
+const s = t(locale);
+---
+<Base locale={locale} routeKey="contact" title={s.contact.title} description={s.contact.intro}>
+  <article class="container contact">
+    <p class="eyebrow">{s.contact.title}</p>
+    <p class="intro">{s.contact.intro}</p>
+
+    <p class="email">
+      <a href={`mailto:${s.contact.emailLabel}`}>{s.contact.emailLabel}</a>
+    </p>
+
+    <section class="elsewhere" aria-labelledby="elsewhere-heading">
+      <p class="eyebrow" id="elsewhere-heading">{s.contact.elsewhere}</p>
+      <ul>
+        <li><a href="https://github.com/RubenPeeters" class="ext" rel="noopener">{s.contact.links.github}</a></li>
+        <li><a href="https://scholar.google.com/citations?user=BRoMOlMAAAAJ&hl=nl" class="ext" rel="noopener">{s.contact.links.scholar}</a></li>
+      </ul>
+    </section>
+
+    <section class="students" aria-labelledby="students-heading">
+      <p class="eyebrow">{s.contact.students.eyebrow}</p>
+      <h2 id="students-heading">{s.contact.students.title}</h2>
+      <p>{s.contact.students.body}</p>
+    </section>
+  </article>
+
+  <style>
+    .contact {
+      padding-block: var(--space-32) var(--space-96);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-48);
+    }
+    .contact .eyebrow { margin: 0; }
+    .intro {
+      font-family: var(--font-serif);
+      font-size: var(--text-tagline);
+      line-height: 1.35;
+      color: var(--color-text);
+      max-width: 36ch;
+    }
+    .email a {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+    }
+    .elsewhere ul {
+      list-style: none;
+      margin: var(--space-12) 0 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-24);
+      font-size: var(--text-small);
+    }
+    .students {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .students h2 {
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+  </style>
+</Base>
