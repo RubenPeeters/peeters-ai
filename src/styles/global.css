@@ -16,60 +16,108 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  font-feature-settings: 'ss01', 'cv11';
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  font-feature-settings: 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3 {
   font-family: var(--font-serif);
   font-weight: 500;
-  line-height: var(--leading-tight);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin: 0;
+  text-wrap: balance;
 }
 
-h1 { font-size: var(--text-4xl); }
-h2 { font-size: var(--text-2xl); }
-h3 { font-size: var(--text-xl); }
+h1 {
+  font-size: var(--text-h1);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.025em;
+}
+h2 {
+  font-size: var(--text-h2);
+  line-height: var(--leading-snug);
+}
+h3 {
+  font-size: var(--text-h3);
+  line-height: var(--leading-snug);
+}
 
-p { margin: 0; }
+p { margin: 0; max-width: 68ch; text-wrap: pretty; }
 
+/*
+  Inline links: ink-colored with a transparent underline that warms to azure on hover.
+  Underline doesn't flash on — it warms.
+*/
 a {
-  color: var(--color-accent);
+  color: inherit;
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-
 a:hover {
-  color: var(--color-accent-hover);
-  border-bottom-color: currentColor;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
-
 a:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-::selection {
-  background: var(--color-accent-soft);
+/* External-link nudge */
+a.ext::after {
+  content: ' ↗';
+  display: inline-block;
+  margin-left: 0.1em;
+  transition: transform var(--dur) var(--ease);
+}
+a.ext:hover::after {
+  transform: translate(0.1em, -0.1em);
+}
+
+/* Eyebrow / small labels — mono, small caps spacing */
+.eyebrow,
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Outline pill — for monogram brand and language toggle */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-4) var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.08em;
   color: var(--color-text);
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.pill:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .container {
   max-width: var(--measure);
   margin-inline: auto;
-  padding-inline: var(--space-6);
-}
-
-.container-wide {
-  max-width: var(--measure-wide);
-  margin-inline: auto;
-  padding-inline: var(--space-6);
+  padding-inline: clamp(var(--space-24), 4vw, var(--space-48));
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -7,19 +7,27 @@ const s = t(locale);
 ---
 <Base locale={locale}>
   <section class="container hero">
+    <p class="eyebrow">{s.eyebrow}</p>
     <h1>{s.siteName}</h1>
-    <p class="tagline">{s.tagline}</p>
+    <p class="tagline">
+      {s.taglineParts.pre}<em>{s.taglineParts.em}</em>{s.taglineParts.post}
+    </p>
   </section>
 
   <style>
-    .hero {
-      padding-block: var(--space-12) var(--space-16);
-    }
+    .hero { padding-block: var(--space-32) var(--space-96); }
+    .eyebrow { margin-bottom: var(--space-24); }
+    h1 { margin-bottom: var(--space-32); }
     .tagline {
-      margin-top: var(--space-6);
-      font-size: var(--text-lg);
-      color: var(--color-text-muted);
-      max-width: 32rem;
+      font-family: var(--font-serif);
+      font-size: var(--text-tagline);
+      line-height: 1.35;
+      color: var(--color-text);
+      max-width: 32ch;
+    }
+    .tagline em {
+      font-style: italic;
+      font-variation-settings: 'opsz' 18;
     }
   </style>
 </Base>
