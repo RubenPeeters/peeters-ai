@@ -121,15 +121,15 @@ function joinTagline(parts: TaglineParts): string {
 }
 
 const enTagline: TaglineParts = {
-  pre: 'PhD researcher in Belgium. I work at the ',
-  em: 'seams',
-  post: ' between machine learning, knowledge graphs, and the messy data of the real world.',
+  pre: 'PhD researcher at KU Leuven. I work on knowledge graphs and multimodal ML, ',
+  em: 'mostly',
+  post: ' for cultural heritage.',
 };
 
 const nlTagline: TaglineParts = {
-  pre: 'Doctoraatsonderzoeker in België. Ik werk op de ',
-  em: 'naden',
-  post: ' tussen machine learning, kennisgrafen en de rommelige data van de echte wereld.',
+  pre: 'Doctoraatsonderzoeker aan KU Leuven. Ik werk op kennisgrafen en multimodale ML, ',
+  em: 'vooral',
+  post: ' voor cultureel erfgoed.',
 };
 
 const en: Strings = {
@@ -142,18 +142,18 @@ const en: Strings = {
   about: {
     title: 'About',
     intro:
-      'I’m a PhD candidate at KU Leuven. My work sits at two intersections: making cultural-heritage collections searchable through multimodal knowledge graphs, and helping human-biomonitoring studies share data without losing meaning along the way.',
-    currently: 'Currently — refining a multimodal knowledge base for cultural heritage and writing up the next paper.',
+      'I’m a PhD candidate at KU Leuven. I work on knowledge graphs and multimodal machine learning for cultural heritage, and on data interoperability in human biomonitoring studies.',
+    currently: 'Currently — building ArtKB and writing the next paper.',
     paragraphs: [
-      'I trained as an industrial engineer in information science before moving into research. The shift didn’t feel like a jump so much as a zoom-in: the same questions about how data flows through systems, asked at a different angle.',
-      'Outside the PhD I build small things to learn from — sports analytics, chess engines, real-estate dashboards. The throughline is the same as the day job: take messy, real-world data and find a shape that lets you ask new questions of it.',
-      'I’m always happy to talk to students looking for a thesis topic, collaborators on knowledge-graph or cultural-heritage work, and anyone with an interesting dataset and a question they can’t quite get to.',
+      'I trained as an industrial engineer (information science) before moving into research.',
+      'Outside the PhD I build small side projects in Python and TypeScript — sports analytics, chess, real-estate notebooks, the occasional web app.',
+      'Happy to hear from students looking for a thesis topic, collaborators on knowledge-graph or cultural-heritage work, and anyone with an interesting dataset.',
     ],
   },
   research: {
     title: 'Research',
     intro:
-      'Selected papers and talks. Most live at the intersection of knowledge graphs, multimodal machine learning, and cultural heritage; one thread runs through human biomonitoring data.',
+      'Selected papers. Mostly on knowledge graphs and multimodal ML for cultural heritage; some on data interoperability in human biomonitoring.',
     themeLabels: {
       'cultural-heritage': 'Cultural heritage',
       'knowledge-graphs': 'Knowledge graphs',
@@ -172,14 +172,14 @@ const en: Strings = {
   projects: {
     title: 'Projects',
     intro:
-      'Side projects I build to learn from. The throughline is the same as the day job: take messy data, find a shape that lets you ask new questions of it.',
+      'Side projects. Mostly Python and TypeScript, mostly excuses to try something new.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'More on GitHub',
   },
   contact: {
     title: 'Contact',
     intro:
-      'The fastest way to reach me is email. I read it daily and reply within a day or two.',
+      'Email is the fastest way to reach me. I usually reply within a day or two.',
     emailLabel: 'ruben@fampeeters.be',
     elsewhere: 'Elsewhere',
     links: { github: 'GitHub', scholar: 'Google Scholar' },
@@ -187,7 +187,7 @@ const en: Strings = {
       eyebrow: 'For students',
       title: 'Looking for a thesis topic?',
       body:
-        'If you’re interested in knowledge graphs, multimodal machine learning, or cultural-heritage data, send me a short note about what draws you to the area and I’ll get back to you with options or a chat.',
+        'If you’re interested in knowledge graphs, multimodal ML, or cultural-heritage data, send a short email about what you’d like to work on and we’ll find a fit.',
     },
   },
 };
@@ -202,19 +202,19 @@ const nl: Strings = {
   about: {
     title: 'Over mij',
     intro:
-      'Ik ben doctoraatsonderzoeker aan KU Leuven. Mijn werk bevindt zich op twee snijvlakken: cultureel-erfgoedcollecties doorzoekbaar maken via multimodale kennisgrafen, en human-biomonitoring-studies helpen om data te delen zonder dat betekenis onderweg verloren gaat.',
+      'Ik ben doctoraatsonderzoeker aan KU Leuven. Ik werk op kennisgrafen en multimodale machine learning voor cultureel erfgoed, en op data-interoperabiliteit in human-biomonitoring-studies.',
     currently:
-      'Op dit moment — verfijn ik een multimodale kennisbasis voor cultureel erfgoed en schrijf ik aan het volgende artikel.',
+      'Op dit moment — bouw ik aan ArtKB en schrijf ik aan het volgende artikel.',
     paragraphs: [
-      'Ik studeerde als industrieel ingenieur informatica voordat ik in onderzoek terechtkwam. De overstap voelde minder als een sprong dan als een inzoomen: dezelfde vragen over hoe data door systemen stroomt, vanuit een andere hoek.',
-      'Naast het doctoraat bouw ik kleine projecten om bij te leren — sportanalytics, schaakengines, vastgoeddashboards. De rode draad is steeds dezelfde: rommelige, echte data nemen en er een vorm voor vinden waarmee je nieuwe vragen kunt stellen.',
-      'Ik praat graag met studenten op zoek naar een thesisonderwerp, met mogelijke collaborators rond kennisgrafen of cultureel erfgoed, en met iedereen die een interessante dataset heeft en een vraag waar ze niet helemaal bij komen.',
+      'Ik studeerde industrieel ingenieur (informatica) voordat ik in onderzoek terechtkwam.',
+      'Naast het doctoraat bouw ik kleine bijprojecten in Python en TypeScript — sportanalytics, schaak, vastgoednotebooks, af en toe een webapp.',
+      'Studenten op zoek naar een thesisonderwerp, mogelijke collaborators rond kennisgrafen of cultureel erfgoed, en iedereen met een interessante dataset — hoor ik graag van.',
     ],
   },
   research: {
     title: 'Onderzoek',
     intro:
-      'Een selectie van papers en lezingen. Het meeste bevindt zich op het snijvlak van kennisgrafen, multimodale machine learning en cultureel erfgoed; één lijn loopt door human-biomonitoring-data.',
+      'Een selectie van papers. Vooral over kennisgrafen en multimodale ML voor cultureel erfgoed; daarnaast over data-interoperabiliteit in human biomonitoring.',
     themeLabels: {
       'cultural-heritage': 'Cultureel erfgoed',
       'knowledge-graphs': 'Kennisgrafen',
@@ -233,14 +233,14 @@ const nl: Strings = {
   projects: {
     title: 'Projecten',
     intro:
-      'Bijprojecten die ik bouw om bij te leren. De rode draad is dezelfde als die van het doctoraat: rommelige data nemen en een vorm vinden waarmee je er nieuwe vragen aan kunt stellen.',
+      'Bijprojecten. Vooral Python en TypeScript, vooral excuses om iets nieuws uit te proberen.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'Meer op GitHub',
   },
   contact: {
     title: 'Contact',
     intro:
-      'De snelste weg is een e-mail. Ik lees mijn inbox dagelijks en antwoord meestal binnen één à twee dagen.',
+      'Een e-mail is de snelste manier om me te bereiken. Ik antwoord meestal binnen één à twee dagen.',
     emailLabel: 'ruben@fampeeters.be',
     elsewhere: 'Elders',
     links: { github: 'GitHub', scholar: 'Google Scholar' },
@@ -248,7 +248,7 @@ const nl: Strings = {
       eyebrow: 'Voor studenten',
       title: 'Op zoek naar een thesisonderwerp?',
       body:
-        'Heb je interesse in kennisgrafen, multimodale machine learning of data rond cultureel erfgoed? Stuur een korte mail met wat je in dat domein aanspreekt, dan kom ik bij je terug met een paar mogelijkheden of een afspraak voor een gesprek.',
+        'Heb je interesse in kennisgrafen, multimodale ML of data rond cultureel erfgoed? Stuur een korte mail met waar je aan zou willen werken, dan vinden we wel iets dat past.',
     },
   },
 };

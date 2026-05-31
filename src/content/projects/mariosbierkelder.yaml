@@ -1,7 +1,7 @@
 title: "Mario's Bierkelder"
 description:
-  en: "A small shop site for a friend's craft-beer cellar. TypeScript, Vercel, very few moving parts."
-  nl: "Een kleine winkelsite voor de bierkelder van een vriend. TypeScript, Vercel, weinig bewegende delen."
+  en: "Shop site for a friend's craft-beer cellar. TypeScript and Vercel."
+  nl: "Webshop voor de bierkelder van een vriend. TypeScript en Vercel."
 repo: "https://github.com/RubenPeeters/mariosbierkelder"
 demo: "https://marios-beer-site.vercel.app"
 year: 2024
