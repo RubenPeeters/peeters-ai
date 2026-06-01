@@ -25,7 +25,7 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-weight: 500;
   letter-spacing: -0.02em;
   margin: 0;
@@ -47,6 +47,16 @@ h3 {
 }
 
 p { margin: 0; max-width: 68ch; text-wrap: pretty; }
+
+/*
+  Page lede — the section's one message, carried by the <h1> so it leads the
+  document outline. Kept at body weight and tracking so it reads as a sentence,
+  not a heavy title; the h1 defaults above would otherwise overstate it.
+*/
+h1.intro {
+  font-weight: 400;
+  letter-spacing: normal;
+}
 
 /*
   Inline links: ink-colored with a transparent underline that warms to azure on hover.

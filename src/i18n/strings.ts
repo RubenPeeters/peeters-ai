@@ -142,9 +142,10 @@ const en: Strings = {
   about: {
     title: 'About',
     intro:
-      'I’m a PhD candidate at KU Leuven. I work on knowledge graphs and multimodal machine learning for cultural heritage, and on data interoperability in human biomonitoring studies.',
+      'I’m a PhD candidate at KU Leuven, working on knowledge graphs and multimodal ML for cultural heritage.',
     currently: 'Currently — building ArtKB and writing the next paper.',
     paragraphs: [
+      'My work also reaches into data interoperability in human biomonitoring studies.',
       'I trained as an industrial engineer (information science) before moving into research.',
       'Outside the PhD I build small side projects in Python and TypeScript — sports analytics, chess, real-estate notebooks, the occasional web app.',
       'Happy to hear from students looking for a thesis topic, collaborators on knowledge-graph or cultural-heritage work, and anyone with an interesting dataset.',
@@ -153,7 +154,7 @@ const en: Strings = {
   research: {
     title: 'Research',
     intro:
-      'Selected papers. Mostly on knowledge graphs and multimodal ML for cultural heritage; some on data interoperability in human biomonitoring.',
+      'Most of my research is on knowledge graphs and multimodal ML for cultural heritage, with some work on data interoperability in human biomonitoring.',
     themeLabels: {
       'cultural-heritage': 'Cultural heritage',
       'knowledge-graphs': 'Knowledge graphs',
@@ -172,14 +173,14 @@ const en: Strings = {
   projects: {
     title: 'Projects',
     intro:
-      'Side projects. Mostly Python and TypeScript, mostly excuses to try something new.',
+      'Side projects — mostly excuses to try something new in Python and TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'More on GitHub',
   },
   contact: {
     title: 'Contact',
     intro:
-      'Email is the fastest way to reach me. I usually reply within a day or two.',
+      'Email is the fastest way to reach me — I usually reply within a day or two.',
     emailLabel: 'ruben@fampeeters.be',
     elsewhere: 'Elsewhere',
     links: { github: 'GitHub', scholar: 'Google Scholar' },
@@ -202,10 +203,11 @@ const nl: Strings = {
   about: {
     title: 'Over mij',
     intro:
-      'Ik ben doctoraatsonderzoeker aan KU Leuven. Ik werk op kennisgrafen en multimodale machine learning voor cultureel erfgoed, en op data-interoperabiliteit in human-biomonitoring-studies.',
+      'Ik ben doctoraatsonderzoeker aan KU Leuven en werk op kennisgrafen en multimodale ML voor cultureel erfgoed.',
     currently:
       'Op dit moment — bouw ik aan ArtKB en schrijf ik aan het volgende artikel.',
     paragraphs: [
+      'Mijn werk raakt ook aan data-interoperabiliteit in human-biomonitoring-studies.',
       'Ik studeerde industrieel ingenieur (informatica) voordat ik in onderzoek terechtkwam.',
       'Naast het doctoraat bouw ik kleine bijprojecten in Python en TypeScript — sportanalytics, schaak, vastgoednotebooks, af en toe een webapp.',
       'Studenten op zoek naar een thesisonderwerp, mogelijke collaborators rond kennisgrafen of cultureel erfgoed, en iedereen met een interessante dataset — hoor ik graag van.',
@@ -214,7 +216,7 @@ const nl: Strings = {
   research: {
     title: 'Onderzoek',
     intro:
-      'Een selectie van papers. Vooral over kennisgrafen en multimodale ML voor cultureel erfgoed; daarnaast over data-interoperabiliteit in human biomonitoring.',
+      'Mijn onderzoek gaat vooral over kennisgrafen en multimodale ML voor cultureel erfgoed, met wat werk rond data-interoperabiliteit in human biomonitoring.',
     themeLabels: {
       'cultural-heritage': 'Cultureel erfgoed',
       'knowledge-graphs': 'Kennisgrafen',
@@ -233,14 +235,14 @@ const nl: Strings = {
   projects: {
     title: 'Projecten',
     intro:
-      'Bijprojecten. Vooral Python en TypeScript, vooral excuses om iets nieuws uit te proberen.',
+      'Bijprojecten — vooral excuses om iets nieuws te proberen in Python en TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'Meer op GitHub',
   },
   contact: {
     title: 'Contact',
     intro:
-      'Een e-mail is de snelste manier om me te bereiken. Ik antwoord meestal binnen één à twee dagen.',
+      'Een e-mail is de snelste manier om me te bereiken — meestal antwoord ik binnen één à twee dagen.',
     emailLabel: 'ruben@fampeeters.be',
     elsewhere: 'Elders',
     links: { github: 'GitHub', scholar: 'Google Scholar' },

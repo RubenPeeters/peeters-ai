@@ -16,8 +16,7 @@
   --color-accent: #0075ff;
   --color-accent-hover: #005ad1;
 
-  /* Typography */
-  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* Typography — sans for everything, mono only for small labels (Doumont: few families, sans for legibility) */
   --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 

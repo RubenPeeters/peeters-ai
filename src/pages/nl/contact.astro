@@ -7,8 +7,8 @@ const s = t(locale);
 ---
 <Base locale={locale} routeKey="contact" title={s.contact.title} description={s.contact.intro}>
   <article class="container contact">
-    <h1 class="eyebrow">{s.contact.title}</h1>
-    <p class="intro">{s.contact.intro}</p>
+    <p class="eyebrow">{s.contact.title}</p>
+    <h1 class="intro">{s.contact.intro}</h1>
 
     <p class="email">
       <a href={`mailto:${s.contact.emailLabel}`}>{s.contact.emailLabel}</a>
@@ -38,14 +38,14 @@ const s = t(locale);
     }
     .contact .eyebrow { margin: 0; }
     .intro {
-      font-family: var(--font-serif);
+      font-family: var(--font-sans);
       font-size: var(--text-tagline);
       line-height: 1.35;
       color: var(--color-text);
       max-width: 36ch;
     }
     .email a {
-      font-family: var(--font-serif);
+      font-family: var(--font-sans);
       font-size: 1.25rem;
     }
     .elsewhere ul {

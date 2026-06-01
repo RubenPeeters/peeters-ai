@@ -7,8 +7,8 @@ const s = t(locale);
 ---
 <Base locale={locale} routeKey="about" title={s.about.title} description={s.about.intro}>
   <article class="container about">
-    <h1 class="eyebrow">{s.about.title}</h1>
-    <p class="intro">{s.about.intro}</p>
+    <p class="eyebrow">{s.about.title}</p>
+    <h1 class="intro">{s.about.intro}</h1>
 
     <p class="currently">
       <span class="dot" aria-hidden="true"></span>
@@ -27,7 +27,7 @@ const s = t(locale);
     }
     .about .eyebrow { margin: 0; }
     .intro {
-      font-family: var(--font-serif);
+      font-family: var(--font-sans);
       font-size: var(--text-tagline);
       line-height: 1.35;
       color: var(--color-text);
