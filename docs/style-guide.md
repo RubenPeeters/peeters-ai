@@ -52,9 +52,14 @@ Applied here:
 
 ## Typography
 
-- **Serif headings** (`Newsreader`), **sans body** (`Hanken Grotesk`), **mono for small
-  labels/eyebrows** (`IBM Plex Mono`). Three roles, used consistently — hierarchy comes
-  from the type scale, not from many sizes invented per-page.
+- **Sans-serif throughout** (`Hanken Grotesk`), with **mono reserved for small
+  labels/eyebrows** (`IBM Plex Mono`). Doumont's rule: one workhorse sans, chosen for
+  legibility — serifs are avoided. Two families, used consistently.
+- **Hierarchy from weight and size, not family.** Headings are the same sans as the body,
+  set heavier (`500`) and larger; the page lede sits at body weight so it reads as a
+  sentence, not a title.
+- **Emphasis with weight, never italics or color.** Bold the word; don't slant or tint it.
+  Italics survive only for genuine citation conventions (e.g. publication venues).
 - Few sizes. Stick to the `--text-*` tokens; each maps to a role (h1/h2/h3, body, tagline,
   small, mono-label).
 - High contrast, comfortable measure, `1.65` body leading for readability.
