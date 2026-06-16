@@ -1,0 +1,317 @@
+---
+import { t, pathFor, type Locale } from '~/i18n/strings';
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const s = t(locale);
+const g = s.graph;
+
+/*
+  Coordinates are percentages of a 1000×600 conceptual canvas. The SVG below
+  uses the same viewBox so edges line up with HTML nodes positioned at the
+  same percentages. Center at (50, 50); first-ring info chips on an inner
+  pentagon; outer-ring page links at the four corners.
+*/
+const center = { x: 50, y: 50 };
+
+const chips = [
+  { key: 'role',          label: g.chips.role,          x: 50, y: 12 },
+  { key: 'affiliation',   label: g.chips.affiliation,   x: 78, y: 30 },
+  { key: 'interestKgs',   label: g.chips.interestKgs,   x: 73, y: 75 },
+  { key: 'interestMmml',  label: g.chips.interestMmml,  x: 27, y: 75 },
+  { key: 'interestCh',    label: g.chips.interestCh,    x: 22, y: 30 },
+] as const;
+
+const links = [
+  { key: 'about' as const,    label: s.about.title,    x: 90, y: 8  },
+  { key: 'research' as const, label: s.research.title, x: 90, y: 92 },
+  { key: 'projects' as const, label: s.projects.title, x: 10, y: 92 },
+  { key: 'contact' as const,  label: s.contact.title,  x: 10, y: 8  },
+];
+
+/*
+  Edges are shortened so they don't visually pierce the labels at either end.
+  Coordinates are in viewBox space (1000×600). centerInset clears the title's
+  bounding box; nodeInset stops a few units shy of each chip/link.
+*/
+const centerInset = 130;
+const nodeInset = 45;
+
+type EdgeTarget = { x: number; y: number };
+function edge(target: EdgeTarget) {
+  const cx = center.x * 10;
+  const cy = center.y * 6;
+  const tx = target.x * 10;
+  const ty = target.y * 6;
+  const dx = tx - cx;
+  const dy = ty - cy;
+  const len = Math.hypot(dx, dy);
+  const ux = dx / len;
+  const uy = dy / len;
+  return {
+    x1: cx + ux * centerInset,
+    y1: cy + uy * centerInset,
+    x2: tx - ux * nodeInset,
+    y2: ty - uy * nodeInset,
+  };
+}
+---
+
+<section class="graph-wrap" aria-label={g.ariaLabel}>
+  <div class="graph" data-graph>
+    <svg
+      class="graph-edges"
+      viewBox="0 0 1000 600"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      {chips.map((c) => {
+        const e = edge(c);
+        return <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} class="edge edge-chip" />;
+      })}
+      {links.map((l) => {
+        const e = edge(l);
+        return <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} class="edge edge-link" />;
+      })}
+    </svg>
+
+    <h1
+      class="node-center"
+      data-graph-center
+      style={`--cx:${center.x}%;--cy:${center.y}%`}
+    >{g.centerName}</h1>
+
+    {chips.map((c) => (
+      <span
+        class="node-chip"
+        style={`--cx:${c.x}%;--cy:${c.y}%`}
+      >{c.label}</span>
+    ))}
+
+    {links.map((l) => (
+      <a
+        class="node-link"
+        href={pathFor(l.key, locale)}
+        style={`--cx:${l.x}%;--cy:${l.y}%`}
+      >{l.label}</a>
+    ))}
+  </div>
+
+  <h2 class="visually-hidden" id="graph-fallback-heading">{g.listFallbackHeading}</h2>
+  <ul class="visually-hidden" aria-labelledby="graph-fallback-heading">
+    {links.map((l) => (
+      <li><a href={pathFor(l.key, locale)}>{l.label}</a></li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .graph-wrap {
+    width: min(72rem, 92vw);
+    margin-inline: auto;
+    padding-block: var(--space-32) var(--space-64);
+  }
+
+  .graph {
+    position: relative;
+    aspect-ratio: 5 / 3;
+    width: 100%;
+  }
+
+  .graph-edges {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .edge {
+    stroke: var(--color-border);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .edge-chip { opacity: 0.45; }
+  .edge-link { opacity: 0.7; }
+
+  .node-center,
+  .node-chip,
+  .node-link {
+    position: absolute;
+    left: var(--cx);
+    top: var(--cy);
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  /*
+    Center node — big, confident. Cursor-follow radial-gradient sits inside
+    the text via background-clip. Glow opacity and pulse radius are nudged
+    by the script below; defaults render plain ink without JS.
+  */
+  .node-center {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0;
+    cursor: default;
+    background-image: radial-gradient(
+      circle at var(--x, -100%) var(--y, -100%),
+      color-mix(in srgb, var(--color-tertiary) calc(var(--glow-opacity, 0) * 100%), var(--color-text)) 0%,
+      color-mix(in srgb, var(--color-tertiary) calc(var(--glow-opacity, 0) * 100%), var(--color-text)) var(--pulse-radius, 20%),
+      var(--color-text) 60%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    padding: var(--space-8) var(--space-16);
+  }
+
+  .node-chip {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    padding: var(--space-4) var(--space-12);
+    letter-spacing: 0.01em;
+  }
+
+  .node-link {
+    font-size: var(--text-h3);
+    font-weight: 500;
+    color: var(--color-text);
+    background: var(--color-bg);
+    padding: var(--space-4) var(--space-12);
+    border-bottom: none;
+    position: absolute;
+    display: inline-block;
+  }
+  /*
+    Praneshravi-style brand chip: a shifted, semi-transparent slab sits behind
+    the link label and slides into place on hover. Subtle but signals
+    interactivity without an underline-warm.
+  */
+  .node-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-accent);
+    opacity: 0;
+    transform: translate(4px, 4px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+    z-index: -1;
+    border-radius: 2px;
+  }
+  .node-link:hover,
+  .node-link:focus-visible {
+    color: var(--color-text);
+    border-bottom: none;
+  }
+  .node-link:hover::before,
+  .node-link:focus-visible::before {
+    opacity: 0.18;
+    transform: translate(0, 0);
+  }
+  .node-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /*
+    Mobile — graph collapses to a calm vertical stack. Same content, no
+    absolute positioning, no edges.
+  */
+  @media (max-width: 640px) {
+    .graph {
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-24);
+    }
+    .graph-edges { display: none; }
+    .node-center,
+    .node-chip,
+    .node-link {
+      position: static;
+      transform: none;
+      background: transparent;
+      padding: 0;
+      white-space: normal;
+    }
+    .node-center { font-size: clamp(2.25rem, 8vw, 3rem); }
+    .node-chip { font-size: var(--text-small); }
+    .node-link { font-size: var(--text-h3); }
+    .node-link::before { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node-link::before {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /*
+    Cursor-follow glow on the center node, mirroring praneshravi.in's h1
+    effect: pointer position sets --x/--y on the element; a rAF loop fades
+    --glow-opacity in/out and pulses --pulse-radius via a sine wave. Disabled
+    under prefers-reduced-motion.
+  */
+  const center = document.querySelector<HTMLElement>('[data-graph-center]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (center && !reduceMotion) {
+    let angle = 0;
+    let rafId: number | null = null;
+    let hovered = false;
+    let opacity = 0;
+
+    const setPos = (clientX: number, clientY: number) => {
+      const rect = center.getBoundingClientRect();
+      center.style.setProperty('--x', `${clientX - rect.left}px`);
+      center.style.setProperty('--y', `${clientY - rect.top}px`);
+      if (!hovered) {
+        hovered = true;
+        if (rafId === null) tick();
+      }
+    };
+
+    const tick = () => {
+      if (hovered && opacity < 1) opacity = Math.min(1, opacity + 0.1);
+      else if (!hovered && opacity > 0) opacity = Math.max(0, opacity - 0.05);
+      center.style.setProperty('--glow-opacity', String(opacity));
+
+      angle += 0.05;
+      const pulse = Math.sin(angle) * 5 + 20;
+      center.style.setProperty('--pulse-radius', `${pulse}%`);
+
+      if (opacity > 0 || hovered) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = null;
+      }
+    };
+
+    document.addEventListener('pointermove', (e) => setPos(e.clientX, e.clientY));
+    document.addEventListener('pointerleave', () => { hovered = false; });
+    document.addEventListener('touchend', () => { hovered = false; });
+  }
+</script>
