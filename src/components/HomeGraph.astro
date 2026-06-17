@@ -446,8 +446,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const SPRING_K = 0.014;
     const REST = 280;            // resting edge length, viewBox units
     const HOME_K = 0.035;        // looser home pull — nodes can wander further
-    const DAMPING = 0.93;        // higher retention → motion sustains
-    const WIND = 32;             // stronger random impulse per frame
+    const DAMPING = 0.95;        // higher retention → motion sustains longer
+    const WIND = 24;             // random impulse per frame (tuned for new damping)
     const EDGE_INSET_CENTER = 180;
     const EDGE_INSET_NODE = 55;
 
@@ -458,11 +458,14 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       the same beat, but the corners arrive bigger.
     */
     if (!reduceMotion) {
-      const FLYOUT_RATE = 3.5;
+      // Links get a stronger kick than chips so the far corners arrive
+      // before the inner chips do — preserves the visual ring order during
+      // the bloom (links outside, chips inside).
       nodes.forEach((n) => {
         if (n.pinned) return;
-        n.vx = (n.hx - n.x) * FLYOUT_RATE;
-        n.vy = (n.hy - n.y) * FLYOUT_RATE;
+        const rate = n.kind === 'link' ? 2.8 : 1.7;
+        n.vx = (n.hx - n.x) * rate;
+        n.vy = (n.hy - n.y) * rate;
       });
     }
 
