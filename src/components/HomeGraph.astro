@@ -119,6 +119,16 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     height: 100%;
     z-index: 0;
     pointer-events: none;
+    /*
+      Edges fade in after nodes have flown out and roughly settled. The
+      delay matches the time it takes the impulse to carry the farthest
+      corner-link node to its home position.
+    */
+    opacity: 0;
+    transition: opacity 600ms var(--ease) 700ms;
+  }
+  .graph.is-loaded .graph-edges {
+    opacity: 1;
   }
   .edge {
     stroke: var(--color-border);
@@ -201,12 +211,20 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   /*
     Center node — pinned anchor, no glyph, label rendered directly as a
     big h1 with the cursor-follow text glow. Always visible; no hover swap.
+    Scales + fades in on load, before the rest of the graph blooms outward.
   */
   .node-center {
     margin: 0;
     cursor: default;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94);
+    transition: opacity 500ms var(--ease), transform 500ms var(--ease);
   }
   .node-center:active { cursor: default; }
+  .graph.is-loaded .node-center {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
   .node-center .node-label {
     position: static;
     font-family: var(--font-sans);
@@ -228,6 +246,21 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+  }
+
+  /*
+    Chip and link wrappers fade in slightly after the center settles. The
+    physics impulse carries them outward visually; the fade just keeps the
+    initial frame clean instead of all icons stacked on the title.
+  */
+  .node-chip,
+  .node-link {
+    opacity: 0;
+    transition: opacity 450ms var(--ease) 200ms;
+  }
+  .graph.is-loaded .node-chip,
+  .graph.is-loaded .node-link {
+    opacity: 1;
   }
 
   .node-chip .node-label {
@@ -327,8 +360,25 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 
   @media (prefers-reduced-motion: reduce) {
     .node-label,
-    .node-link::before {
+    .node-link::before,
+    .node-center,
+    .node-chip,
+    .node-link,
+    .graph-edges {
       transition: none;
+    }
+    /*
+      Skip the load fade entirely — render at final state regardless of
+      whether the class has been added yet.
+    */
+    .node-center,
+    .node-chip,
+    .node-link,
+    .graph-edges {
+      opacity: 1;
+    }
+    .node-center {
+      transform: translate(-50%, -50%);
     }
   }
 </style>
@@ -359,12 +409,20 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const nodes: NodeState[] = nodeDefs.map((d) => {
       const el = graph.querySelector<HTMLElement>(`[data-node-id="${d.id}"]`)!;
       const kind = (el.dataset.nodeKind as NodeState['kind']) ?? 'chip';
+      /*
+        Load animation: non-center nodes start collapsed onto the center
+        (with a tiny jitter so pairwise repulsion has a defined direction)
+        and get an outward impulse toward their home. Center stays at home.
+      */
+      const startAtHome = reduceMotion || kind === 'center';
+      const x = startAtHome ? d.hx : 500 + (Math.random() - 0.5) * 8;
+      const y = startAtHome ? d.hy : 300 + (Math.random() - 0.5) * 8;
       return {
         id: d.id,
         el,
         kind,
         hx: d.hx, hy: d.hy,
-        x: d.hx, y: d.hy,
+        x, y,
         vx: 0, vy: 0,
         // Center stays pinned permanently — it's the narrative anchor and
         // never drifts or accepts drag.
@@ -393,12 +451,20 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const EDGE_INSET_CENTER = 180;
     const EDGE_INSET_NODE = 55;
 
-    // Initial perturbation — bigger kick so the graph looks alive on load.
+    /*
+      Outward fly-out kick for the load animation. Each non-center node gets
+      a velocity pointing toward its home, scaled by distance — far corner
+      nodes leave faster so the whole graph blooms open in roughly one beat.
+    */
     if (!reduceMotion) {
+      const FLYOUT_IMPULSE = 950;
       nodes.forEach((n) => {
         if (n.pinned) return;
-        n.vx = (Math.random() - 0.5) * 120;
-        n.vy = (Math.random() - 0.5) * 120;
+        const dx = n.hx - n.x;
+        const dy = n.hy - n.y;
+        const len = Math.hypot(dx, dy) || 1;
+        n.vx = (dx / len) * FLYOUT_IMPULSE;
+        n.vy = (dy / len) * FLYOUT_IMPULSE;
       });
     }
 
@@ -505,6 +571,16 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 
     // Initial render so positions are sane before first frame
     render();
+    /*
+      Trigger CSS load animation after first paint. Double rAF guarantees the
+      initial transform state lands in the DOM before .is-loaded swaps in the
+      final state, otherwise the transition is skipped.
+    */
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        graph.classList.add('is-loaded');
+      });
+    });
     start();
 
     /* ---------- drag ---------- */
