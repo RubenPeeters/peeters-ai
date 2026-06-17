@@ -20,6 +20,7 @@ type NodeDef = {
   label: string;
   glyph: GlyphName;
   href?: string;
+  section?: string;
   hx: number;
   hy: number;
 };
@@ -31,10 +32,10 @@ const nodes: NodeDef[] = [
   { id: 'kgs',          kind: 'chip',   label: g.chips.interestKgs, glyph: 'kgraph',      hx: 730, hy: 450 },
   { id: 'mmml',         kind: 'chip',   label: g.chips.interestMmml,glyph: 'shapes',      hx: 270, hy: 450 },
   { id: 'ch',           kind: 'chip',   label: g.chips.interestCh,  glyph: 'column',      hx: 220, hy: 180 },
-  { id: 'about',        kind: 'link',   label: s.about.title,       glyph: 'person',      href: pathFor('about', locale),    hx: 900, hy: 48 },
-  { id: 'research',     kind: 'link',   label: s.research.title,    glyph: 'page',        href: pathFor('research', locale), hx: 900, hy: 552 },
-  { id: 'projects',     kind: 'link',   label: s.projects.title,    glyph: 'code',        href: pathFor('projects', locale), hx: 100, hy: 552 },
-  { id: 'contact',      kind: 'link',   label: s.contact.title,     glyph: 'envelope',    href: pathFor('contact', locale),  hx: 100, hy: 48  },
+  { id: 'about',        kind: 'link',   label: s.about.title,       glyph: 'person',      href: pathFor('about', locale),    section: 'var(--color-section-about)',    hx: 900, hy: 48 },
+  { id: 'research',     kind: 'link',   label: s.research.title,    glyph: 'page',        href: pathFor('research', locale), section: 'var(--color-section-research)', hx: 900, hy: 552 },
+  { id: 'projects',     kind: 'link',   label: s.projects.title,    glyph: 'code',        href: pathFor('projects', locale), section: 'var(--color-section-projects)', hx: 100, hy: 552 },
+  { id: 'contact',      kind: 'link',   label: s.contact.title,     glyph: 'envelope',    href: pathFor('contact', locale),  section: 'var(--color-section-contact)',  hx: 100, hy: 48  },
 ];
 
 const edges = nodes.slice(1).map((n) => ({ from: 'center', to: n.id }));
@@ -74,7 +75,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
           ]}
           data-node-id={n.id}
           data-node-kind={n.kind}
-          style={`--cx:${n.hx / 10}%;--cy:${n.hy / 6}%`}
+          style={`--cx:${n.hx / 10}%;--cy:${n.hy / 6}%${n.section ? `;--section:${n.section}` : ''}`}
           aria-label={ariaLabel}
           {...linkProps}
         >
@@ -155,8 +156,6 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 4.75rem;
-    height: 4.75rem;
     border-radius: 50%;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
@@ -164,9 +163,26 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     opacity: 1;
     transform: scale(1);
   }
-  .node-glyph svg {
-    width: 2.125rem;
-    height: 2.125rem;
+  /*
+    Two node tiers: detail chips read as small + restrained; navigation links
+    read as larger + assertive. Both keep generous space between glyph and
+    border so the SVG sits in its own pocket of air.
+  */
+  .node-chip .node-glyph {
+    width: 4rem;
+    height: 4rem;
+  }
+  .node-chip .node-glyph svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .node-link .node-glyph {
+    width: 5.75rem;
+    height: 5.75rem;
+  }
+  .node-link .node-glyph svg {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .node-label {
@@ -237,30 +253,40 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     font-weight: 500;
     color: var(--color-text);
   }
-  /* Brand-style slab that slides under the link label on hover */
-  .node-link .node-label::before {
+  /*
+    Per-link section disc — a colored slab sized to the glyph that sits
+    offset down-right at rest, then slides up-left into alignment on
+    hover/focus. The slab color is set per-link via --section.
+  */
+  .node-link::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background-color: var(--color-accent);
-    opacity: 0;
-    transform: translate(4px, 4px);
+    width: 5.75rem;
+    height: 5.75rem;
+    border-radius: 999px;
+    background-color: var(--section, var(--color-accent));
+    opacity: 0.22;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% + 0.5rem), calc(-50% + 0.5rem));
     transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
-    z-index: -1;
-    border-radius: 2px;
+    pointer-events: none;
+    z-index: 0;
   }
-  .node-link .node-label { position: relative; }
-  .node-link:hover .node-label::before,
-  .node-link:focus-visible .node-label::before {
-    opacity: 0.18;
-    transform: translate(0, 0);
+  .node-link .node-glyph,
+  .node-link .node-label {
+    position: relative;
+    z-index: 1;
+  }
+  .node-link:hover::before,
+  .node-link:focus-visible::before {
+    opacity: 0.38;
+    transform: translate(-50%, -50%);
   }
   .node-link:focus-visible {
-    outline: none;
-  }
-  .node-link:focus-visible .node-glyph {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 4px;
+    outline: 2px solid var(--section, var(--color-accent));
+    outline-offset: 6px;
+    border-radius: 999px;
   }
 
   .visually-hidden {
@@ -308,7 +334,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     }
     .node-glyph { opacity: 1; }
     .node-label { opacity: 1; padding: 0; background: transparent; }
-    .node-link .node-label::before { display: none; }
+    .node-link::before { display: none; }
     .node-center .node-label {
       font-size: clamp(2rem, 7vw, 2.75rem);
     }

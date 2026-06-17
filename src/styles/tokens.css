@@ -21,6 +21,16 @@
   --color-tertiary: #795369;
 
   /*
+    Section colors — one per navigation link, used as the offset slab behind
+    each link node. Kept in the same lightness/chroma register as the rest of
+    the palette so four hues sit together without fighting.
+  */
+  --color-section-about: #795369;
+  --color-section-research: #595992;
+  --color-section-projects: #527053;
+  --color-section-contact: #406885;
+
+  /*
     Typography — one variable sans for everything.
     --font-mono is intentionally the same family; .eyebrow/.pill rely on
     uppercase + tracking, not a separate face, for their label register.
