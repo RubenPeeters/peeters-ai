@@ -41,6 +41,19 @@ const nodes: NodeDef[] = [
 const edges = nodes.slice(1).map((n) => ({ from: 'center', to: n.id }));
 
 const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
+
+/*
+  Per-link slab offset direction. Each link sits in one of the four corners
+  of the canvas; its slab pokes outward from the center node so the four
+  offsets read as balanced rather than all-down-right (which looked
+  inconsistent against the radial layout).
+*/
+function offsetVars(n: NodeDef): string {
+  if (n.kind !== 'link') return '';
+  const ox = n.hx > 500 ? 1 : -1;
+  const oy = n.hy > 300 ? 1 : -1;
+  return `;--off-x:${ox};--off-y:${oy}`;
+}
 ---
 
 <section class="graph-wrap" aria-label={g.ariaLabel}>
@@ -75,7 +88,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
           ]}
           data-node-id={n.id}
           data-node-kind={n.kind}
-          style={`--cx:${n.hx / 10}%;--cy:${n.hy / 6}%${n.section ? `;--section:${n.section}` : ''}`}
+          style={`--cx:${n.hx / 10}%;--cy:${n.hy / 6}%${n.section ? `;--section:${n.section}` : ''}${offsetVars(n)}`}
           aria-label={ariaLabel}
           {...linkProps}
         >
@@ -157,7 +170,6 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: var(--color-bg);
     border: 1px solid var(--color-border);
     color: var(--color-text-muted);
     opacity: 1;
@@ -186,9 +198,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 
   .node-label {
     white-space: nowrap;
-    background: var(--color-bg);
     padding: var(--space-4) var(--space-12);
-    border-radius: 4px;
     opacity: 0;
     transform: scale(0.95);
     pointer-events: none;
@@ -273,7 +283,10 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     opacity: 0.32;
     top: 50%;
     left: 50%;
-    transform: translate(calc(-50% + 0.5rem), calc(-50% + 0.5rem));
+    transform: translate(
+      calc(-50% + 0.5rem * var(--off-x, 1)),
+      calc(-50% + 0.5rem * var(--off-y, 1))
+    );
     transition:
       width var(--dur) var(--ease),
       height var(--dur) var(--ease),
@@ -292,9 +305,12 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   .node-link:focus-visible::before {
     width: 9.5rem;
     height: 3rem;
-    border-radius: 6px;
+    border-radius: 0;
     opacity: 0.55;
-    transform: translate(calc(-50% + 0.1875rem), calc(-50% + 0.1875rem));
+    transform: translate(
+      calc(-50% + 0.1875rem * var(--off-x, 1)),
+      calc(-50% + 0.1875rem * var(--off-y, 1))
+    );
   }
   .node-link:focus-visible {
     outline: 2px solid var(--section, var(--color-accent));
