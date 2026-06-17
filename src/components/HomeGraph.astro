@@ -458,7 +458,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       the same beat, but the corners arrive bigger.
     */
     if (!reduceMotion) {
-      const FLYOUT_RATE = 5.0;
+      const FLYOUT_RATE = 3.5;
       nodes.forEach((n) => {
         if (n.pinned) return;
         n.vx = (n.hx - n.x) * FLYOUT_RATE;
