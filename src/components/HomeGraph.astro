@@ -452,19 +452,17 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const EDGE_INSET_NODE = 55;
 
     /*
-      Outward fly-out kick for the load animation. Each non-center node gets
-      a velocity pointing toward its home, scaled by distance — far corner
-      nodes leave faster so the whole graph blooms open in roughly one beat.
+      Outward fly-out kick. Velocity is proportional to displacement from
+      center (v = Δ * rate), so corner link nodes leave fast and travel
+      far while inner chips drift out gently. All nodes settle in roughly
+      the same beat, but the corners arrive bigger.
     */
     if (!reduceMotion) {
-      const FLYOUT_IMPULSE = 950;
+      const FLYOUT_RATE = 2.2;
       nodes.forEach((n) => {
         if (n.pinned) return;
-        const dx = n.hx - n.x;
-        const dy = n.hy - n.y;
-        const len = Math.hypot(dx, dy) || 1;
-        n.vx = (dx / len) * FLYOUT_IMPULSE;
-        n.vy = (dy / len) * FLYOUT_IMPULSE;
+        n.vx = (n.hx - n.x) * FLYOUT_RATE;
+        n.vy = (n.hy - n.y) * FLYOUT_RATE;
       });
     }
 
