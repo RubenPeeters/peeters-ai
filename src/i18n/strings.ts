@@ -76,6 +76,19 @@ type ResearchCopy = {
   scholarLink: string;
 };
 
+type GraphCopy = {
+  centerName: string;
+  ariaLabel: string;
+  listFallbackHeading: string;
+  chips: {
+    role: string;
+    affiliation: string;
+    interestKgs: string;
+    interestMmml: string;
+    interestCh: string;
+  };
+};
+
 type Strings = {
   siteName: string;
   eyebrow: string;
@@ -90,6 +103,7 @@ type Strings = {
     builtWith: string;
     source: string;
   };
+  graph: GraphCopy;
   about: AboutCopy;
   research: ResearchCopy;
   projects: ProjectsCopy;
@@ -139,6 +153,18 @@ const en: Strings = {
   tagline: joinTagline(enTagline),
   langSwitch: { label: 'Language', en: 'EN', nl: 'NL' },
   footer: { builtWith: 'Built with Astro.', source: 'Source on GitHub' },
+  graph: {
+    centerName: 'Ruben Peeters',
+    ariaLabel: "A small map of Ruben Peeters' role, interests, and the sections of this site.",
+    listFallbackHeading: 'Sections',
+    chips: {
+      role: 'PhD candidate',
+      affiliation: 'KU Leuven',
+      interestKgs: 'Knowledge graphs',
+      interestMmml: 'Multimodal ML',
+      interestCh: 'Cultural heritage',
+    },
+  },
   about: {
     title: 'About',
     intro:
@@ -200,6 +226,18 @@ const nl: Strings = {
   tagline: joinTagline(nlTagline),
   langSwitch: { label: 'Taal', en: 'EN', nl: 'NL' },
   footer: { builtWith: 'Gemaakt met Astro.', source: 'Broncode op GitHub' },
+  graph: {
+    centerName: 'Ruben Peeters',
+    ariaLabel: 'Een kleine kaart van Ruben Peeters’ functie, interesses en de secties van deze site.',
+    listFallbackHeading: 'Secties',
+    chips: {
+      role: 'Doctoraatsonderzoeker',
+      affiliation: 'KU Leuven',
+      interestKgs: 'Kennisgrafen',
+      interestMmml: 'Multimodale ML',
+      interestCh: 'Cultureel erfgoed',
+    },
+  },
   about: {
     title: 'Over mij',
     intro:
