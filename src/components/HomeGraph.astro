@@ -110,6 +110,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     aspect-ratio: 5 / 3;
     width: 100%;
     touch-action: none;
+    transform-origin: center center;
   }
 
   .graph-edges {
@@ -170,6 +171,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   .node-chip .node-glyph {
     width: 4.25rem;
     height: 4.25rem;
+    border: none;
   }
   /*
     Glyph SVGs live in a separate Astro component, so their attributes are
@@ -198,10 +200,11 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     transform: translate(-50%, 0.25rem);
     transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
     pointer-events: none;
+    z-index: 2;
   }
 
-  /* Reveal label on hover / focus / drag-pin */
-  .node:hover .node-label,
+  /* Reveal label on hover / focus — hide while dragging (active) */
+  .node:hover:not(:active) .node-label,
   .node:focus-visible .node-label,
   .node.is-revealed .node-label {
     opacity: 1;
@@ -291,8 +294,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     opacity: 0.32;
     top: 50%;
     left: 50%;
-    transform: translate(calc(-50% + 0.125rem), calc(-50% + 0.125rem));
-    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+    transform: translate(-50%, -50%);
+    transition: opacity var(--dur) var(--ease);
     pointer-events: none;
     z-index: 0;
   }
@@ -302,7 +305,6 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
   .node-link:hover::before,
   .node-link:focus-visible::before {
-    transform: translate(-50%, -50%);
     opacity: 0.5;
   }
   .node-link:focus-visible {
@@ -384,20 +386,23 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 </style>
 
 <script>
+  import { navigate } from 'astro:transitions/client';
+
   type NodeState = {
     id: string;
     el: HTMLElement;
     kind: 'center' | 'chip' | 'link';
-    hx: number; hy: number;     // home position (viewBox units, 0..1000 x 0..600)
-    x: number;  y: number;      // current position
-    vx: number; vy: number;     // velocity
+    hx: number; hy: number;
+    x: number;  y: number;
+    vx: number; vy: number;
     pinned: boolean;
   };
 
-  const graphEl = document.querySelector<HTMLElement>('[data-graph]');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function initGraph() {
+    const graphEl = document.querySelector<HTMLElement>('[data-graph]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (graphEl) {
+    if (!graphEl) return;
     const graph = graphEl;
     const nodeDefs: { id: string; hx: number; hy: number }[] = JSON.parse(
       graph.dataset.graphNodes || '[]'
@@ -406,71 +411,83 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       graph.dataset.graphEdges || '[]'
     );
 
+    // ponytail: check sessionStorage for a "returning from" node id
+    const returningFrom = sessionStorage.getItem('graph-zoom-from');
+    sessionStorage.removeItem('graph-zoom-from');
+
     const nodes: NodeState[] = nodeDefs.map((d) => {
       const el = graph.querySelector<HTMLElement>(`[data-node-id="${d.id}"]`)!;
       const kind = (el.dataset.nodeKind as NodeState['kind']) ?? 'chip';
-      /*
-        Load animation: non-center nodes start collapsed onto the center
-        (with a tiny jitter so pairwise repulsion has a defined direction)
-        and get an outward impulse toward their home. Center stays at home.
-      */
       const startAtHome = reduceMotion || kind === 'center';
       const x = startAtHome ? d.hx : 500 + (Math.random() - 0.5) * 8;
       const y = startAtHome ? d.hy : 300 + (Math.random() - 0.5) * 8;
       return {
-        id: d.id,
-        el,
-        kind,
+        id: d.id, el, kind,
         hx: d.hx, hy: d.hy,
-        x, y,
-        vx: 0, vy: 0,
-        // Center stays pinned permanently — it's the narrative anchor and
-        // never drifts or accepts drag.
+        x, y, vx: 0, vy: 0,
         pinned: kind === 'center',
       };
     });
     const byId = new Map(nodes.map((n) => [n.id, n]));
 
-    const edgeEls = Array.from(
-      graph.querySelectorAll<SVGLineElement>('.edge')
-    );
+    const edgeEls = Array.from(graph.querySelectorAll<SVGLineElement>('.edge'));
+    const center = byId.get('center')!;
 
-    const center = byId.get('center');
-
-    /* ---------- viewBox <-> screen px mapping for drag ---------- */
     const VB_W = 1000;
     const VB_H = 600;
+    const REF_WIDTH = 304; // 76rem reference
+
+    /* ---------- dynamic edge insets ---------- */
+    const insetCache = new Map<string, number>();
+    let vbPxRatio = 1;
+    function updateInsets() {
+      const r = graph.getBoundingClientRect();
+      if (r.width > 0) vbPxRatio = VB_W / r.width;
+      insetCache.clear();
+      for (const n of nodes) {
+        if (n.kind === 'center') {
+          const label = n.el.querySelector('.node-label') as HTMLElement | null;
+          insetCache.set(n.id, label
+            ? Math.hypot(label.offsetWidth, label.offsetHeight) / 2 * vbPxRatio
+            : 60);
+        } else {
+          const glyph = n.el.querySelector('.node-glyph') as HTMLElement | null;
+          insetCache.set(n.id, glyph
+            ? (glyph.offsetWidth / 2 + 6) * vbPxRatio
+            : 30);
+        }
+      }
+    }
+    updateInsets();
+    const ro = new ResizeObserver(updateInsets);
+    ro.observe(graph);
 
     /* ---------- physics ---------- */
     const REPULSION = 60_000;
     const SPRING_K = 0.014;
-    const REST = 280;            // resting edge length, viewBox units
-    const HOME_K = 0.035;        // looser home pull — nodes can wander further
-    const DAMPING = 0.95;        // higher retention → motion sustains longer
-    const WIND = 24;             // random impulse per frame (tuned for new damping)
-    const EDGE_INSET_CENTER = 180;
-    const EDGE_INSET_NODE = 55;
+    const REST = 280;
+    const HOME_K = 0.035;
+    const DAMPING = 0.95;
+    const WIND = 24;
 
-    /*
-      Outward fly-out kick. Velocity is proportional to displacement from
-      center (v = Δ * rate), so corner link nodes leave fast and travel
-      far while inner chips drift out gently. All nodes settle in roughly
-      the same beat, but the corners arrive bigger.
-    */
-    if (!reduceMotion) {
-      // Links get a stronger kick than chips so the far corners arrive
-      // before the inner chips do — preserves the visual ring order during
-      // the bloom (links outside, chips inside).
+    // Screen-relative fly-out: scale rate by container width
+    if (!reduceMotion && !returningFrom) {
+      const rect = graph.getBoundingClientRect();
+      const scale = Math.sqrt(rect.width / REF_WIDTH);
       nodes.forEach((n) => {
         if (n.pinned) return;
-        const rate = n.kind === 'link' ? 2.8 : 1.7;
+        const rate = (n.kind === 'link' ? 2.8 : 1.7) * scale;
         n.vx = (n.hx - n.x) * rate;
         n.vy = (n.hy - n.y) * rate;
       });
     }
 
+    // If returning from a sub-page, start nodes at their home (settled)
+    if (returningFrom) {
+      nodes.forEach((n) => { n.x = n.hx; n.y = n.hy; });
+    }
+
     function applyForces(dt: number) {
-      // pairwise repulsion
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
         if (a.pinned) continue;
@@ -486,17 +503,13 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
           fx += (dx / d) * f;
           fy += (dy / d) * f;
         }
-        // home pull
         fx += (a.hx - a.x) * HOME_K;
         fy += (a.hy - a.y) * HOME_K;
-        // wind
         fx += (Math.random() - 0.5) * WIND;
         fy += (Math.random() - 0.5) * WIND;
-
         a.vx = (a.vx + fx * dt) * DAMPING;
         a.vy = (a.vy + fy * dt) * DAMPING;
       }
-      // edge springs — pull connected nodes toward rest length
       for (const e of edgeDefs) {
         const a = byId.get(e.from)!;
         const b = byId.get(e.to)!;
@@ -510,12 +523,10 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
         if (!a.pinned) { a.vx += f * ux * dt; a.vy += f * uy * dt; }
         if (!b.pinned) { b.vx -= f * ux * dt; b.vy -= f * uy * dt; }
       }
-      // integrate
       for (const n of nodes) {
         if (n.pinned) continue;
         n.x += n.vx * dt;
         n.y += n.vy * dt;
-        // clamp inside viewBox with soft margins
         const m = 40;
         if (n.x < m)        { n.x = m;          n.vx = Math.abs(n.vx) * 0.5; }
         if (n.x > VB_W - m) { n.x = VB_W - m;   n.vx = -Math.abs(n.vx) * 0.5; }
@@ -529,7 +540,6 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
         n.el.style.setProperty('--cx', `${n.x / 10}%`);
         n.el.style.setProperty('--cy', `${n.y / 6}%`);
       }
-      const c = center!;
       for (let i = 0; i < edgeDefs.length; i++) {
         const e = edgeDefs[i];
         const a = byId.get(e.from)!;
@@ -539,28 +549,27 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
         const len = Math.hypot(dx, dy) || 0.001;
         const ux = dx / len;
         const uy = dy / len;
-        // shorter inset on the chip-side, larger on the center-side, so edges
-        // meet labels rather than pierce them
-        const insetA = a === c ? EDGE_INSET_CENTER : EDGE_INSET_NODE;
-        const insetB = b === c ? EDGE_INSET_CENTER : EDGE_INSET_NODE;
+        const inA = Math.min(insetCache.get(a.id) ?? 30, len * 0.35);
+        const inB = Math.min(insetCache.get(b.id) ?? 30, len * 0.35);
         const ln = edgeEls[i];
-        ln.setAttribute('x1', String(a.x + ux * insetA));
-        ln.setAttribute('y1', String(a.y + uy * insetA));
-        ln.setAttribute('x2', String(b.x - ux * insetB));
-        ln.setAttribute('y2', String(b.y - uy * insetB));
+        ln.setAttribute('x1', String(a.x + ux * inA));
+        ln.setAttribute('y1', String(a.y + uy * inA));
+        ln.setAttribute('x2', String(b.x - ux * inB));
+        ln.setAttribute('y2', String(b.y - uy * inB));
       }
     }
 
-    /* ---------- animation loop with idle sleep ---------- */
+    /* ---------- animation loop ---------- */
     let rafId: number | null = null;
     let lastT = performance.now();
 
     function tick(t: number) {
       const dt = Math.min(0.033, (t - lastT) / 1000);
       lastT = t;
-      applyForces(dt);
+      if (!zooming) applyForces(dt);
       render();
       updateGlow();
+      if (zooming) tickZoom(t);
       rafId = requestAnimationFrame(tick);
     }
 
@@ -570,19 +579,66 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       rafId = requestAnimationFrame(tick);
     }
 
-    // Initial render so positions are sane before first frame
+    function stop() {
+      if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+
     render();
-    /*
-      Trigger CSS load animation after first paint. Double rAF guarantees the
-      initial transform state lands in the DOM before .is-loaded swaps in the
-      final state, otherwise the transition is skipped.
-    */
-    requestAnimationFrame(() => {
+    if (returningFrom) {
+      // Skip bloom — show settled graph immediately on back-nav
+      graph.classList.add('is-loaded');
+    } else {
       requestAnimationFrame(() => {
-        graph.classList.add('is-loaded');
+        requestAnimationFrame(() => {
+          graph.classList.add('is-loaded');
+        });
       });
-    });
+    }
     start();
+
+    /* ---------- click-to-zoom navigation ---------- */
+    let zooming = false;
+    let zoomTarget: NodeState | null = null;
+    let zoomHref = '';
+    let zoomStartT = 0;
+    const ZOOM_DURATION = 520; // ms
+
+    function startZoom(node: NodeState, href: string) {
+      zooming = true;
+      zoomTarget = node;
+      zoomHref = href;
+      zoomStartT = performance.now();
+      sessionStorage.setItem('graph-zoom-from', node.id);
+      start();
+    }
+
+    function tickZoom(t: number) {
+      if (!zoomTarget) return;
+      const elapsed = t - zoomStartT;
+      const raw = Math.min(1, elapsed / ZOOM_DURATION);
+      // ease-out cubic
+      const p = 1 - Math.pow(1 - raw, 3);
+
+      // Scale the graph container: 1 → 2.5, translating so the target node
+      // ends up at viewport center.
+      const targetPctX = zoomTarget.x / VB_W;
+      const targetPctY = zoomTarget.y / VB_H;
+      const scale = 1 + p * 1.5;
+      const tx = -(targetPctX - 0.5) * p * 100;
+      const ty = -(targetPctY - 0.5) * p * 100;
+      graph.style.transform = `scale(${scale}) translate(${tx}%, ${ty}%)`;
+      graph.style.opacity = String(1 - p * 0.6);
+
+      if (raw >= 0.8 && zoomHref) {
+        const href = zoomHref;
+        zoomHref = '';
+        navigate(href);
+      }
+      if (raw >= 1) {
+        zooming = false;
+        zoomTarget = null;
+      }
+    }
 
     /* ---------- drag ---------- */
     function vbFromClient(clientX: number, clientY: number) {
@@ -595,13 +651,12 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     let dragNode: NodeState | null = null;
     let dragStart = { x: 0, y: 0 };
     let didDrag = false;
-    const DRAG_THRESHOLD = 4; // px
+    const DRAG_THRESHOLD = 4;
 
     nodes.forEach((n) => {
-      // Center is non-grabbable; skip drag wiring.
       if (n.kind === 'center') return;
       n.el.addEventListener('pointerdown', (e) => {
-        // ignore non-primary buttons
+        if (zooming) return;
         if (e.button !== 0 && e.pointerType === 'mouse') return;
         dragNode = n;
         n.pinned = true;
@@ -630,17 +685,19 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       n.el.addEventListener('pointerup', endDrag);
       n.el.addEventListener('pointercancel', endDrag);
 
-      // Suppress link navigation when the user actually dragged.
       if (n.kind === 'link') {
         n.el.addEventListener('click', (e) => {
-          if (didDrag) e.preventDefault();
+          if (didDrag) { e.preventDefault(); return; }
+          if (reduceMotion) return; // let normal navigation happen
+          e.preventDefault();
+          const href = (n.el as HTMLAnchorElement).href;
+          if (href) startZoom(n, href);
         });
       }
     });
 
     /* ---------- center cursor-follow glow ---------- */
-    const centerEl = center!.el;
-    const centerLabel = centerEl.querySelector<HTMLElement>('.node-label')!;
+    const centerLabel = center.el.querySelector<HTMLElement>('.node-label')!;
     let glowAngle = 0;
     let glowOpacity = 0;
     let glowHovered = false;
@@ -655,12 +712,25 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       centerLabel.style.setProperty('--pulse-radius', `${pulse}%`);
     }
 
-    document.addEventListener('pointermove', (e) => {
+    const onPointerMove = (e: PointerEvent) => {
       const r = centerLabel.getBoundingClientRect();
       centerLabel.style.setProperty('--x', `${e.clientX - r.left}px`);
       centerLabel.style.setProperty('--y', `${e.clientY - r.top}px`);
       glowHovered = true;
-    });
-    document.addEventListener('pointerleave', () => { glowHovered = false; });
+    };
+    const onPointerLeave = () => { glowHovered = false; };
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerleave', onPointerLeave);
+
+    /* ---------- cleanup on View Transition swap ---------- */
+    document.addEventListener('astro:before-swap', () => {
+      stop();
+      ro.disconnect();
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerleave', onPointerLeave);
+    }, { once: true });
   }
+
+  // astro:page-load fires on initial load and on every View Transition nav
+  document.addEventListener('astro:page-load', initGraph);
 </script>

@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '~/styles/global.css';
 import {
   t,
@@ -91,6 +92,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+    <ClientRouter />
   </head>
   <body class:list={[chromeless && 'is-chromeless']}>
     <a href="#main" class="skip-link">{skipToMainLabel}</a>
