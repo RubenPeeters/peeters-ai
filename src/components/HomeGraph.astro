@@ -1,8 +1,6 @@
 ---
 import { t, pathFor, type Locale } from '~/i18n/strings';
 import Glyph, { type GlyphName } from '~/components/Glyph.astro';
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 
 type Props = { locale: Locale };
 const { locale } = Astro.props;
@@ -10,18 +8,10 @@ const s = t(locale);
 const g = s.graph;
 
 /*
-  Resolve a portrait at build time. Drop one of these in /public to swap
-  the silhouette glyph for a real photo; no code change required.
-*/
-const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
-const portraitCandidates = ['ruben.webp', 'ruben.jpg', 'ruben.png'];
-const portraitFile = portraitCandidates.find((f) => existsSync(publicDir + f));
-const portraitSrc = portraitFile ? `/${portraitFile}` : null;
-
-/*
   Node coordinates are in a 1000×600 viewBox. The same viewBox drives the
   SVG edges layer underneath. JS may nudge positions every frame, so the
   CSS variables --cx/--cy are the single source of truth at runtime.
+  The center node is pinned (it's the anchor); everything else drifts.
 */
 type NodeKind = 'center' | 'chip' | 'link';
 type NodeDef = {
@@ -88,13 +78,11 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
           aria-label={ariaLabel}
           {...linkProps}
         >
-          <span class="node-glyph" aria-hidden="true">
-            {n.kind === 'center' && portraitSrc ? (
-              <img src={portraitSrc} alt="" width="120" height="120" />
-            ) : (
+          {n.kind !== 'center' && (
+            <span class="node-glyph" aria-hidden="true">
               <Glyph name={n.glyph} />
-            )}
-          </span>
+            </span>
+          )}
           <span class="node-label">{n.label}</span>
         </Tag>
       );
@@ -167,8 +155,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 4.75rem;
+    height: 4.75rem;
     border-radius: 50%;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
@@ -177,15 +165,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     transform: scale(1);
   }
   .node-glyph svg {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-  .node-glyph img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
+    width: 2.125rem;
+    height: 2.125rem;
   }
 
   .node-label {
@@ -212,27 +193,25 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     transform: scale(1);
   }
 
-  /* Center node — bigger glyph, h1-weight label with cursor-glow gradient */
+  /*
+    Center node — pinned anchor, no glyph, label rendered directly as a
+    big h1 with the cursor-follow text glow. Always visible; no hover swap.
+  */
   .node-center {
     margin: 0;
-    cursor: grab;
+    cursor: default;
   }
-  .node-center .node-glyph {
-    width: 6rem;
-    height: 6rem;
-    color: var(--color-text);
-  }
-  .node-center .node-glyph svg {
-    width: 3rem;
-    height: 3rem;
-  }
+  .node-center:active { cursor: default; }
   .node-center .node-label {
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+    font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
     line-height: 1.05;
     letter-spacing: -0.025em;
     padding: var(--space-8) var(--space-16);
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
     background-image: radial-gradient(
       circle at var(--x, -100%) var(--y, -100%),
       color-mix(in srgb, var(--color-tertiary) calc(var(--glow-opacity, 0) * 100%), var(--color-text)) 0%,
@@ -246,7 +225,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
 
   .node-chip .node-label {
-    font-size: var(--text-small);
+    font-size: var(--text-body);
     color: var(--color-text-muted);
   }
   .node-link {
@@ -254,7 +233,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     border-bottom: none;
   }
   .node-link .node-label {
-    font-size: var(--text-h3);
+    font-size: var(--text-h2);
     font-weight: 500;
     color: var(--color-text);
   }
@@ -369,14 +348,17 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 
     const nodes: NodeState[] = nodeDefs.map((d) => {
       const el = graph.querySelector<HTMLElement>(`[data-node-id="${d.id}"]`)!;
+      const kind = (el.dataset.nodeKind as NodeState['kind']) ?? 'chip';
       return {
         id: d.id,
         el,
-        kind: (el.dataset.nodeKind as NodeState['kind']) ?? 'chip',
+        kind,
         hx: d.hx, hy: d.hy,
         x: d.hx, y: d.hy,
         vx: 0, vy: 0,
-        pinned: false,
+        // Center stays pinned permanently — it's the narrative anchor and
+        // never drifts or accepts drag.
+        pinned: kind === 'center',
       };
     });
     const byId = new Map(nodes.map((n) => [n.id, n]));
@@ -392,20 +374,21 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const VB_H = 600;
 
     /* ---------- physics ---------- */
-    const REPULSION = 90_000;
-    const SPRING_K = 0.012;
+    const REPULSION = 60_000;
+    const SPRING_K = 0.014;
     const REST = 280;            // resting edge length, viewBox units
-    const HOME_K = 0.06;         // pull toward home
-    const DAMPING = 0.86;
-    const WIND = 8;              // tiny random impulse per frame
-    const EDGE_INSET_CENTER = 130;
-    const EDGE_INSET_NODE = 45;
+    const HOME_K = 0.035;        // looser home pull — nodes can wander further
+    const DAMPING = 0.93;        // higher retention → motion sustains
+    const WIND = 32;             // stronger random impulse per frame
+    const EDGE_INSET_CENTER = 180;
+    const EDGE_INSET_NODE = 55;
 
-    // give each node a tiny initial perturbation so the graph starts breathing
+    // Initial perturbation — bigger kick so the graph looks alive on load.
     if (!reduceMotion) {
       nodes.forEach((n) => {
-        n.vx = (Math.random() - 0.5) * 30;
-        n.vy = (Math.random() - 0.5) * 30;
+        if (n.pinned) return;
+        n.vx = (Math.random() - 0.5) * 120;
+        n.vy = (Math.random() - 0.5) * 120;
       });
     }
 
@@ -528,6 +511,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     const DRAG_THRESHOLD = 4; // px
 
     nodes.forEach((n) => {
+      // Center is non-grabbable; skip drag wiring.
+      if (n.kind === 'center') return;
       n.el.addEventListener('pointerdown', (e) => {
         // ignore non-primary buttons
         if (e.button !== 0 && e.pointerType === 'mouse') return;
