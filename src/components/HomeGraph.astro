@@ -134,23 +134,16 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     transform: translate(-50%, -50%);
     z-index: 1;
     /*
-      Each node is its own positioning context. Glyph and label stack on top
-      of each other and crossfade on hover/focus.
+      Glyph stays visible always; label hangs below the glyph and fades in
+      on hover. Wrapper sizes to the glyph so edges and physics still aim at
+      the icon center, not at the gap below it.
     */
-    display: grid;
-    place-items: center;
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
     color: var(--color-text);
   }
   .node:active { cursor: grabbing; }
-
-  .node-glyph,
-  .node-label {
-    grid-area: 1 / 1;
-    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
-  }
 
   .node-glyph {
     display: inline-flex;
@@ -159,8 +152,6 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     border-radius: 50%;
     border: 1px solid var(--color-border);
     color: var(--color-text-muted);
-    opacity: 1;
-    transform: scale(1);
   }
   /*
     Two node tiers with a wide air gap between glyph and border. SVG is
@@ -184,25 +175,22 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
 
   .node-label {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
     white-space: nowrap;
-    padding: var(--space-4) var(--space-12);
     opacity: 0;
-    transform: scale(0.95);
+    transform: translate(-50%, 0.25rem);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
     pointer-events: none;
   }
 
-  /* Reveal text on hover / focus / when the node is the focal point of a drag */
-  .node:hover .node-glyph,
-  .node:focus-visible .node-glyph,
-  .node.is-revealed .node-glyph {
-    opacity: 0;
-    transform: scale(0.92);
-  }
+  /* Reveal label on hover / focus / drag-pin */
   .node:hover .node-label,
   .node:focus-visible .node-label,
   .node.is-revealed .node-label {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, 0);
   }
 
   /*
@@ -215,6 +203,7 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
   .node-center:active { cursor: default; }
   .node-center .node-label {
+    position: static;
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
@@ -250,47 +239,33 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     color: var(--color-text);
   }
   /*
-    Per-link section disc — a colored slab sized to the glyph that sits
-    offset down-right at rest, then slides up-left into alignment on
-    hover/focus. The slab color is set per-link via --section.
-  */
-  /*
-    Slab morphs disc → rounded rect on hover. At rest it sits offset behind
-    the glyph circle (matching glyph dimensions). On hover it widens, flattens,
-    and rounds less to wrap the revealed text label — and nudges closer to
-    centered, the way praneshravi's social-link slabs do.
+    Per-link section disc — sized to the glyph, offset down-right at rest.
+    On hover it slides into alignment behind the glyph and darkens slightly.
+    No shape morph; the label appears separately below the node.
   */
   .node-link::before {
     content: '';
     position: absolute;
     width: 6rem;
     height: 6rem;
-    border-radius: 999px;
+    border-radius: 50%;
     background-color: var(--section, var(--color-accent));
     opacity: 0.32;
     top: 50%;
     left: 50%;
     transform: translate(calc(-50% + 0.5rem), calc(-50% + 0.5rem));
-    transition:
-      width var(--dur) var(--ease),
-      height var(--dur) var(--ease),
-      border-radius var(--dur) var(--ease),
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
     pointer-events: none;
     z-index: 0;
   }
-  .node-link .node-glyph,
-  .node-link .node-label {
+  .node-link .node-glyph {
     position: relative;
     z-index: 1;
   }
   .node-link:hover::before,
   .node-link:focus-visible::before {
-    width: 9.5rem;
-    height: 3rem;
-    border-radius: 0;
-    transform: translate(calc(-50% + 0.5rem), calc(-50% + 0.5rem));
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
   }
   .node-link:focus-visible {
     outline: 2px solid var(--section, var(--color-accent));
@@ -328,21 +303,17 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
       position: static;
       transform: none;
       cursor: default;
-      grid-template-columns: auto 1fr;
-      grid-template-rows: 1fr;
+      display: flex;
+      align-items: center;
       gap: var(--space-16);
-      place-items: center start;
     }
-    .node-glyph,
     .node-label {
-      grid-area: auto;
       position: static;
       transition: none;
       transform: none;
+      opacity: 1;
       pointer-events: auto;
     }
-    .node-glyph { opacity: 1; }
-    .node-label { opacity: 1; padding: 0; background: transparent; }
     .node-link::before { display: none; }
     .node-center .node-label {
       font-size: clamp(2rem, 7vw, 2.75rem);
@@ -350,9 +321,8 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .node-glyph,
     .node-label,
-    .node-link .node-label::before {
+    .node-link::before {
       transition: none;
     }
   }
