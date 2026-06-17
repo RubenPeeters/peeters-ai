@@ -17,7 +17,7 @@ type RouteDef = {
 */
 export const routes: Record<RouteKey, RouteDef> = {
   home: {
-    paths: { en: '/', nl: '/nl/' },
+    paths: { en: '/', nl: '/nl' },
     navLabel: { en: 'Home', nl: 'Home' },
     published: false,
   },
