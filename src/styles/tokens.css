@@ -22,13 +22,13 @@
 
   /*
     Section colors — one per navigation link, used as the offset slab behind
-    each link node. Kept in the same lightness/chroma register as the rest of
-    the palette so four hues sit together without fighting.
+    each link node. Four hues spread ~90° around the wheel so they remain
+    distinguishable at the slab's low opacity.
   */
-  --color-section-about: #795369;
-  --color-section-research: #595992;
-  --color-section-projects: #527053;
-  --color-section-contact: #406885;
+  --color-section-about: #c04a6a;       /* rose */
+  --color-section-research: #6f4dd6;    /* violet */
+  --color-section-projects: #3d8b3d;    /* green */
+  --color-section-contact: #2470c7;     /* blue */
 
   /*
     Typography — one variable sans for everything.

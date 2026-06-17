@@ -164,25 +164,24 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     transform: scale(1);
   }
   /*
-    Two node tiers: detail chips read as small + restrained; navigation links
-    read as larger + assertive. Both keep generous space between glyph and
-    border so the SVG sits in its own pocket of air.
+    Two node tiers with a wide air gap between glyph and border. SVG is
+    roughly a quarter of the circle so the icon floats in cream space.
   */
   .node-chip .node-glyph {
-    width: 4rem;
-    height: 4rem;
+    width: 4.25rem;
+    height: 4.25rem;
   }
   .node-chip .node-glyph svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
   }
   .node-link .node-glyph {
-    width: 5.75rem;
-    height: 5.75rem;
+    width: 6rem;
+    height: 6rem;
   }
   .node-link .node-glyph svg {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .node-label {
@@ -258,18 +257,29 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
     offset down-right at rest, then slides up-left into alignment on
     hover/focus. The slab color is set per-link via --section.
   */
+  /*
+    Slab morphs disc → rounded rect on hover. At rest it sits offset behind
+    the glyph circle (matching glyph dimensions). On hover it widens, flattens,
+    and rounds less to wrap the revealed text label — and nudges closer to
+    centered, the way praneshravi's social-link slabs do.
+  */
   .node-link::before {
     content: '';
     position: absolute;
-    width: 5.75rem;
-    height: 5.75rem;
+    width: 6rem;
+    height: 6rem;
     border-radius: 999px;
     background-color: var(--section, var(--color-accent));
-    opacity: 0.22;
+    opacity: 0.32;
     top: 50%;
     left: 50%;
     transform: translate(calc(-50% + 0.5rem), calc(-50% + 0.5rem));
-    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+    transition:
+      width var(--dur) var(--ease),
+      height var(--dur) var(--ease),
+      border-radius var(--dur) var(--ease),
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
     pointer-events: none;
     z-index: 0;
   }
@@ -280,8 +290,11 @@ const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
   }
   .node-link:hover::before,
   .node-link:focus-visible::before {
-    opacity: 0.38;
-    transform: translate(-50%, -50%);
+    width: 9.5rem;
+    height: 3rem;
+    border-radius: 6px;
+    opacity: 0.55;
+    transform: translate(calc(-50% + 0.1875rem), calc(-50% + 0.1875rem));
   }
   .node-link:focus-visible {
     outline: 2px solid var(--section, var(--color-accent));
