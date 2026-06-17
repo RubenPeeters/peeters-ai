@@ -14,9 +14,15 @@ type Props = {
   routeKey: RouteKey;
   title?: string;
   description?: string;
+  /*
+    Chromeless layout hides the brand pill, primary nav, and footer; the
+    graph landing uses this so it can act as its own navigation. The lang
+    switch stays, floating in the corner.
+  */
+  chromeless?: boolean;
 };
 
-const { locale, routeKey, title, description } = Astro.props;
+const { locale, routeKey, title, description, chromeless = false } = Astro.props;
 const s = t(locale);
 
 const pageTitle = title ? `${title} — ${s.siteName}` : s.siteName;
@@ -86,49 +92,63 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   </head>
-  <body>
+  <body class:list={[chromeless && 'is-chromeless']}>
     <a href="#main" class="skip-link">{skipToMainLabel}</a>
 
-    <header class="container site-header">
-      <a href={pathFor('home', locale)} class="pill brand" aria-label={s.siteName}>RP</a>
-      {navKeys.length > 0 && (
-        <nav class="site-nav" aria-label="Sections">
-          <ul>
-            {navKeys.map((key) => (
-              <li>
-                <a
-                  href={pathFor(key, locale)}
-                  aria-current={key === routeKey ? 'page' : undefined}
-                >
-                  {routes[key].navLabel[locale]}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
-      <nav aria-label={s.langSwitch.label} class="lang-switch">
+    {chromeless ? (
+      <nav class="lang-switch floating" aria-label={s.langSwitch.label}>
         <a
           href={otherHref}
           hreflang={otherLocale}
-          class="pill"
           aria-label={`${s.langSwitch.label}: ${s.langSwitch[otherLocale]}`}
         >
           {s.langSwitch[otherLocale]}
         </a>
       </nav>
-    </header>
+    ) : (
+      <header class="container site-header">
+        <a href={pathFor('home', locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+        {navKeys.length > 0 && (
+          <nav class="site-nav" aria-label="Sections">
+            <ul>
+              {navKeys.map((key) => (
+                <li>
+                  <a
+                    href={pathFor(key, locale)}
+                    aria-current={key === routeKey ? 'page' : undefined}
+                  >
+                    {routes[key].navLabel[locale]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <nav aria-label={s.langSwitch.label} class="lang-switch">
+          <a
+            href={otherHref}
+            hreflang={otherLocale}
+            class="pill"
+            aria-label={`${s.langSwitch.label}: ${s.langSwitch[otherLocale]}`}
+          >
+            {s.langSwitch[otherLocale]}
+          </a>
+        </nav>
+      </header>
+    )}
 
     <main id="main">
       <slot />
     </main>
 
-    <footer class="container site-footer">
-      <p>
-        {s.footer.builtWith}{' '}
-        <a href="https://github.com/RubenPeeters/peeters-ai" class="ext">{s.footer.source}</a>.
-      </p>
-    </footer>
+    {!chromeless && (
+      <footer class="container site-footer">
+        <p>
+          {s.footer.builtWith}{' '}
+          <a href="https://github.com/RubenPeeters/peeters-ai" class="ext">{s.footer.source}</a>.
+        </p>
+      </footer>
+    )}
 
     <style>
       .skip-link {
@@ -182,6 +202,24 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       .lang-switch {
         display: flex;
         gap: var(--space-8);
+      }
+      .lang-switch.floating {
+        position: fixed;
+        top: var(--space-24);
+        right: var(--space-24);
+        z-index: 50;
+        font-size: var(--text-small);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .lang-switch.floating a {
+        color: var(--color-text-muted);
+        border-bottom: none;
+        padding: var(--space-4) var(--space-8);
+        transition: color var(--dur) var(--ease);
+      }
+      .lang-switch.floating a:hover {
+        color: var(--color-text);
       }
       .site-footer {
         padding-block: var(--space-48) var(--space-32);

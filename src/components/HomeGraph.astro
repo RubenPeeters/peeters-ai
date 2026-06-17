@@ -1,5 +1,8 @@
 ---
 import { t, pathFor, type Locale } from '~/i18n/strings';
+import Glyph, { type GlyphName } from '~/components/Glyph.astro';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 type Props = { locale: Locale };
 const { locale } = Astro.props;
@@ -7,107 +10,108 @@ const s = t(locale);
 const g = s.graph;
 
 /*
-  Coordinates are percentages of a 1000×600 conceptual canvas. The SVG below
-  uses the same viewBox so edges line up with HTML nodes positioned at the
-  same percentages. Center at (50, 50); first-ring info chips on an inner
-  pentagon; outer-ring page links at the four corners.
+  Resolve a portrait at build time. Drop one of these in /public to swap
+  the silhouette glyph for a real photo; no code change required.
 */
-const center = { x: 50, y: 50 };
-
-const chips = [
-  { key: 'role',          label: g.chips.role,          x: 50, y: 12 },
-  { key: 'affiliation',   label: g.chips.affiliation,   x: 78, y: 30 },
-  { key: 'interestKgs',   label: g.chips.interestKgs,   x: 73, y: 75 },
-  { key: 'interestMmml',  label: g.chips.interestMmml,  x: 27, y: 75 },
-  { key: 'interestCh',    label: g.chips.interestCh,    x: 22, y: 30 },
-] as const;
-
-const links = [
-  { key: 'about' as const,    label: s.about.title,    x: 90, y: 8  },
-  { key: 'research' as const, label: s.research.title, x: 90, y: 92 },
-  { key: 'projects' as const, label: s.projects.title, x: 10, y: 92 },
-  { key: 'contact' as const,  label: s.contact.title,  x: 10, y: 8  },
-];
+const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+const portraitCandidates = ['ruben.webp', 'ruben.jpg', 'ruben.png'];
+const portraitFile = portraitCandidates.find((f) => existsSync(publicDir + f));
+const portraitSrc = portraitFile ? `/${portraitFile}` : null;
 
 /*
-  Edges are shortened so they don't visually pierce the labels at either end.
-  Coordinates are in viewBox space (1000×600). centerInset clears the title's
-  bounding box; nodeInset stops a few units shy of each chip/link.
+  Node coordinates are in a 1000×600 viewBox. The same viewBox drives the
+  SVG edges layer underneath. JS may nudge positions every frame, so the
+  CSS variables --cx/--cy are the single source of truth at runtime.
 */
-const centerInset = 130;
-const nodeInset = 45;
+type NodeKind = 'center' | 'chip' | 'link';
+type NodeDef = {
+  id: string;
+  kind: NodeKind;
+  label: string;
+  glyph: GlyphName;
+  href?: string;
+  hx: number;
+  hy: number;
+};
 
-type EdgeTarget = { x: number; y: number };
-function edge(target: EdgeTarget) {
-  const cx = center.x * 10;
-  const cy = center.y * 6;
-  const tx = target.x * 10;
-  const ty = target.y * 6;
-  const dx = tx - cx;
-  const dy = ty - cy;
-  const len = Math.hypot(dx, dy);
-  const ux = dx / len;
-  const uy = dy / len;
-  return {
-    x1: cx + ux * centerInset,
-    y1: cy + uy * centerInset,
-    x2: tx - ux * nodeInset,
-    y2: ty - uy * nodeInset,
-  };
-}
+const nodes: NodeDef[] = [
+  { id: 'center',       kind: 'center', label: g.centerName,        glyph: 'portrait',    hx: 500, hy: 300 },
+  { id: 'role',         kind: 'chip',   label: g.chips.role,        glyph: 'mortarboard', hx: 500, hy: 72  },
+  { id: 'affiliation',  kind: 'chip',   label: g.chips.affiliation, glyph: 'leaf',        hx: 780, hy: 180 },
+  { id: 'kgs',          kind: 'chip',   label: g.chips.interestKgs, glyph: 'kgraph',      hx: 730, hy: 450 },
+  { id: 'mmml',         kind: 'chip',   label: g.chips.interestMmml,glyph: 'shapes',      hx: 270, hy: 450 },
+  { id: 'ch',           kind: 'chip',   label: g.chips.interestCh,  glyph: 'column',      hx: 220, hy: 180 },
+  { id: 'about',        kind: 'link',   label: s.about.title,       glyph: 'person',      href: pathFor('about', locale),    hx: 900, hy: 48 },
+  { id: 'research',     kind: 'link',   label: s.research.title,    glyph: 'page',        href: pathFor('research', locale), hx: 900, hy: 552 },
+  { id: 'projects',     kind: 'link',   label: s.projects.title,    glyph: 'code',        href: pathFor('projects', locale), hx: 100, hy: 552 },
+  { id: 'contact',      kind: 'link',   label: s.contact.title,     glyph: 'envelope',    href: pathFor('contact', locale),  hx: 100, hy: 48  },
+];
+
+const edges = nodes.slice(1).map((n) => ({ from: 'center', to: n.id }));
+
+const nodesPayload = nodes.map((n) => ({ id: n.id, hx: n.hx, hy: n.hy }));
 ---
 
 <section class="graph-wrap" aria-label={g.ariaLabel}>
-  <div class="graph" data-graph>
+  <div
+    class="graph"
+    data-graph
+    data-graph-nodes={JSON.stringify(nodesPayload)}
+    data-graph-edges={JSON.stringify(edges)}
+  >
     <svg
       class="graph-edges"
       viewBox="0 0 1000 600"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      {chips.map((c) => {
-        const e = edge(c);
-        return <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} class="edge edge-chip" />;
-      })}
-      {links.map((l) => {
-        const e = edge(l);
-        return <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} class="edge edge-link" />;
-      })}
+      {edges.map((e) => (
+        <line data-edge-from={e.from} data-edge-to={e.to} class="edge" />
+      ))}
     </svg>
 
-    <h1
-      class="node-center"
-      data-graph-center
-      style={`--cx:${center.x}%;--cy:${center.y}%`}
-    >{g.centerName}</h1>
-
-    {chips.map((c) => (
-      <span
-        class="node-chip"
-        style={`--cx:${c.x}%;--cy:${c.y}%`}
-      >{c.label}</span>
-    ))}
-
-    {links.map((l) => (
-      <a
-        class="node-link"
-        href={pathFor(l.key, locale)}
-        style={`--cx:${l.x}%;--cy:${l.y}%`}
-      >{l.label}</a>
-    ))}
+    {nodes.map((n) => {
+      const Tag = n.kind === 'link' ? 'a' : n.kind === 'center' ? 'h1' : 'span';
+      const linkProps = n.kind === 'link' ? { href: n.href } : {};
+      const ariaLabel = n.kind === 'link' ? n.label : undefined;
+      return (
+        <Tag
+          class:list={[
+            'node',
+            n.kind === 'center' && 'node-center',
+            n.kind === 'chip' && 'node-chip',
+            n.kind === 'link' && 'node-link',
+          ]}
+          data-node-id={n.id}
+          data-node-kind={n.kind}
+          style={`--cx:${n.hx / 10}%;--cy:${n.hy / 6}%`}
+          aria-label={ariaLabel}
+          {...linkProps}
+        >
+          <span class="node-glyph" aria-hidden="true">
+            {n.kind === 'center' && portraitSrc ? (
+              <img src={portraitSrc} alt="" width="120" height="120" />
+            ) : (
+              <Glyph name={n.glyph} />
+            )}
+          </span>
+          <span class="node-label">{n.label}</span>
+        </Tag>
+      );
+    })}
   </div>
 
   <h2 class="visually-hidden" id="graph-fallback-heading">{g.listFallbackHeading}</h2>
   <ul class="visually-hidden" aria-labelledby="graph-fallback-heading">
-    {links.map((l) => (
-      <li><a href={pathFor(l.key, locale)}>{l.label}</a></li>
+    {nodes.filter((n) => n.kind === 'link').map((n) => (
+      <li><a href={n.href}>{n.label}</a></li>
     ))}
   </ul>
 </section>
 
 <style>
   .graph-wrap {
-    width: min(72rem, 92vw);
+    width: min(76rem, 94vw);
     margin-inline: auto;
     padding-block: var(--space-32) var(--space-64);
   }
@@ -116,6 +120,7 @@ function edge(target: EdgeTarget) {
     position: relative;
     aspect-ratio: 5 / 3;
     width: 100%;
+    touch-action: none;
   }
 
   .graph-edges {
@@ -129,35 +134,105 @@ function edge(target: EdgeTarget) {
   .edge {
     stroke: var(--color-border);
     stroke-width: 1;
+    opacity: 0.55;
     vector-effect: non-scaling-stroke;
   }
-  .edge-chip { opacity: 0.45; }
-  .edge-link { opacity: 0.7; }
 
-  .node-center,
-  .node-chip,
-  .node-link {
+  .node {
     position: absolute;
     left: var(--cx);
     top: var(--cy);
     transform: translate(-50%, -50%);
     z-index: 1;
-    white-space: nowrap;
+    /*
+      Each node is its own positioning context. Glyph and label stack on top
+      of each other and crossfade on hover/focus.
+    */
+    display: grid;
+    place-items: center;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    color: var(--color-text);
+  }
+  .node:active { cursor: grabbing; }
+
+  .node-glyph,
+  .node-label {
+    grid-area: 1 / 1;
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
   }
 
-  /*
-    Center node — big, confident. Cursor-follow radial-gradient sits inside
-    the text via background-clip. Glow opacity and pulse radius are nudged
-    by the script below; defaults render plain ink without JS.
-  */
+  .node-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    opacity: 1;
+    transform: scale(1);
+  }
+  .node-glyph svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .node-glyph img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .node-label {
+    white-space: nowrap;
+    background: var(--color-bg);
+    padding: var(--space-4) var(--space-12);
+    border-radius: 4px;
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+  }
+
+  /* Reveal text on hover / focus / when the node is the focal point of a drag */
+  .node:hover .node-glyph,
+  .node:focus-visible .node-glyph,
+  .node.is-revealed .node-glyph {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  .node:hover .node-label,
+  .node:focus-visible .node-label,
+  .node.is-revealed .node-label {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Center node — bigger glyph, h1-weight label with cursor-glow gradient */
   .node-center {
+    margin: 0;
+    cursor: grab;
+  }
+  .node-center .node-glyph {
+    width: 6rem;
+    height: 6rem;
+    color: var(--color-text);
+  }
+  .node-center .node-glyph svg {
+    width: 3rem;
+    height: 3rem;
+  }
+  .node-center .node-label {
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
     line-height: 1.05;
     letter-spacing: -0.025em;
-    margin: 0;
-    cursor: default;
+    padding: var(--space-8) var(--space-16);
     background-image: radial-gradient(
       circle at var(--x, -100%) var(--y, -100%),
       color-mix(in srgb, var(--color-tertiary) calc(var(--glow-opacity, 0) * 100%), var(--color-text)) 0%,
@@ -168,33 +243,23 @@ function edge(target: EdgeTarget) {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    padding: var(--space-8) var(--space-16);
   }
 
-  .node-chip {
+  .node-chip .node-label {
     font-size: var(--text-small);
     color: var(--color-text-muted);
-    background: var(--color-bg);
-    padding: var(--space-4) var(--space-12);
-    letter-spacing: 0.01em;
   }
-
   .node-link {
+    text-decoration: none;
+    border-bottom: none;
+  }
+  .node-link .node-label {
     font-size: var(--text-h3);
     font-weight: 500;
     color: var(--color-text);
-    background: var(--color-bg);
-    padding: var(--space-4) var(--space-12);
-    border-bottom: none;
-    position: absolute;
-    display: inline-block;
   }
-  /*
-    Praneshravi-style brand chip: a shifted, semi-transparent slab sits behind
-    the link label and slides into place on hover. Subtle but signals
-    interactivity without an underline-warm.
-  */
-  .node-link::before {
+  /* Brand-style slab that slides under the link label on hover */
+  .node-link .node-label::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -205,20 +270,18 @@ function edge(target: EdgeTarget) {
     z-index: -1;
     border-radius: 2px;
   }
-  .node-link:hover,
-  .node-link:focus-visible {
-    color: var(--color-text);
-    border-bottom: none;
-  }
-  .node-link:hover::before,
-  .node-link:focus-visible::before {
+  .node-link .node-label { position: relative; }
+  .node-link:hover .node-label::before,
+  .node-link:focus-visible .node-label::before {
     opacity: 0.18;
     transform: translate(0, 0);
   }
   .node-link:focus-visible {
+    outline: none;
+  }
+  .node-link:focus-visible .node-glyph {
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
-    border-radius: 2px;
   }
 
   .visually-hidden {
@@ -234,8 +297,8 @@ function edge(target: EdgeTarget) {
   }
 
   /*
-    Mobile — graph collapses to a calm vertical stack. Same content, no
-    absolute positioning, no edges.
+    Mobile — collapse to a vertical stack. Disable physics layout, hide edges,
+    show labels permanently (no hover on touch).
   */
   @media (max-width: 640px) {
     .graph {
@@ -243,75 +306,289 @@ function edge(target: EdgeTarget) {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--space-24);
+      gap: var(--space-16);
+      touch-action: auto;
     }
     .graph-edges { display: none; }
-    .node-center,
-    .node-chip,
-    .node-link {
+    .node {
       position: static;
       transform: none;
-      background: transparent;
-      padding: 0;
-      white-space: normal;
+      cursor: default;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: 1fr;
+      gap: var(--space-16);
+      place-items: center start;
     }
-    .node-center { font-size: clamp(2.25rem, 8vw, 3rem); }
-    .node-chip { font-size: var(--text-small); }
-    .node-link { font-size: var(--text-h3); }
-    .node-link::before { display: none; }
+    .node-glyph,
+    .node-label {
+      grid-area: auto;
+      position: static;
+      transition: none;
+      transform: none;
+      pointer-events: auto;
+    }
+    .node-glyph { opacity: 1; }
+    .node-label { opacity: 1; padding: 0; background: transparent; }
+    .node-link .node-label::before { display: none; }
+    .node-center .node-label {
+      font-size: clamp(2rem, 7vw, 2.75rem);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .node-link::before {
+    .node-glyph,
+    .node-label,
+    .node-link .node-label::before {
       transition: none;
     }
   }
 </style>
 
 <script>
-  /*
-    Cursor-follow glow on the center node, mirroring praneshravi.in's h1
-    effect: pointer position sets --x/--y on the element; a rAF loop fades
-    --glow-opacity in/out and pulses --pulse-radius via a sine wave. Disabled
-    under prefers-reduced-motion.
-  */
-  const center = document.querySelector<HTMLElement>('[data-graph-center]');
+  type NodeState = {
+    id: string;
+    el: HTMLElement;
+    kind: 'center' | 'chip' | 'link';
+    hx: number; hy: number;     // home position (viewBox units, 0..1000 x 0..600)
+    x: number;  y: number;      // current position
+    vx: number; vy: number;     // velocity
+    pinned: boolean;
+  };
+
+  const graphEl = document.querySelector<HTMLElement>('[data-graph]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (center && !reduceMotion) {
-    let angle = 0;
+  if (graphEl) {
+    const graph = graphEl;
+    const nodeDefs: { id: string; hx: number; hy: number }[] = JSON.parse(
+      graph.dataset.graphNodes || '[]'
+    );
+    const edgeDefs: { from: string; to: string }[] = JSON.parse(
+      graph.dataset.graphEdges || '[]'
+    );
+
+    const nodes: NodeState[] = nodeDefs.map((d) => {
+      const el = graph.querySelector<HTMLElement>(`[data-node-id="${d.id}"]`)!;
+      return {
+        id: d.id,
+        el,
+        kind: (el.dataset.nodeKind as NodeState['kind']) ?? 'chip',
+        hx: d.hx, hy: d.hy,
+        x: d.hx, y: d.hy,
+        vx: 0, vy: 0,
+        pinned: false,
+      };
+    });
+    const byId = new Map(nodes.map((n) => [n.id, n]));
+
+    const edgeEls = Array.from(
+      graph.querySelectorAll<SVGLineElement>('.edge')
+    );
+
+    const center = byId.get('center');
+
+    /* ---------- viewBox <-> screen px mapping for drag ---------- */
+    const VB_W = 1000;
+    const VB_H = 600;
+
+    /* ---------- physics ---------- */
+    const REPULSION = 90_000;
+    const SPRING_K = 0.012;
+    const REST = 280;            // resting edge length, viewBox units
+    const HOME_K = 0.06;         // pull toward home
+    const DAMPING = 0.86;
+    const WIND = 8;              // tiny random impulse per frame
+    const EDGE_INSET_CENTER = 130;
+    const EDGE_INSET_NODE = 45;
+
+    // give each node a tiny initial perturbation so the graph starts breathing
+    if (!reduceMotion) {
+      nodes.forEach((n) => {
+        n.vx = (Math.random() - 0.5) * 30;
+        n.vy = (Math.random() - 0.5) * 30;
+      });
+    }
+
+    function applyForces(dt: number) {
+      // pairwise repulsion
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        if (a.pinned) continue;
+        let fx = 0, fy = 0;
+        for (let j = 0; j < nodes.length; j++) {
+          if (i === j) continue;
+          const b = nodes[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy + 100;
+          const f = REPULSION / d2;
+          const d = Math.sqrt(d2);
+          fx += (dx / d) * f;
+          fy += (dy / d) * f;
+        }
+        // home pull
+        fx += (a.hx - a.x) * HOME_K;
+        fy += (a.hy - a.y) * HOME_K;
+        // wind
+        fx += (Math.random() - 0.5) * WIND;
+        fy += (Math.random() - 0.5) * WIND;
+
+        a.vx = (a.vx + fx * dt) * DAMPING;
+        a.vy = (a.vy + fy * dt) * DAMPING;
+      }
+      // edge springs — pull connected nodes toward rest length
+      for (const e of edgeDefs) {
+        const a = byId.get(e.from)!;
+        const b = byId.get(e.to)!;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 0.001;
+        const stretch = d - REST;
+        const f = SPRING_K * stretch;
+        const ux = dx / d;
+        const uy = dy / d;
+        if (!a.pinned) { a.vx += f * ux * dt; a.vy += f * uy * dt; }
+        if (!b.pinned) { b.vx -= f * ux * dt; b.vy -= f * uy * dt; }
+      }
+      // integrate
+      for (const n of nodes) {
+        if (n.pinned) continue;
+        n.x += n.vx * dt;
+        n.y += n.vy * dt;
+        // clamp inside viewBox with soft margins
+        const m = 40;
+        if (n.x < m)        { n.x = m;          n.vx = Math.abs(n.vx) * 0.5; }
+        if (n.x > VB_W - m) { n.x = VB_W - m;   n.vx = -Math.abs(n.vx) * 0.5; }
+        if (n.y < m)        { n.y = m;          n.vy = Math.abs(n.vy) * 0.5; }
+        if (n.y > VB_H - m) { n.y = VB_H - m;   n.vy = -Math.abs(n.vy) * 0.5; }
+      }
+    }
+
+    function render() {
+      for (const n of nodes) {
+        n.el.style.setProperty('--cx', `${n.x / 10}%`);
+        n.el.style.setProperty('--cy', `${n.y / 6}%`);
+      }
+      const c = center!;
+      for (let i = 0; i < edgeDefs.length; i++) {
+        const e = edgeDefs[i];
+        const a = byId.get(e.from)!;
+        const b = byId.get(e.to)!;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len = Math.hypot(dx, dy) || 0.001;
+        const ux = dx / len;
+        const uy = dy / len;
+        // shorter inset on the chip-side, larger on the center-side, so edges
+        // meet labels rather than pierce them
+        const insetA = a === c ? EDGE_INSET_CENTER : EDGE_INSET_NODE;
+        const insetB = b === c ? EDGE_INSET_CENTER : EDGE_INSET_NODE;
+        const ln = edgeEls[i];
+        ln.setAttribute('x1', String(a.x + ux * insetA));
+        ln.setAttribute('y1', String(a.y + uy * insetA));
+        ln.setAttribute('x2', String(b.x - ux * insetB));
+        ln.setAttribute('y2', String(b.y - uy * insetB));
+      }
+    }
+
+    /* ---------- animation loop with idle sleep ---------- */
     let rafId: number | null = null;
-    let hovered = false;
-    let opacity = 0;
+    let lastT = performance.now();
 
-    const setPos = (clientX: number, clientY: number) => {
-      const rect = center.getBoundingClientRect();
-      center.style.setProperty('--x', `${clientX - rect.left}px`);
-      center.style.setProperty('--y', `${clientY - rect.top}px`);
-      if (!hovered) {
-        hovered = true;
-        if (rafId === null) tick();
+    function tick(t: number) {
+      const dt = Math.min(0.033, (t - lastT) / 1000);
+      lastT = t;
+      applyForces(dt);
+      render();
+      updateGlow();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function start() {
+      if (rafId !== null || reduceMotion) return;
+      lastT = performance.now();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // Initial render so positions are sane before first frame
+    render();
+    start();
+
+    /* ---------- drag ---------- */
+    function vbFromClient(clientX: number, clientY: number) {
+      const r = graph.getBoundingClientRect();
+      const x = ((clientX - r.left) / r.width) * VB_W;
+      const y = ((clientY - r.top)  / r.height) * VB_H;
+      return { x, y };
+    }
+
+    let dragNode: NodeState | null = null;
+    let dragStart = { x: 0, y: 0 };
+    let didDrag = false;
+    const DRAG_THRESHOLD = 4; // px
+
+    nodes.forEach((n) => {
+      n.el.addEventListener('pointerdown', (e) => {
+        // ignore non-primary buttons
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        dragNode = n;
+        n.pinned = true;
+        n.vx = 0; n.vy = 0;
+        dragStart = { x: e.clientX, y: e.clientY };
+        didDrag = false;
+        n.el.setPointerCapture(e.pointerId);
+        start();
+      });
+
+      n.el.addEventListener('pointermove', (e) => {
+        if (!dragNode || dragNode !== n) return;
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        if (!didDrag && Math.hypot(dx, dy) > DRAG_THRESHOLD) didDrag = true;
+        const p = vbFromClient(e.clientX, e.clientY);
+        n.x = p.x; n.y = p.y;
+      });
+
+      const endDrag = (e: PointerEvent) => {
+        if (!dragNode || dragNode !== n) return;
+        n.pinned = false;
+        n.el.releasePointerCapture(e.pointerId);
+        dragNode = null;
+      };
+      n.el.addEventListener('pointerup', endDrag);
+      n.el.addEventListener('pointercancel', endDrag);
+
+      // Suppress link navigation when the user actually dragged.
+      if (n.kind === 'link') {
+        n.el.addEventListener('click', (e) => {
+          if (didDrag) e.preventDefault();
+        });
       }
-    };
+    });
 
-    const tick = () => {
-      if (hovered && opacity < 1) opacity = Math.min(1, opacity + 0.1);
-      else if (!hovered && opacity > 0) opacity = Math.max(0, opacity - 0.05);
-      center.style.setProperty('--glow-opacity', String(opacity));
+    /* ---------- center cursor-follow glow ---------- */
+    const centerEl = center!.el;
+    const centerLabel = centerEl.querySelector<HTMLElement>('.node-label')!;
+    let glowAngle = 0;
+    let glowOpacity = 0;
+    let glowHovered = false;
 
-      angle += 0.05;
-      const pulse = Math.sin(angle) * 5 + 20;
-      center.style.setProperty('--pulse-radius', `${pulse}%`);
+    function updateGlow() {
+      if (reduceMotion) return;
+      if (glowHovered && glowOpacity < 1) glowOpacity = Math.min(1, glowOpacity + 0.1);
+      else if (!glowHovered && glowOpacity > 0) glowOpacity = Math.max(0, glowOpacity - 0.05);
+      centerLabel.style.setProperty('--glow-opacity', String(glowOpacity));
+      glowAngle += 0.05;
+      const pulse = Math.sin(glowAngle) * 5 + 20;
+      centerLabel.style.setProperty('--pulse-radius', `${pulse}%`);
+    }
 
-      if (opacity > 0 || hovered) {
-        rafId = requestAnimationFrame(tick);
-      } else {
-        rafId = null;
-      }
-    };
-
-    document.addEventListener('pointermove', (e) => setPos(e.clientX, e.clientY));
-    document.addEventListener('pointerleave', () => { hovered = false; });
-    document.addEventListener('touchend', () => { hovered = false; });
+    document.addEventListener('pointermove', (e) => {
+      const r = centerLabel.getBoundingClientRect();
+      centerLabel.style.setProperty('--x', `${e.clientX - r.left}px`);
+      centerLabel.style.setProperty('--y', `${e.clientY - r.top}px`);
+      glowHovered = true;
+    });
+    document.addEventListener('pointerleave', () => { glowHovered = false; });
   }
 </script>
