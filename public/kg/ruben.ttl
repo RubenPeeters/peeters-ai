@@ -1,0 +1,245 @@
+@prefix id: <https://peeters.ai/id/> .
+@prefix pp: <https://peeters.ai/ontology/> .
+@prefix schema: <https://schema.org/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+id:ruben a schema:Person ;
+  schema:name "Ruben Peeters" ;
+  schema:description
+    "Researcher and software builder working where knowledge graphs, multimodal machine learning, and cultural heritage meet."@en,
+    "Onderzoeker en softwarebouwer op het kruispunt van kennisgrafen, multimodale machine learning en cultureel erfgoed."@nl ;
+  schema:affiliation id:ku-leuven ;
+  pp:hasRole id:phd-researcher ;
+  pp:hasSkill id:knowledge-graphs, id:multimodal-ml, id:rdf, id:sparql, id:python, id:typescript ;
+  pp:interestedIn id:cultural-heritage, id:human-biomonitoring ;
+  pp:worksOn id:artkb, id:reevaluate, id:hbm-toolkit ;
+  pp:expressesValue id:open-research, id:interoperability ;
+  pp:hasSection id:section-about, id:section-research, id:section-projects, id:section-contact ;
+  pp:showInGraph true ;
+  pp:graphGroup "person" ;
+  pp:graphWeight 5 .
+
+id:ku-leuven a schema:CollegeOrUniversity ;
+  schema:name "KU Leuven" ;
+  schema:description
+    "University in Leuven, Belgium."@en,
+    "Universiteit in Leuven, België."@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "organization" ;
+  pp:graphWeight 2 .
+
+id:phd-researcher a pp:Role ;
+  schema:name "PhD researcher"@en, "Doctoraatsonderzoeker"@nl ;
+  schema:affiliation id:ku-leuven ;
+  pp:hasTopic id:knowledge-graphs, id:multimodal-ml, id:cultural-heritage ;
+  pp:showInGraph true ;
+  pp:graphGroup "role" ;
+  pp:graphWeight 2 .
+
+id:knowledge-graphs a pp:Skill, pp:Interest ;
+  schema:name "Knowledge graphs"@en, "Kennisgrafen"@nl ;
+  schema:description
+    "Connecting heterogeneous knowledge so that people and machines can use it."@en,
+    "Heterogene kennis verbinden zodat mensen en machines ermee kunnen werken."@nl ;
+  pp:usesTechnology id:rdf, id:sparql ;
+  pp:showInGraph true ;
+  pp:graphGroup "skill" ;
+  pp:graphWeight 4 .
+
+id:multimodal-ml a pp:Skill, pp:Interest ;
+  schema:name "Multimodal ML"@en, "Multimodale ML"@nl ;
+  pp:usesTechnology id:python ;
+  pp:showInGraph true ;
+  pp:graphGroup "skill" ;
+  pp:graphWeight 3 .
+
+id:rdf a pp:Skill ;
+  schema:name "RDF" ;
+  pp:showInGraph true ;
+  pp:graphGroup "technology" ;
+  pp:graphWeight 1 .
+
+id:sparql a pp:Skill ;
+  schema:name "SPARQL" ;
+  pp:showInGraph true ;
+  pp:graphGroup "technology" ;
+  pp:graphWeight 1 .
+
+id:python a pp:Skill ;
+  schema:name "Python" ;
+  pp:showInGraph true ;
+  pp:graphGroup "technology" ;
+  pp:graphWeight 1 .
+
+id:typescript a pp:Skill ;
+  schema:name "TypeScript" ;
+  pp:showInGraph true ;
+  pp:graphGroup "technology" ;
+  pp:graphWeight 1 .
+
+id:cultural-heritage a pp:Interest ;
+  schema:name "Cultural heritage"@en, "Cultureel erfgoed"@nl ;
+  schema:description
+    "Making digitised heritage easier to discover, understand, and reuse."@en,
+    "Gedigitaliseerd erfgoed makkelijker vindbaar, begrijpelijk en herbruikbaar maken."@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "topic" ;
+  pp:graphWeight 4 .
+
+id:human-biomonitoring a pp:Interest ;
+  schema:name "Human biomonitoring" ;
+  schema:description
+    "Improving interoperability between environmental health datasets."@en,
+    "De interoperabiliteit tussen milieugezondheidsdata verbeteren."@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "topic" ;
+  pp:graphWeight 2 .
+
+id:open-research a pp:Value ;
+  schema:name "Open research"@en, "Open onderzoek"@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "value" ;
+  pp:graphWeight 1 .
+
+id:interoperability a pp:Value ;
+  schema:name "Interoperability"@en, "Interoperabiliteit"@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "value" ;
+  pp:graphWeight 2 .
+
+id:artkb a schema:ResearchProject ;
+  schema:name "ArtKB" ;
+  schema:description
+    "A multimodal art knowledge base for cultural heritage."@en,
+    "Een multimodale kunstkennisbank voor cultureel erfgoed."@nl ;
+  pp:hasTopic id:cultural-heritage, id:knowledge-graphs, id:multimodal-ml ;
+  pp:usesTechnology id:rdf, id:python ;
+  pp:expressesValue id:interoperability ;
+  pp:showInGraph true ;
+  pp:graphGroup "project" ;
+  pp:graphWeight 3 .
+
+id:reevaluate a schema:ResearchProject ;
+  schema:name "REEVALUATE" ;
+  schema:description
+    "A framework for safe, open, collaborative, and inclusive cultural-heritage digitisation."@en,
+    "Een kader voor veilige, open, collaboratieve en inclusieve digitalisering van cultureel erfgoed."@nl ;
+  pp:hasTopic id:cultural-heritage, id:knowledge-graphs ;
+  pp:expressesValue id:open-research, id:interoperability ;
+  pp:showInGraph true ;
+  pp:graphGroup "project" ;
+  pp:graphWeight 3 .
+
+id:hbm-toolkit a schema:ResearchProject ;
+  schema:name "HBM data toolkit" ;
+  pp:hasTopic id:human-biomonitoring ;
+  pp:usesTechnology id:python ;
+  pp:expressesValue id:interoperability ;
+  pp:showInGraph true ;
+  pp:graphGroup "project" ;
+  pp:graphWeight 2 .
+
+id:paper-artkb a schema:ScholarlyArticle ;
+  schema:name "ArtKB: A Multimodal Art Knowledge Base" ;
+  schema:author id:ruben ;
+  schema:about id:artkb, id:cultural-heritage, id:knowledge-graphs ;
+  schema:datePublished "2026"^^xsd:gYear ;
+  pp:showInGraph true ;
+  pp:graphGroup "publication" ;
+  pp:graphWeight 2 .
+
+id:paper-retrieval a schema:ScholarlyArticle ;
+  schema:name "Knowledge-enhanced multimodal retrieval" ;
+  schema:author id:ruben ;
+  schema:about id:cultural-heritage, id:knowledge-graphs, id:multimodal-ml ;
+  schema:datePublished "2026"^^xsd:gYear ;
+  pp:showInGraph true ;
+  pp:graphGroup "publication" ;
+  pp:graphWeight 2 .
+
+id:paper-hbm a schema:ScholarlyArticle ;
+  schema:name "Enhancing data interoperability in HBM studies" ;
+  schema:author id:ruben ;
+  schema:about id:hbm-toolkit, id:human-biomonitoring, id:interoperability ;
+  schema:datePublished "2025"^^xsd:gYear ;
+  pp:showInGraph true ;
+  pp:graphGroup "publication" ;
+  pp:graphWeight 2 .
+
+id:chess-with-friends a schema:SoftwareApplication ;
+  schema:name "Chess with Friends" ;
+  schema:author id:ruben ;
+  pp:usesTechnology id:typescript ;
+  pp:showInGraph true ;
+  pp:graphGroup "side-project" ;
+  pp:graphWeight 1 .
+
+id:league-analysis a schema:SoftwareSourceCode ;
+  schema:name "League Analysis" ;
+  schema:author id:ruben ;
+  pp:usesTechnology id:python ;
+  pp:showInGraph true ;
+  pp:graphGroup "side-project" ;
+  pp:graphWeight 1 .
+
+id:vastgoed-analysis a schema:SoftwareSourceCode ;
+  schema:name "Vastgoed Analysis" ;
+  schema:author id:ruben ;
+  pp:usesTechnology id:python ;
+  pp:showInGraph true ;
+  pp:graphGroup "side-project" ;
+  pp:graphWeight 1 .
+
+id:marios-bierkelder a schema:SoftwareApplication ;
+  schema:name "Mario's Bierkelder" ;
+  schema:author id:ruben ;
+  pp:usesTechnology id:typescript ;
+  pp:showInGraph true ;
+  pp:graphGroup "side-project" ;
+  pp:graphWeight 1 .
+
+id:section-about a pp:SiteSection ;
+  schema:name "About"@en, "Over mij"@nl ;
+  schema:description
+    "Background, current work, and the person behind the graph."@en,
+    "Achtergrond, huidig werk en de persoon achter de graaf."@nl ;
+  pp:pathEn "/about" ;
+  pp:pathNl "/nl/over-mij" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .
+
+id:section-research a pp:SiteSection ;
+  schema:name "Research"@en, "Onderzoek"@nl ;
+  schema:description
+    "Publications and research themes."@en,
+    "Publicaties en onderzoeksthema's."@nl ;
+  pp:pathEn "/research" ;
+  pp:pathNl "/nl/onderzoek" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .
+
+id:section-projects a pp:SiteSection ;
+  schema:name "Projects"@en, "Projecten"@nl ;
+  schema:description
+    "Side projects and practical experiments."@en,
+    "Bijprojecten en praktische experimenten."@nl ;
+  pp:pathEn "/projects" ;
+  pp:pathNl "/nl/projecten" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .
+
+id:section-contact a pp:SiteSection ;
+  schema:name "Contact" ;
+  schema:description
+    "Ways to get in touch and collaborate."@en,
+    "Manieren om contact op te nemen en samen te werken."@nl ;
+  pp:pathEn "/contact" ;
+  pp:pathNl "/nl/contact" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .

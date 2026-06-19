@@ -52,12 +52,11 @@ Applied here:
 
 ## Typography
 
-- **Sans-serif throughout** (`Hanken Grotesk`), with **mono reserved for small
-  labels/eyebrows** (`IBM Plex Mono`). Doumont's rule: one workhorse sans, chosen for
-  legibility — serifs are avoided. Two families, used consistently.
-- **Hierarchy from weight and size, not family.** Headings are the same sans as the body,
-  set heavier (`500`) and larger; the page lede sits at body weight so it reads as a
-  sentence, not a title.
+- **Literata for headings, Inter for body and interface text.** The serif gives long-form
+  and research material a scholarly voice; the sans keeps navigation, labels, and body
+  copy crisp. The two roles stay strict and predictable.
+- **Hierarchy from role, weight, and size.** Headings use the serif at a compact weight;
+  the page lede sits at body weight so it reads as a sentence, not a display title.
 - **Emphasis with weight, never italics or color.** Bold the word; don't slant or tint it.
   Italics survive only for genuine citation conventions (e.g. publication venues).
 - Few sizes. Stick to the `--text-*` tokens; each maps to a role (h1/h2/h3, body, tagline,
@@ -66,10 +65,11 @@ Applied here:
 
 ## Color
 
-- **Warm paper background, deep-teal ink.** A neutral surface with dark text is the
+- **Warm paper background, near-black ink.** A neutral surface with dark text is the
   baseline — calm, low-noise.
-- **One accent (azure `#0075ff`), used sparingly to direct attention** — links/hover, the
-  eyebrow label, a status dot. Color is a *pointer*, never decoration.
+- **One plum accent, used sparingly to direct attention** — links, labels, and focus
+  states. The knowledge graph adds a restrained categorical palette because color carries
+  data there rather than acting as decoration.
 - **Never rely on color alone** to carry meaning (effective redundancy + accessibility).
   Pair it with position, a label, or shape. The accent must survive a color-blind reader
   and still leave the meaning intact.

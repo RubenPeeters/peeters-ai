@@ -1,0 +1,82 @@
+@prefix pp: <https://peeters.ai/ontology/> .
+@prefix schema: <https://schema.org/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+pp: a owl:Ontology ;
+  dct:title "peeters.ai personal portfolio ontology"@en ;
+  dct:description "A small ontology for describing Ruben Peeters' work, interests, output, and website."@en .
+
+pp:Role a owl:Class ;
+  rdfs:label "role"@en, "rol"@nl .
+
+pp:Skill a owl:Class ;
+  rdfs:label "skill"@en, "vaardigheid"@nl .
+
+pp:Interest a owl:Class ;
+  rdfs:label "interest"@en, "interesse"@nl .
+
+pp:Value a owl:Class ;
+  rdfs:label "value"@en, "waarde"@nl .
+
+pp:SiteSection a owl:Class ;
+  rdfs:label "site section"@en, "sitesectie"@nl .
+
+pp:hasRole a owl:ObjectProperty ;
+  rdfs:label "works as"@en, "werkt als"@nl ;
+  rdfs:domain schema:Person ;
+  rdfs:range pp:Role .
+
+pp:hasSkill a owl:ObjectProperty ;
+  rdfs:label "works with"@en, "werkt met"@nl ;
+  rdfs:domain schema:Person ;
+  rdfs:range pp:Skill .
+
+pp:interestedIn a owl:ObjectProperty ;
+  rdfs:label "is interested in"@en, "is geïnteresseerd in"@nl ;
+  rdfs:domain schema:Person ;
+  rdfs:range pp:Interest .
+
+pp:worksOn a owl:ObjectProperty ;
+  rdfs:label "works on"@en, "werkt aan"@nl ;
+  rdfs:domain schema:Person .
+
+pp:usesTechnology a owl:ObjectProperty ;
+  rdfs:label "uses"@en, "gebruikt"@nl ;
+  rdfs:range pp:Skill .
+
+pp:hasTopic a owl:ObjectProperty ;
+  rdfs:label "is about"@en, "gaat over"@nl ;
+  rdfs:range pp:Interest .
+
+pp:expressesValue a owl:ObjectProperty ;
+  rdfs:label "expresses"@en, "draagt uit"@nl ;
+  rdfs:range pp:Value .
+
+pp:hasSection a owl:ObjectProperty ;
+  rdfs:label "has section"@en, "heeft sectie"@nl ;
+  rdfs:domain schema:Person ;
+  rdfs:range pp:SiteSection .
+
+pp:showInGraph a owl:DatatypeProperty ;
+  rdfs:label "show in graph"@en ;
+  rdfs:range xsd:boolean .
+
+pp:graphGroup a owl:DatatypeProperty ;
+  rdfs:label "graph group"@en ;
+  rdfs:range xsd:string .
+
+pp:graphWeight a owl:DatatypeProperty ;
+  rdfs:label "graph weight"@en ;
+  rdfs:range xsd:decimal .
+
+pp:pathEn a owl:DatatypeProperty ;
+  rdfs:label "English path"@en ;
+  rdfs:range xsd:string .
+
+pp:pathNl a owl:DatatypeProperty ;
+  rdfs:label "Dutch path"@en ;
+  rdfs:range xsd:string .
