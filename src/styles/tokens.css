@@ -1,42 +1,34 @@
-/*
-  Design tokens — minimal, expressive sans aesthetic.
-  One sans family throughout (Google Sans Flex, Outfit fallback).
-  Light palette inspired by Material 3 expressive tones: faint lavender paper,
-  near-black ink, violet primary, dusty-pink tertiary used only for the cursor
-  glow on the central node.
-*/
+/* Warm academic palette: paper, ink, restrained plum, and research-graph hues. */
 :root {
   /* Surface */
-  --color-bg: #fcf8ff;
-  --color-surface: #f3eff7;
-  --color-border: #c8c5d0;
+  --color-bg: #fbf7f0;
+  --color-surface: #f1ebe1;
+  --color-border: #c9c0b5;
 
   /* Ink */
-  --color-text: #1b1b21;
-  --color-text-muted: #47464f;
+  --color-text: #25211f;
+  --color-text-muted: #625b56;
 
   /* Accents */
-  --color-accent: #595992;
-  --color-accent-hover: #414178;
-  --color-tertiary: #795369;
+  --color-accent: #765166;
+  --color-accent-hover: #583849;
+  --color-tertiary: #a86452;
 
-  /*
-    Section colors — one per navigation link, used as the offset slab behind
-    each link node. Four hues spread ~90° around the wheel so they remain
-    distinguishable at the slab's low opacity.
-  */
-  --color-section-about: #c04a6a;       /* rose */
-  --color-section-research: #6f4dd6;    /* violet */
-  --color-section-projects: #3d8b3d;    /* green */
-  --color-section-contact: #2470c7;     /* blue */
+  /* Knowledge graph */
+  --color-graph-link: #aaa099;
+  --color-graph-person: #765166;
+  --color-graph-organization: #9a5c49;
+  --color-graph-skill: #376f68;
+  --color-graph-topic: #48658d;
+  --color-graph-project: #8a6a32;
+  --color-graph-publication: #6b5f91;
+  --color-graph-value: #6e7741;
+  --color-graph-section: #b4474f;
 
-  /*
-    Typography — one variable sans for everything.
-    --font-mono is intentionally the same family; .eyebrow/.pill rely on
-    uppercase + tracking, not a separate face, for their label register.
-  */
-  --font-sans: 'Google Sans Flex', 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Google Sans Flex', 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Literata carries the scholarly voice; Inter keeps interfaces quiet. */
+  --font-serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Body 18px / 1.65 */
   --text-body: 1.125rem;
@@ -47,7 +39,7 @@
   --text-mono: 0.8125rem;
   --text-small: 0.9375rem;
 
-  --leading-tight: 1.02;
+  --leading-tight: 1.04;
   --leading-snug: 1.25;
   --leading-body: 1.65;
 

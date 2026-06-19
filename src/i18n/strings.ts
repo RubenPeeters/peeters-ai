@@ -80,13 +80,19 @@ type GraphCopy = {
   centerName: string;
   ariaLabel: string;
   listFallbackHeading: string;
-  chips: {
-    role: string;
-    affiliation: string;
-    interestKgs: string;
-    interestMmml: string;
-    interestCh: string;
+  eyebrow: string;
+  intro: string;
+  hint: string;
+  loading: string;
+  loadError: string;
+  dataLink: string;
+  fallbackIntro: string;
+  controls: {
+    zoomIn: string;
+    zoomOut: string;
+    reset: string;
   };
+  categories: Record<string, string>;
 };
 
 type Strings = {
@@ -155,14 +161,33 @@ const en: Strings = {
   footer: { builtWith: 'Built with Astro.', source: 'Source on GitHub' },
   graph: {
     centerName: 'Ruben Peeters',
-    ariaLabel: "A small map of Ruben Peeters' role, interests, and the sections of this site.",
-    listFallbackHeading: 'Sections',
-    chips: {
-      role: 'PhD candidate',
-      affiliation: 'KU Leuven',
-      interestKgs: 'Knowledge graphs',
-      interestMmml: 'Multimodal ML',
-      interestCh: 'Cultural heritage',
+    ariaLabel: "Ruben Peeters' interactive personal knowledge graph.",
+    listFallbackHeading: 'Explore the site',
+    eyebrow: 'Knowledge graph · portfolio',
+    intro:
+      'Research, software, and side projects are connected here as one explorable knowledge graph.',
+    hint: 'Drag nodes, scroll to zoom, or select a highlighted section.',
+    loading: 'Building the graph from RDF…',
+    loadError: 'The graph could not be loaded. Use the section links instead.',
+    dataLink: 'View the RDF data',
+    fallbackIntro: 'The graph becomes a direct list on smaller screens.',
+    controls: {
+      zoomIn: 'Zoom in',
+      zoomOut: 'Zoom out',
+      reset: 'Reset view',
+    },
+    categories: {
+      person: 'Person',
+      organization: 'Organization',
+      role: 'Role',
+      skill: 'Skill',
+      technology: 'Technology',
+      topic: 'Research theme',
+      project: 'Research project',
+      'side-project': 'Side project',
+      publication: 'Publication',
+      value: 'Value',
+      section: 'Site section',
     },
   },
   about: {
@@ -228,14 +253,33 @@ const nl: Strings = {
   footer: { builtWith: 'Gemaakt met Astro.', source: 'Broncode op GitHub' },
   graph: {
     centerName: 'Ruben Peeters',
-    ariaLabel: 'Een kleine kaart van Ruben Peeters’ functie, interesses en de secties van deze site.',
-    listFallbackHeading: 'Secties',
-    chips: {
-      role: 'Doctoraatsonderzoeker',
-      affiliation: 'KU Leuven',
-      interestKgs: 'Kennisgrafen',
-      interestMmml: 'Multimodale ML',
-      interestCh: 'Cultureel erfgoed',
+    ariaLabel: 'De interactieve persoonlijke kennisgraaf van Ruben Peeters.',
+    listFallbackHeading: 'Verken de site',
+    eyebrow: 'Kennisgraaf · portfolio',
+    intro:
+      'Onderzoek, software en bijprojecten komen hier samen in één verkenbare kennisgraaf.',
+    hint: 'Sleep knopen, scroll om te zoomen of kies een uitgelichte sectie.',
+    loading: 'De graaf wordt opgebouwd uit RDF…',
+    loadError: 'De graaf kon niet worden geladen. Gebruik de sectielinks.',
+    dataLink: 'Bekijk de RDF-data',
+    fallbackIntro: 'Op kleinere schermen wordt de graaf een rechtstreekse lijst.',
+    controls: {
+      zoomIn: 'Inzoomen',
+      zoomOut: 'Uitzoomen',
+      reset: 'Weergave herstellen',
+    },
+    categories: {
+      person: 'Persoon',
+      organization: 'Organisatie',
+      role: 'Rol',
+      skill: 'Vaardigheid',
+      technology: 'Technologie',
+      topic: 'Onderzoeksthema',
+      project: 'Onderzoeksproject',
+      'side-project': 'Bijproject',
+      publication: 'Publicatie',
+      value: 'Waarde',
+      section: 'Sitesectie',
     },
   },
   about: {

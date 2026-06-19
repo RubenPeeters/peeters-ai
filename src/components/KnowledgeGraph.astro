@@ -1,0 +1,834 @@
+---
+import { pathFor, t, type Locale } from '~/i18n/strings';
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const s = t(locale);
+const g = s.graph;
+
+const sectionLinks = [
+  { href: pathFor('about', locale), label: s.about.title },
+  { href: pathFor('research', locale), label: s.research.title },
+  { href: pathFor('projects', locale), label: s.projects.title },
+  { href: pathFor('contact', locale), label: s.contact.title },
+];
+
+const clientCopy = {
+  loading: g.loading,
+  loadError: g.loadError,
+  categories: g.categories,
+};
+---
+
+<section
+  class="kg-hero"
+  data-knowledge-graph
+  data-locale={locale}
+  data-copy={JSON.stringify(clientCopy)}
+  aria-labelledby="kg-title"
+>
+  <header class="kg-intro">
+    <p class="eyebrow">{g.eyebrow}</p>
+    <h1 id="kg-title">{g.centerName}</h1>
+    <p class="kg-lede">{g.intro}</p>
+    <p class="kg-hint">{g.hint}</p>
+  </header>
+
+  <div class="kg-stage">
+    <div class="kg-controls" aria-label={g.ariaLabel}>
+      <button type="button" data-kg-zoom-in aria-label={g.controls.zoomIn} title={g.controls.zoomIn}>+</button>
+      <button type="button" data-kg-zoom-out aria-label={g.controls.zoomOut} title={g.controls.zoomOut}>−</button>
+      <button type="button" data-kg-reset aria-label={g.controls.reset} title={g.controls.reset}>↺</button>
+    </div>
+
+    <svg
+      class="kg-canvas"
+      data-kg-canvas
+      viewBox="0 0 1200 720"
+      role="img"
+      aria-label={g.ariaLabel}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g data-kg-viewport>
+        <g class="kg-links" data-kg-links></g>
+        <g class="kg-nodes" data-kg-nodes></g>
+      </g>
+    </svg>
+
+    <p class="kg-status" data-kg-status role="status">{g.loading}</p>
+
+    <aside class="kg-tooltip" data-kg-tooltip hidden>
+      <p class="kg-tooltip-category" data-kg-tooltip-category></p>
+      <p class="kg-tooltip-title" data-kg-tooltip-title></p>
+      <p class="kg-tooltip-description" data-kg-tooltip-description></p>
+    </aside>
+
+    <nav class="kg-fallback" aria-labelledby="kg-fallback-heading">
+      <h2 id="kg-fallback-heading">{g.listFallbackHeading}</h2>
+      <p>{g.fallbackIntro}</p>
+      <ul>
+        {sectionLinks.map((link) => (
+          <li><a href={link.href}>{link.label}<span aria-hidden="true">→</span></a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <a class="kg-data-link" href="/kg/ruben.ttl">{g.dataLink}<span aria-hidden="true">↗</span></a>
+</section>
+
+<noscript>
+  <style>
+    .kg-canvas,
+    .kg-controls,
+    .kg-status {
+      display: none !important;
+    }
+    .kg-fallback {
+      position: static !important;
+      width: auto !important;
+      height: auto !important;
+      clip: auto !important;
+      overflow: visible !important;
+      white-space: normal !important;
+    }
+  </style>
+</noscript>
+
+<style is:global>
+  .kg-hero {
+    width: calc(100% - clamp(2rem, 6vw, 6rem));
+    max-width: 92rem;
+    min-height: 100svh;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vh, 6rem) 2rem;
+    display: grid;
+    grid-template-columns: minmax(15rem, 25rem) minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .kg-intro {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+  }
+
+  .kg-intro .eyebrow {
+    margin-bottom: var(--space-16);
+    color: var(--color-accent);
+  }
+
+  .kg-intro h1 {
+    font-size: clamp(3.25rem, 5.5vw, 6.5rem);
+    line-height: 0.92;
+    max-width: 8ch;
+  }
+
+  .kg-lede {
+    margin-top: var(--space-32);
+    max-width: 31ch;
+    font-size: var(--text-tagline);
+    line-height: 1.4;
+  }
+
+  .kg-hint {
+    margin-top: var(--space-24);
+    max-width: 38ch;
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
+  }
+
+  .kg-stage {
+    position: relative;
+    min-width: 0;
+    height: min(78svh, 48rem);
+    min-height: 34rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--color-surface) 72%, transparent), transparent 62%),
+      color-mix(in srgb, var(--color-bg) 82%, transparent);
+  }
+
+  .kg-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  .kg-controls {
+    position: absolute;
+    top: var(--space-16);
+    right: var(--space-16);
+    z-index: 3;
+    display: flex;
+    gap: var(--space-8);
+  }
+
+  .kg-controls button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    color: var(--color-text);
+    font: 500 1.1rem/1 var(--font-sans);
+    cursor: pointer;
+    transition:
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  .kg-controls button:hover,
+  .kg-controls button:focus-visible {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-bg);
+  }
+
+  .kg-link {
+    stroke: var(--color-graph-link);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    transition: opacity var(--dur) var(--ease), stroke var(--dur) var(--ease);
+  }
+
+  .kg-node {
+    color: var(--color-graph-topic);
+    cursor: grab;
+    outline: none;
+  }
+
+  .kg-node:active {
+    cursor: grabbing;
+  }
+
+  .kg-node[data-group='person'] { color: var(--color-graph-person); }
+  .kg-node[data-group='organization'],
+  .kg-node[data-group='role'] { color: var(--color-graph-organization); }
+  .kg-node[data-group='skill'],
+  .kg-node[data-group='technology'] { color: var(--color-graph-skill); }
+  .kg-node[data-group='project'],
+  .kg-node[data-group='side-project'] { color: var(--color-graph-project); }
+  .kg-node[data-group='publication'] { color: var(--color-graph-publication); }
+  .kg-node[data-group='value'] { color: var(--color-graph-value); }
+  .kg-node[data-group='section'] { color: var(--color-graph-section); cursor: pointer; }
+
+  .kg-node circle {
+    fill: color-mix(in srgb, currentColor 20%, var(--color-bg));
+    stroke: currentColor;
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+    transition:
+      fill var(--dur) var(--ease),
+      stroke-width var(--dur) var(--ease),
+      opacity var(--dur) var(--ease);
+  }
+
+  .kg-node[data-group='section'] circle {
+    fill: color-mix(in srgb, currentColor 34%, var(--color-bg));
+    stroke-width: 2.4;
+  }
+
+  .kg-node text {
+    fill: var(--color-text);
+    font: 500 12px/1 var(--font-sans);
+    letter-spacing: 0.01em;
+    paint-order: stroke;
+    stroke: var(--color-bg);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .kg-node[data-priority='high'] text,
+  .kg-node:hover text,
+  .kg-node:focus text {
+    opacity: 1;
+  }
+
+  .kg-node:hover circle,
+  .kg-node:focus circle {
+    fill: color-mix(in srgb, currentColor 42%, var(--color-bg));
+    stroke-width: 3;
+  }
+
+  .kg-nodes.has-active-node .kg-node:not(.is-active):not(.is-neighbor) {
+    opacity: 0.24;
+  }
+
+  .kg-links.has-active-node .kg-link:not(.is-active) {
+    opacity: 0.12;
+  }
+
+  .kg-link.is-active {
+    stroke: var(--color-text-muted);
+    stroke-width: 1.8;
+  }
+
+  .kg-status {
+    position: absolute;
+    left: var(--space-16);
+    bottom: var(--space-12);
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
+  }
+
+  .kg-tooltip {
+    position: absolute;
+    left: var(--space-16);
+    bottom: var(--space-16);
+    z-index: 3;
+    width: min(22rem, calc(100% - 2rem));
+    padding: var(--space-16);
+    border: 1px solid var(--color-border);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    backdrop-filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .kg-tooltip-category {
+    color: var(--color-accent);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kg-tooltip-title {
+    margin-top: var(--space-4);
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: var(--leading-snug);
+  }
+
+  .kg-tooltip-description {
+    margin-top: var(--space-8);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .kg-tooltip-description:empty {
+    display: none;
+  }
+
+  .kg-fallback {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .kg-data-link {
+    grid-column: 2;
+    justify-self: end;
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
+  }
+
+  .kg-data-link span {
+    display: inline-block;
+    margin-left: 0.25em;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .kg-data-link:hover span {
+    transform: translate(0.1em, -0.1em);
+  }
+
+  @media (max-width: 900px) {
+    .kg-hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      align-items: start;
+    }
+
+    .kg-intro h1 {
+      max-width: none;
+    }
+
+    .kg-lede {
+      max-width: 42ch;
+    }
+
+    .kg-stage {
+      width: 100%;
+      height: 65svh;
+    }
+
+    .kg-data-link {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .kg-hero {
+      width: calc(100% - 2rem);
+      max-width: 34rem;
+      min-height: auto;
+      padding-top: 5rem;
+      gap: var(--space-32);
+    }
+
+    .kg-intro h1 {
+      font-size: clamp(3rem, 18vw, 5rem);
+    }
+
+    .kg-hint {
+      display: none;
+    }
+
+    .kg-stage {
+      min-width: 0;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      border: 0;
+      background: none;
+    }
+
+    .kg-canvas,
+    .kg-controls,
+    .kg-status,
+    .kg-tooltip {
+      display: none;
+    }
+
+    .kg-fallback {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+
+    .kg-fallback h2 {
+      font-size: var(--text-h2);
+    }
+
+    .kg-fallback > p {
+      margin-top: var(--space-8);
+      color: var(--color-text-muted);
+      font-size: var(--text-small);
+    }
+
+    .kg-fallback ul {
+      display: grid;
+      gap: var(--space-12);
+      margin: var(--space-24) 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .kg-fallback a {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-16) 0;
+      border-bottom: 1px solid var(--color-border);
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+</style>
+
+<script>
+  import {
+    drag,
+    forceCenter,
+    forceCollide,
+    forceLink,
+    forceManyBody,
+    forceSimulation,
+    forceX,
+    forceY,
+    select,
+    zoom,
+    zoomIdentity,
+    type SimulationLinkDatum,
+    type SimulationNodeDatum,
+  } from 'd3';
+  import { Parser, type Quad } from 'n3';
+  import { navigate } from 'astro:transitions/client';
+
+  type GraphCopy = {
+    loading: string;
+    loadError: string;
+    categories: Record<string, string>;
+  };
+
+  type GraphNode = SimulationNodeDatum & {
+    id: string;
+    label: string;
+    description: string;
+    group: string;
+    href?: string;
+    weight: number;
+    degree: number;
+    radius: number;
+  };
+
+  type GraphLink = SimulationLinkDatum<GraphNode> & {
+    source: string | GraphNode;
+    target: string | GraphNode;
+    label: string;
+  };
+
+  const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+  const RDFS_LABEL = 'http://www.w3.org/2000/01/rdf-schema#label';
+  const SCHEMA_NAME = 'https://schema.org/name';
+  const SCHEMA_DESCRIPTION = 'https://schema.org/description';
+  const PP = 'https://peeters.ai/ontology/';
+  const SHOW = `${PP}showInGraph`;
+  const GROUP = `${PP}graphGroup`;
+  const WEIGHT = `${PP}graphWeight`;
+  const PATH_EN = `${PP}pathEn`;
+  const PATH_NL = `${PP}pathNl`;
+
+  const metadataPredicates = new Set([
+    RDF_TYPE,
+    RDFS_LABEL,
+    SCHEMA_NAME,
+    SCHEMA_DESCRIPTION,
+    SHOW,
+    GROUP,
+    WEIGHT,
+    PATH_EN,
+    PATH_NL,
+    'https://schema.org/datePublished',
+  ]);
+
+  const clusterPositions: Record<string, [number, number]> = {
+    person: [600, 350],
+    organization: [590, 105],
+    role: [790, 135],
+    skill: [270, 300],
+    technology: [150, 500],
+    topic: [390, 560],
+    project: [820, 420],
+    'side-project': [985, 565],
+    publication: [1010, 260],
+    value: [610, 625],
+    section: [600, 350],
+  };
+
+  function literalFor(
+    quads: Quad[],
+    subject: string,
+    predicate: string,
+    locale: string,
+  ) {
+    const matches = quads.flatMap((quad) => (
+      quad.subject.value === subject
+      && quad.predicate.value === predicate
+      && quad.object.termType === 'Literal'
+        ? [quad.object]
+        : []
+    ));
+    return matches.find((literal) => literal.language === locale)?.value
+      ?? matches.find((literal) => literal.language === 'en')?.value
+      ?? matches.find((literal) => literal.language === '')?.value
+      ?? matches[0]?.value
+      ?? '';
+  }
+
+  function linkedNode(linkEnd: string | GraphNode) {
+    return typeof linkEnd === 'string' ? linkEnd : linkEnd.id;
+  }
+
+  async function initKnowledgeGraph(root: HTMLElement) {
+    if (root.dataset.initialized === 'true') return;
+    root.dataset.initialized = 'true';
+
+    const locale = root.dataset.locale ?? 'en';
+    const copy: GraphCopy = JSON.parse(root.dataset.copy ?? '{}');
+    const svgElement = root.querySelector<SVGSVGElement>('[data-kg-canvas]');
+    const status = root.querySelector<HTMLElement>('[data-kg-status]');
+    const tooltip = root.querySelector<HTMLElement>('[data-kg-tooltip]');
+    const tooltipCategory = root.querySelector<HTMLElement>('[data-kg-tooltip-category]');
+    const tooltipTitle = root.querySelector<HTMLElement>('[data-kg-tooltip-title]');
+    const tooltipDescription = root.querySelector<HTMLElement>('[data-kg-tooltip-description]');
+
+    if (!svgElement || !status || !tooltip || !tooltipCategory || !tooltipTitle || !tooltipDescription) {
+      return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const [ontologyResponse, dataResponse] = await Promise.all([
+        fetch('/kg/ontology.ttl'),
+        fetch('/kg/ruben.ttl'),
+      ]);
+      if (!ontologyResponse.ok || !dataResponse.ok) throw new Error('RDF request failed');
+
+      const [ontologyText, dataText] = await Promise.all([
+        ontologyResponse.text(),
+        dataResponse.text(),
+      ]);
+      const ontologyQuads = new Parser().parse(ontologyText);
+      const dataQuads = new Parser().parse(dataText);
+
+      const visibleIds = new Set(
+        dataQuads
+          .filter((quad) => quad.predicate.value === SHOW && quad.object.value === 'true')
+          .map((quad) => quad.subject.value),
+      );
+
+      const nodes: GraphNode[] = Array.from(visibleIds, (id) => {
+        const group = literalFor(dataQuads, id, GROUP, locale) || 'topic';
+        const href = literalFor(dataQuads, id, locale === 'nl' ? PATH_NL : PATH_EN, locale);
+        const weight = Number(literalFor(dataQuads, id, WEIGHT, locale) || 1);
+        const cluster = clusterPositions[group] ?? clusterPositions.topic;
+        return {
+          id,
+          label: literalFor(dataQuads, id, SCHEMA_NAME, locale) || id.split('/').pop() || id,
+          description: literalFor(dataQuads, id, SCHEMA_DESCRIPTION, locale),
+          group,
+          href: href || undefined,
+          weight,
+          degree: 0,
+          radius: 10,
+          x: cluster[0] + (Math.random() - 0.5) * 80,
+          y: cluster[1] + (Math.random() - 0.5) * 80,
+        };
+      });
+      const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+      const predicateLabels = new Map<string, string>();
+      for (const quad of ontologyQuads) {
+        if (quad.predicate.value !== RDFS_LABEL || quad.object.termType !== 'Literal') continue;
+        const current = predicateLabels.get(quad.subject.value);
+        if (quad.object.language === locale || (!current && quad.object.language === 'en')) {
+          predicateLabels.set(quad.subject.value, quad.object.value);
+        }
+      }
+
+      const seenLinks = new Set<string>();
+      const links: GraphLink[] = [];
+      for (const quad of dataQuads) {
+        if (
+          quad.object.termType !== 'NamedNode'
+          || !visibleIds.has(quad.subject.value)
+          || !visibleIds.has(quad.object.value)
+          || metadataPredicates.has(quad.predicate.value)
+        ) continue;
+
+        const key = `${quad.subject.value}|${quad.predicate.value}|${quad.object.value}`;
+        if (seenLinks.has(key)) continue;
+        seenLinks.add(key);
+        links.push({
+          source: quad.subject.value,
+          target: quad.object.value,
+          label: predicateLabels.get(quad.predicate.value)
+            ?? quad.predicate.value.split(/[\/#]/).pop()
+            ?? '',
+        });
+        nodeById.get(quad.subject.value)!.degree += 1;
+        nodeById.get(quad.object.value)!.degree += 1;
+      }
+
+      for (const node of nodes) {
+        node.radius = Math.min(29, 8 + node.degree * 1.25 + node.weight * 1.6);
+      }
+
+      const svg = select(svgElement);
+      const viewport = svg.select<SVGGElement>('[data-kg-viewport]');
+      const linksLayer = svg.select<SVGGElement>('[data-kg-links]');
+      const nodesLayer = svg.select<SVGGElement>('[data-kg-nodes]');
+
+      const linkSelection = linksLayer
+        .selectAll<SVGLineElement, GraphLink>('line')
+        .data(links)
+        .join('line')
+        .attr('class', 'kg-link');
+
+      const nodeSelection = nodesLayer
+        .selectAll<SVGGElement, GraphNode>('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'kg-node')
+        .attr('data-group', (node) => node.group)
+        .attr('data-priority', (node) => node.weight >= 3 || node.degree >= 6 ? 'high' : 'normal')
+        .attr('tabindex', 0)
+        .attr('role', (node) => node.href ? 'link' : 'img')
+        .attr('aria-label', (node) => {
+          const category = copy.categories[node.group] ?? node.group;
+          return [node.label, category, node.description].filter(Boolean).join('. ');
+        });
+
+      nodeSelection
+        .append('circle')
+        .attr('r', (node) => node.radius);
+
+      nodeSelection
+        .append('text')
+        .attr('x', (node) => node.radius + 7)
+        .attr('y', 4)
+        .text((node) => node.label);
+
+      const simulation = forceSimulation<GraphNode>(nodes)
+        .force('link', forceLink<GraphNode, GraphLink>(links)
+          .id((node) => node.id)
+          .distance((link) => {
+            const source = typeof link.source === 'string' ? nodeById.get(link.source) : link.source;
+            const target = typeof link.target === 'string' ? nodeById.get(link.target) : link.target;
+            return source?.group === 'section' || target?.group === 'section' ? 150 : 86;
+          })
+          .strength(0.24))
+        .force('charge', forceManyBody<GraphNode>().strength((node) => -115 - node.radius * 8))
+        .force('center', forceCenter(600, 360).strength(0.045))
+        .force('x', forceX<GraphNode>((node) => (clusterPositions[node.group] ?? clusterPositions.topic)[0]).strength(0.075))
+        .force('y', forceY<GraphNode>((node) => (clusterPositions[node.group] ?? clusterPositions.topic)[1]).strength(0.075))
+        .force('collision', forceCollide<GraphNode>().radius((node) => node.radius + 18).iterations(2))
+        .alphaDecay(reduceMotion ? 0.12 : 0.035);
+
+      const renderGraph = () => {
+        linkSelection
+          .attr('x1', (link) => (link.source as GraphNode).x ?? 0)
+          .attr('y1', (link) => (link.source as GraphNode).y ?? 0)
+          .attr('x2', (link) => (link.target as GraphNode).x ?? 0)
+          .attr('y2', (link) => (link.target as GraphNode).y ?? 0);
+        nodeSelection.attr('transform', (node) => `translate(${node.x ?? 0},${node.y ?? 0})`);
+      };
+      simulation.on('tick', renderGraph);
+
+      const zoomBehavior = zoom<SVGSVGElement, unknown>()
+        .scaleExtent([0.45, 3.2])
+        .on('zoom', (event) => viewport.attr('transform', event.transform.toString()));
+      svg.call(zoomBehavior);
+
+      function fitGraph(animate = true) {
+        const xs = nodes.map((node) => node.x ?? 600);
+        const ys = nodes.map((node) => node.y ?? 360);
+        const minX = Math.min(...xs) - 70;
+        const maxX = Math.max(...xs) + 150;
+        const minY = Math.min(...ys) - 70;
+        const maxY = Math.max(...ys) + 70;
+        const graphWidth = Math.max(1, maxX - minX);
+        const graphHeight = Math.max(1, maxY - minY);
+        const scale = Math.min(1.45, 1080 / graphWidth, 620 / graphHeight);
+        const translateX = 600 - ((minX + maxX) / 2) * scale;
+        const translateY = 360 - ((minY + maxY) / 2) * scale;
+        const transform = zoomIdentity.translate(translateX, translateY).scale(scale);
+        const target = animate && !reduceMotion ? svg.transition().duration(450) : svg;
+        target.call(zoomBehavior.transform, transform);
+      }
+
+      function setActiveNode(activeNode?: GraphNode) {
+        const activeId = activeNode?.id;
+        const neighborIds = new Set<string>();
+        if (activeId) {
+          for (const link of links) {
+            const sourceId = linkedNode(link.source);
+            const targetId = linkedNode(link.target);
+            if (sourceId === activeId) neighborIds.add(targetId);
+            if (targetId === activeId) neighborIds.add(sourceId);
+          }
+        }
+
+        nodesLayer.classed('has-active-node', Boolean(activeId));
+        linksLayer.classed('has-active-node', Boolean(activeId));
+        nodeSelection
+          .classed('is-active', (node) => node.id === activeId)
+          .classed('is-neighbor', (node) => neighborIds.has(node.id));
+        linkSelection.classed('is-active', (link) => {
+          if (!activeId) return false;
+          return linkedNode(link.source) === activeId || linkedNode(link.target) === activeId;
+        });
+
+        if (!activeNode) {
+          tooltip!.hidden = true;
+          return;
+        }
+        tooltipCategory!.textContent = copy.categories[activeNode.group] ?? activeNode.group;
+        tooltipTitle!.textContent = activeNode.label;
+        tooltipDescription!.textContent = activeNode.description;
+        tooltip!.hidden = false;
+      }
+
+      nodeSelection
+        .on('pointerenter', (_, node) => setActiveNode(node))
+        .on('pointerleave', () => setActiveNode())
+        .on('focus', (_, node) => setActiveNode(node))
+        .on('blur', () => setActiveNode())
+        .on('click', (event, node) => {
+          if (!node.href || event.defaultPrevented) return;
+          navigate(node.href);
+        })
+        .on('keydown', (event: KeyboardEvent, node) => {
+          if (!node.href || (event.key !== 'Enter' && event.key !== ' ')) return;
+          event.preventDefault();
+          navigate(node.href);
+        });
+
+      const dragBehavior = drag<SVGGElement, GraphNode>()
+        .on('start', (event, node) => {
+          if (!event.active) simulation.alphaTarget(0.18).restart();
+          node.fx = node.x;
+          node.fy = node.y;
+        })
+        .on('drag', (event, node) => {
+          node.fx = event.x;
+          node.fy = event.y;
+        })
+        .on('end', (event, node) => {
+          if (!event.active) simulation.alphaTarget(0);
+          node.fx = null;
+          node.fy = null;
+        });
+      nodeSelection.call(dragBehavior);
+
+      root.querySelector('[data-kg-zoom-in]')?.addEventListener('click', () => {
+        svg.transition().duration(reduceMotion ? 0 : 180).call(zoomBehavior.scaleBy, 1.3);
+      });
+      root.querySelector('[data-kg-zoom-out]')?.addEventListener('click', () => {
+        svg.transition().duration(reduceMotion ? 0 : 180).call(zoomBehavior.scaleBy, 0.77);
+      });
+      root.querySelector('[data-kg-reset]')?.addEventListener('click', () => fitGraph());
+
+      status.hidden = true;
+      if (reduceMotion) {
+        simulation.stop();
+        for (let index = 0; index < 160; index += 1) simulation.tick();
+        renderGraph();
+        fitGraph(false);
+      } else {
+        const fitTimer = window.setTimeout(() => fitGraph(), 1100);
+        document.addEventListener('astro:before-swap', () => window.clearTimeout(fitTimer), { once: true });
+      }
+
+      document.addEventListener('astro:before-swap', () => simulation.stop(), { once: true });
+    } catch (error) {
+      console.error(error);
+      status.textContent = copy.loadError;
+      root.classList.add('has-graph-error');
+    }
+  }
+
+  function initGraphs() {
+    document.querySelectorAll<HTMLElement>('[data-knowledge-graph]').forEach((root) => {
+      void initKnowledgeGraph(root);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initGraphs);
+</script>
