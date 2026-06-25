@@ -6,3 +6,11 @@ year: 2022
 themes:
   - network-security
 status: published
+citation:
+  bibtex: |
+    @mastersthesis{peeters2022deep,
+      title={Deep Reinforcement Learning for Network Intrusion},
+      author={Peeters, Ruben},
+      school={KU Leuven},
+      year={2022}
+    }

@@ -2,11 +2,15 @@
 import { getCollection } from 'astro:content';
 import { t, type Locale } from '~/i18n/strings';
 
-type Props = { locale: Locale };
-const { locale } = Astro.props;
+type Props = { locale: Locale; featured?: boolean };
+const { locale, featured } = Astro.props;
 const s = t(locale).research;
 
-const papers = await getCollection('papers');
+let papers = await getCollection('papers');
+
+if (featured !== undefined) {
+  papers = papers.filter((p) => p.data.featured === featured);
+}
 
 const statusRank: Record<'accepted' | 'preprint' | 'published', number> = {
   accepted: 0,
@@ -26,12 +30,34 @@ function primaryLink(links: Record<string, string | undefined>): string | undefi
 function isExternal(href: string): boolean {
   return /^https?:\/\//.test(href);
 }
+
+function toApa(d: typeof sorted[number]['data']): string {
+  const authorStr = d.authors.length <= 2
+    ? d.authors.join(' & ')
+    : d.authors.slice(0, -1).join(', ') + ', & ' + d.authors[d.authors.length - 1];
+  return `${authorStr} (${d.year}). ${d.title}. ${d.venue}.`;
+}
+
+function toRis(d: typeof sorted[number]['data']): string {
+  const lines = ['TY  - JOUR'];
+  for (const a of d.authors) lines.push(`AU  - ${a}`);
+  lines.push(`TI  - ${d.title}`);
+  lines.push(`JO  - ${d.venue}`);
+  lines.push(`PY  - ${d.year}`);
+  if (d.links.doi) lines.push(`DO  - ${d.links.doi}`);
+  lines.push('ER  -');
+  return lines.join('\n');
+}
 ---
 <ol class="papers">
   {sorted.map((paper) => {
-    const { title, authors, venue, year, themes, status, links } = paper.data;
+    const { title, authors, venue, year, themes, status, links, citation } = paper.data;
     const href = primaryLink(links);
     const showStatusPill = status !== 'published';
+    const hasCitation = !!citation?.bibtex;
+    const apa = toApa(paper.data);
+    const ris = toRis(paper.data);
+    const citeId = `cite-${paper.id}`;
     return (
       <li class="paper">
         <p class="meta">
@@ -59,10 +85,61 @@ function isExternal(href: string): boolean {
           ))}
         </p>
         <p class="venue">{venue}</p>
+        {hasCitation && (
+          <div class="cite-wrapper">
+            <button class="cite-toggle" type="button" aria-expanded="false" aria-controls={citeId} data-cite-toggle>
+              {s.citeButton}
+            </button>
+            <div class="cite-panel" id={citeId} hidden data-cite-panel>
+              <div class="cite-tabs" role="tablist">
+                <button role="tab" aria-selected="true" data-cite-tab="bibtex">{s.citeBibtex}</button>
+                <button role="tab" aria-selected="false" data-cite-tab="apa">{s.citeApa}</button>
+                <button role="tab" aria-selected="false" data-cite-tab="ris">{s.citeRis}</button>
+              </div>
+              <pre class="cite-content" data-cite-content data-bibtex={citation!.bibtex} data-apa={apa} data-ris={ris}>{citation!.bibtex}</pre>
+              <button class="cite-copy" type="button" data-cite-copy data-copied-label={s.copiedLabel}>{s.citeButton === 'Cite' ? 'Copy' : 'Kopieer'}</button>
+            </div>
+          </div>
+        )}
       </li>
     );
   })}
 </ol>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    for (const toggle of document.querySelectorAll<HTMLButtonElement>('[data-cite-toggle]')) {
+      toggle.addEventListener('click', () => {
+        const panel = toggle.nextElementSibling as HTMLElement;
+        const open = !panel.hidden;
+        panel.hidden = open;
+        toggle.setAttribute('aria-expanded', String(!open));
+      });
+    }
+
+    for (const tab of document.querySelectorAll<HTMLButtonElement>('[data-cite-tab]')) {
+      tab.addEventListener('click', () => {
+        const panel = tab.closest('[data-cite-panel]')!;
+        const format = tab.dataset.citeTab!;
+        const content = panel.querySelector<HTMLPreElement>('[data-cite-content]')!;
+        content.textContent = content.dataset[format] ?? '';
+        for (const t of panel.querySelectorAll('[data-cite-tab]')) {
+          t.setAttribute('aria-selected', String(t === tab));
+        }
+      });
+    }
+
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-cite-copy]')) {
+      btn.addEventListener('click', () => {
+        const content = btn.previousElementSibling as HTMLPreElement;
+        navigator.clipboard.writeText(content.textContent ?? '');
+        const original = btn.textContent;
+        btn.textContent = btn.dataset.copiedLabel ?? 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      });
+    }
+  });
+</script>
 
 <style>
   .papers {
@@ -97,7 +174,7 @@ function isExternal(href: string): boolean {
   .theme {
     color: var(--color-text-muted);
   }
-  .theme::before { content: '· '; opacity: 0.5; }
+  .theme::before { content: '\B7  '; opacity: 0.5; }
   .meta .theme:first-of-type::before { content: ''; }
   .title {
     font-family: var(--font-sans);
@@ -124,5 +201,81 @@ function isExternal(href: string): boolean {
     font-size: var(--text-small);
     color: var(--color-text-muted);
     max-width: none;
+  }
+  .cite-wrapper {
+    margin-top: var(--space-4);
+  }
+  .cite-toggle {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: var(--space-4) var(--space-12);
+    cursor: pointer;
+    transition: background var(--duration-normal) var(--ease);
+  }
+  .cite-toggle:hover {
+    background: var(--color-surface);
+  }
+  .cite-panel {
+    margin-top: var(--space-8);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cite-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cite-tabs button {
+    flex: 1;
+    padding: var(--space-8) var(--space-12);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.04em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    transition: color var(--duration-normal) var(--ease);
+  }
+  .cite-tabs button[aria-selected='true'] {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+  .cite-content {
+    padding: var(--space-12);
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 12rem;
+    overflow-y: auto;
+    background: var(--color-surface);
+  }
+  .cite-copy {
+    display: block;
+    width: 100%;
+    padding: var(--space-8);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--color-border);
+    cursor: pointer;
+    color: var(--color-accent);
+    transition: background var(--duration-normal) var(--ease);
+  }
+  .cite-copy:hover {
+    background: var(--color-surface);
   }
 </style>

@@ -14,3 +14,11 @@ themes:
   - knowledge-graphs
 status: published
 featured: true
+citation:
+  bibtex: |
+    @techreport{peeters2025reevaluate,
+      title={REEVALUATE: Framework for Safe, Open, Collaborative and Inclusive Digitization and Management of Cultural Heritage},
+      author={Peeters, Ruben and Blanco, G. and Drosou, A. and Duan, X. and Monopoli, T. and Rizzo, G. and Dimou, A.},
+      institution={EU Open Research Repository},
+      year={2025}
+    }

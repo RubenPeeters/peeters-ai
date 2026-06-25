@@ -13,3 +13,11 @@ themes:
   - cultural-heritage
   - knowledge-graphs
 status: preprint
+citation:
+  bibtex: |
+    @inproceedings{peeters2025rights,
+      title={Rights to Richness: Connecting Cultural Artefacts with Rights and Context},
+      author={Peeters, Ruben and Blanco, G. and Botsoglou, G. and Davis, I. and Duan, X. and Fuhrhop, C. and others},
+      booktitle={Workshop Proceedings},
+      year={2025}
+    }

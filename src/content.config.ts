@@ -21,6 +21,11 @@ const papers = defineCollection({
       })
       .default({}),
     featured: z.boolean().default(false),
+    citation: z
+      .object({
+        bibtex: z.string(),
+      })
+      .optional(),
   }),
 });
 

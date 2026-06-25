@@ -1,5 +1,6 @@
 ---
 import Base from '~/layouts/Base.astro';
+import Timeline from '~/components/Timeline.astro';
 import { t } from '~/i18n/strings';
 
 const locale = 'nl' as const;
@@ -16,6 +17,40 @@ const s = t(locale);
     </p>
 
     {s.about.paragraphs.map((para) => <p>{para}</p>)}
+
+    <section class="divider" aria-labelledby="education-heading">
+      <h2 class="section-heading" id="education-heading">{s.about.educationHeading}</h2>
+      <Timeline entries={s.about.education} />
+    </section>
+
+    <section class="divider" aria-labelledby="background-heading">
+      <h2 class="section-heading" id="background-heading">{s.about.backgroundHeading}</h2>
+      {s.about.backgroundParagraphs.map((para) => <p>{para}</p>)}
+    </section>
+
+    <section class="divider philosophy" aria-labelledby="philosophy-heading">
+      <h2 class="section-heading" id="philosophy-heading">{s.about.philosophyHeading}</h2>
+      <blockquote>{s.about.philosophyParagraph}</blockquote>
+    </section>
+
+    <section class="divider" aria-labelledby="interests-heading">
+      <h2 class="section-heading" id="interests-heading">{s.about.interestsHeading}</h2>
+      <ul class="interests-list">
+        {s.about.interests.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="divider" aria-labelledby="skills-heading">
+      <h2 class="section-heading" id="skills-heading">{s.about.skillsHeading}</h2>
+      <dl class="skills-grid">
+        {s.about.skills.map((group) => (
+          <div class="skill-group">
+            <dt>{group.category}</dt>
+            <dd>{group.items}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   </article>
 
   <style>
@@ -47,6 +82,56 @@ const s = t(locale);
       background: var(--color-accent);
       flex-shrink: 0;
       transform: translateY(-0.05rem);
+    }
+    .divider {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .section-heading {
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+    blockquote {
+      border-left: 3px solid var(--color-accent);
+      padding-left: var(--space-24);
+      margin: 0;
+      font-style: italic;
+      color: var(--color-text-muted);
+      max-width: 60ch;
+    }
+    .interests-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      color: var(--color-text-muted);
+      font-size: var(--text-small);
+    }
+    .skills-grid {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .skill-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .skill-group dt {
+      font-family: var(--font-mono);
+      font-size: var(--text-small);
+      color: var(--color-text-muted);
+    }
+    .skill-group dd {
+      margin: 0;
+      font-size: var(--text-body);
     }
   </style>
 </Base>

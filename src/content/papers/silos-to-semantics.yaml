@@ -9,3 +9,11 @@ themes:
   - cultural-heritage
   - knowledge-graphs
 status: accepted
+citation:
+  bibtex: |
+    @inproceedings{peeters2026silos,
+      title={From Silos to Semantics: A Multimodal, Rights-Aware Ecosystem for Cultural Heritage},
+      author={Peeters, Ruben and Duan, X. and Dimou, A.},
+      booktitle={DHBenelux 2026},
+      year={2026}
+    }
