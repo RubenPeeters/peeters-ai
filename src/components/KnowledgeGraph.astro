@@ -258,8 +258,9 @@ const clientCopy = {
   }
 
   .kg-node:hover circle,
-  .kg-node:focus circle {
-    fill: color-mix(in srgb, currentColor 42%, var(--color-bg));
+  .kg-node:focus circle,
+  .kg-node.is-active circle {
+    fill: color-mix(in srgb, currentColor 55%, var(--color-bg));
     stroke-width: 3;
   }
 
