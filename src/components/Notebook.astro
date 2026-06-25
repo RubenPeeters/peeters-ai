@@ -1,0 +1,196 @@
+---
+import { Code } from 'astro:components';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+type Props = { src: string };
+const { src } = Astro.props;
+
+const raw = readFileSync(join(process.cwd(), 'src/content/notebooks', src), 'utf-8');
+const nb = JSON.parse(raw);
+const lang = nb.metadata?.kernelspec?.language ?? 'python';
+
+type CellOutput = {
+  output_type: string;
+  text?: string[];
+  data?: Record<string, string[]>;
+  ename?: string;
+  evalue?: string;
+  traceback?: string[];
+};
+
+type Cell = {
+  cell_type: 'code' | 'markdown' | 'raw';
+  source: string[];
+  outputs?: CellOutput[];
+  execution_count?: number | null;
+};
+
+const cells: Cell[] = nb.cells ?? [];
+
+function joinSource(source: string[]): string {
+  return source.join('');
+}
+
+function getTextOutput(outputs: CellOutput[]): string | null {
+  for (const o of outputs) {
+    if (o.output_type === 'stream' && o.text) return o.text.join('');
+    if (o.output_type === 'execute_result' && o.data?.['text/plain']) return o.data['text/plain'].join('');
+    if (o.output_type === 'error') return `${o.ename}: ${o.evalue}`;
+  }
+  return null;
+}
+
+function getImageOutput(outputs: CellOutput[]): string | null {
+  for (const o of outputs) {
+    const png = o.data?.['image/png'];
+    if (png) return `data:image/png;base64,${png.join('')}`;
+    const svg = o.data?.['image/svg+xml'];
+    if (svg) return null; // handled separately
+  }
+  return null;
+}
+
+function getSvgOutput(outputs: CellOutput[]): string | null {
+  for (const o of outputs) {
+    const svg = o.data?.['image/svg+xml'];
+    if (svg) return svg.join('');
+  }
+  return null;
+}
+
+function getHtmlOutput(outputs: CellOutput[]): string | null {
+  for (const o of outputs) {
+    const html = o.data?.['text/html'];
+    if (html) return html.join('');
+  }
+  return null;
+}
+---
+<div class="notebook">
+  {cells.map((cell, i) => {
+    if (cell.cell_type === 'markdown') {
+      const md = joinSource(cell.source);
+      return <div class="nb-markdown" set:html={md} />;
+    }
+
+    if (cell.cell_type === 'code') {
+      const code = joinSource(cell.source);
+      if (!code.trim()) return null;
+      const outputs = cell.outputs ?? [];
+      const textOut = getTextOutput(outputs);
+      const imgOut = getImageOutput(outputs);
+      const svgOut = getSvgOutput(outputs);
+      const htmlOut = getHtmlOutput(outputs);
+      const count = cell.execution_count;
+      return (
+        <div class="nb-cell">
+          <div class="nb-input">
+            {count != null && <span class="nb-prompt">In [{count}]:</span>}
+            <Code code={code} lang={lang} theme="github-light" />
+          </div>
+          {(textOut || imgOut || svgOut || htmlOut) && (
+            <div class="nb-output">
+              {count != null && <span class="nb-prompt">Out [{count}]:</span>}
+              <div class="nb-output-content">
+                {htmlOut ? (
+                  <div class="nb-html" set:html={htmlOut} />
+                ) : imgOut ? (
+                  <img src={imgOut} alt={`Output of cell ${i + 1}`} />
+                ) : svgOut ? (
+                  <div class="nb-svg" set:html={svgOut} />
+                ) : textOut ? (
+                  <pre class="nb-text">{textOut}</pre>
+                ) : null}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return null;
+  })}
+</div>
+
+<style>
+  .notebook {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .nb-markdown {
+    padding: var(--space-12) 0;
+  }
+  .nb-markdown :global(h1),
+  .nb-markdown :global(h2),
+  .nb-markdown :global(h3) {
+    margin-top: var(--space-12);
+  }
+  .nb-cell {
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .nb-input {
+    display: flex;
+    align-items: flex-start;
+    background: var(--color-surface);
+  }
+  .nb-input :global(pre) {
+    flex: 1;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+  .nb-prompt {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    color: var(--color-text-muted);
+    padding: var(--space-12);
+    white-space: nowrap;
+    user-select: none;
+    min-width: 5.5rem;
+  }
+  .nb-output {
+    display: flex;
+    align-items: flex-start;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .nb-output-content {
+    flex: 1;
+    padding: var(--space-12);
+    overflow-x: auto;
+  }
+  .nb-text {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .nb-html :global(table) {
+    border-collapse: collapse;
+    font-size: var(--text-mono);
+    font-family: var(--font-mono);
+  }
+  .nb-html :global(th),
+  .nb-html :global(td) {
+    border: 1px solid var(--color-border);
+    padding: var(--space-4) var(--space-8);
+    text-align: left;
+  }
+  .nb-html :global(th) {
+    background: var(--color-surface);
+    font-weight: 500;
+  }
+  .nb-output img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  @media print {
+    .nb-cell { break-inside: avoid; }
+  }
+</style>

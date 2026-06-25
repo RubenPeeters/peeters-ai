@@ -1,0 +1,16 @@
+---
+title: "Notebooks in the blog"
+description: "A quick demo of rendering Jupyter notebooks directly in blog posts."
+date: 2026-06-25
+tags: [meta, python]
+draft: true
+locale: en
+---
+
+This post demonstrates rendering a Jupyter notebook inline. The notebook is parsed at build time — cells, outputs, and all.
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="demo.ipynb" />
+
+That's it. Drop an `.ipynb` file in the notebooks folder, import the component in an MDX post, and the cells render with syntax highlighting and output.
