@@ -3,7 +3,7 @@ export type Locale = 'en' | 'nl';
 export const LOCALES: Locale[] = ['en', 'nl'];
 export const DEFAULT_LOCALE: Locale = 'en';
 
-export type RouteKey = 'home' | 'about' | 'research' | 'projects' | 'contact';
+export type RouteKey = 'home' | 'about' | 'research' | 'projects' | 'blog' | 'cv' | 'contact';
 
 type RouteDef = {
   paths: Record<Locale, string>;
@@ -34,6 +34,16 @@ export const routes: Record<RouteKey, RouteDef> = {
   projects: {
     paths: { en: '/projects', nl: '/nl/projecten' },
     navLabel: { en: 'Projects', nl: 'Projecten' },
+    published: true,
+  },
+  blog: {
+    paths: { en: '/blog', nl: '/nl/blog' },
+    navLabel: { en: 'Blog', nl: 'Blog' },
+    published: true,
+  },
+  cv: {
+    paths: { en: '/cv', nl: '/nl/cv' },
+    navLabel: { en: 'CV', nl: 'CV' },
     published: true,
   },
   contact: {
@@ -127,6 +137,30 @@ type GraphCopy = {
   categories: Record<string, string>;
 };
 
+type BlogCopy = {
+  title: string;
+  intro: string;
+  readMore: string;
+  publishedOn: string;
+  updatedOn: string;
+  tagLabel: string;
+  noPosts: string;
+  backToIndex: string;
+};
+
+type CVCopy = {
+  title: string;
+  intro: string;
+  downloadLabel: string;
+  educationHeading: string;
+  experienceHeading: string;
+  experience: TimelineEntry[];
+  skillsHeading: string;
+  publicationsHeading: string;
+  languagesHeading: string;
+  languages: string[];
+};
+
 type Strings = {
   siteName: string;
   eyebrow: string;
@@ -145,6 +179,8 @@ type Strings = {
   about: AboutCopy;
   research: ResearchCopy;
   projects: ProjectsCopy;
+  blog: BlogCopy;
+  cv: CVCopy;
   contact: ContactCopy;
 };
 
@@ -221,6 +257,7 @@ const en: Strings = {
       'side-project': 'Side project',
       publication: 'Publication',
       value: 'Value',
+      education: 'Education',
       section: 'Site section',
     },
   },
@@ -318,6 +355,41 @@ const en: Strings = {
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'More on GitHub',
   },
+  blog: {
+    title: 'Blog',
+    intro: 'Occasional writing on research, tools, and things I find interesting.',
+    readMore: 'Read more',
+    publishedOn: 'Published',
+    updatedOn: 'Updated',
+    tagLabel: 'Tags',
+    noPosts: 'No posts yet — check back soon.',
+    backToIndex: 'All posts',
+  },
+  cv: {
+    title: 'CV',
+    intro: 'Education, experience, and skills at a glance.',
+    downloadLabel: 'Print / save as PDF',
+    educationHeading: 'Education',
+    experienceHeading: 'Experience',
+    experience: [
+      {
+        period: '2024 – present',
+        title: 'PhD Researcher',
+        subtitle: 'KU Leuven',
+        note: 'Knowledge graphs and multimodal ML for cultural heritage',
+      },
+      {
+        period: '2022 – 2024',
+        title: 'Research Software Engineer',
+        subtitle: 'VITO',
+        note: 'Data interoperability for human biomonitoring studies',
+      },
+    ],
+    skillsHeading: 'Skills',
+    publicationsHeading: 'Selected publications',
+    languagesHeading: 'Languages',
+    languages: ['Dutch (native)', 'English (fluent)', 'French'],
+  },
   contact: {
     title: 'Contact',
     intro:
@@ -372,6 +444,7 @@ const nl: Strings = {
       'side-project': 'Bijproject',
       publication: 'Publicatie',
       value: 'Waarde',
+      education: 'Opleiding',
       section: 'Sitesectie',
     },
   },
@@ -469,6 +542,41 @@ const nl: Strings = {
       'Bijprojecten — vooral excuses om iets nieuws te proberen in Python en TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
     more: 'Meer op GitHub',
+  },
+  blog: {
+    title: 'Blog',
+    intro: 'Af en toe schrijven over onderzoek, tools en dingen die me interesseren.',
+    readMore: 'Lees meer',
+    publishedOn: 'Gepubliceerd',
+    updatedOn: 'Bijgewerkt',
+    tagLabel: 'Tags',
+    noPosts: 'Nog geen berichten — kijk binnenkort nog eens.',
+    backToIndex: 'Alle berichten',
+  },
+  cv: {
+    title: 'CV',
+    intro: 'Opleiding, ervaring en vaardigheden in een oogopslag.',
+    downloadLabel: 'Afdrukken / opslaan als PDF',
+    educationHeading: 'Opleiding',
+    experienceHeading: 'Ervaring',
+    experience: [
+      {
+        period: '2024 – heden',
+        title: 'Doctoraatsonderzoeker',
+        subtitle: 'KU Leuven',
+        note: 'Kennisgrafen en multimodale ML voor cultureel erfgoed',
+      },
+      {
+        period: '2022 – 2024',
+        title: 'Research Software Engineer',
+        subtitle: 'VITO',
+        note: 'Data-interoperabiliteit voor human-biomonitoring-studies',
+      },
+    ],
+    skillsHeading: 'Vaardigheden',
+    publicationsHeading: 'Geselecteerde publicaties',
+    languagesHeading: 'Talen',
+    languages: ['Nederlands (moedertaal)', 'Engels (vloeiend)', 'Frans'],
   },
   contact: {
     title: 'Contact',

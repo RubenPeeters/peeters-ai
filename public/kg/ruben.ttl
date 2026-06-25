@@ -11,12 +11,13 @@ id:ruben a schema:Person ;
     "Researcher and software builder working where knowledge graphs, multimodal machine learning, and cultural heritage meet."@en,
     "Onderzoeker en softwarebouwer op het kruispunt van kennisgrafen, multimodale machine learning en cultureel erfgoed."@nl ;
   schema:affiliation id:ku-leuven ;
-  pp:hasRole id:phd-researcher ;
+  pp:hasRole id:phd-researcher, id:research-software-engineer ;
   pp:hasSkill id:knowledge-graphs, id:multimodal-ml, id:rdf, id:sparql, id:python, id:typescript ;
-  pp:interestedIn id:cultural-heritage, id:human-biomonitoring ;
+  pp:interestedIn id:cultural-heritage, id:human-biomonitoring, id:chess, id:sports, id:gaming ;
   pp:worksOn id:artkb, id:reevaluate, id:hbm-toolkit ;
   pp:expressesValue id:open-research, id:interoperability ;
-  pp:hasSection id:section-about, id:section-research, id:section-projects, id:section-contact ;
+  schema:hasCredential id:msc-industrial-engineering, id:bsc-industrial-engineering ;
+  pp:hasSection id:section-about, id:section-research, id:section-projects, id:section-blog, id:section-cv, id:section-contact ;
   pp:showInGraph true ;
   pp:graphGroup "person" ;
   pp:graphWeight 5 .
@@ -171,6 +172,7 @@ id:paper-hbm a schema:ScholarlyArticle ;
 id:chess-with-friends a schema:SoftwareApplication ;
   schema:name "Chess with Friends" ;
   schema:author id:ruben ;
+  pp:hasTopic id:chess ;
   pp:usesTechnology id:typescript ;
   pp:showInGraph true ;
   pp:graphGroup "side-project" ;
@@ -179,6 +181,7 @@ id:chess-with-friends a schema:SoftwareApplication ;
 id:league-analysis a schema:SoftwareSourceCode ;
   schema:name "League Analysis" ;
   schema:author id:ruben ;
+  pp:hasTopic id:sports ;
   pp:usesTechnology id:python ;
   pp:showInGraph true ;
   pp:graphGroup "side-project" ;
@@ -233,6 +236,28 @@ id:section-projects a pp:SiteSection ;
   pp:graphGroup "section" ;
   pp:graphWeight 4 .
 
+id:section-blog a pp:SiteSection ;
+  schema:name "Blog"@en, "Blog"@nl ;
+  schema:description
+    "Technical articles, project write-ups, and reflections."@en,
+    "Technische artikels, projectverslagen en reflecties."@nl ;
+  pp:pathEn "/blog" ;
+  pp:pathNl "/nl/blog" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .
+
+id:section-cv a pp:SiteSection ;
+  schema:name "CV" ;
+  schema:description
+    "Education, experience, skills, and publications."@en,
+    "Opleiding, ervaring, vaardigheden en publicaties."@nl ;
+  pp:pathEn "/cv" ;
+  pp:pathNl "/nl/cv" ;
+  pp:showInGraph true ;
+  pp:graphGroup "section" ;
+  pp:graphWeight 4 .
+
 id:section-contact a pp:SiteSection ;
   schema:name "Contact" ;
   schema:description
@@ -243,3 +268,59 @@ id:section-contact a pp:SiteSection ;
   pp:showInGraph true ;
   pp:graphGroup "section" ;
   pp:graphWeight 4 .
+
+id:ugent a schema:CollegeOrUniversity ;
+  schema:name "Ghent University (UGent)"@en, "Universiteit Gent (UGent)"@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "organization" ;
+  pp:graphWeight 2 .
+
+id:vito a schema:Organization ;
+  schema:name "VITO" ;
+  schema:description
+    "Flemish Institute for Technological Research."@en,
+    "Vlaamse Instelling voor Technologisch Onderzoek."@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "organization" ;
+  pp:graphWeight 2 .
+
+id:msc-industrial-engineering a schema:EducationalOccupationalCredential ;
+  schema:name "MSc Industrial Engineering"@en, "MSc Industrieel Ingenieur"@nl ;
+  schema:recognizedBy id:ugent ;
+  pp:hasTopic id:knowledge-graphs ;
+  pp:showInGraph true ;
+  pp:graphGroup "education" ;
+  pp:graphWeight 2 .
+
+id:bsc-industrial-engineering a schema:EducationalOccupationalCredential ;
+  schema:name "BSc Industrial Engineering"@en, "BSc Industrieel Ingenieur"@nl ;
+  schema:recognizedBy id:ugent ;
+  pp:showInGraph true ;
+  pp:graphGroup "education" ;
+  pp:graphWeight 1 .
+
+id:research-software-engineer a pp:Role ;
+  schema:name "Research Software Engineer"@en, "Research Software Engineer"@nl ;
+  schema:affiliation id:vito ;
+  pp:hasTopic id:human-biomonitoring, id:interoperability ;
+  pp:showInGraph true ;
+  pp:graphGroup "role" ;
+  pp:graphWeight 2 .
+
+id:chess a pp:Interest ;
+  schema:name "Chess"@en, "Schaken"@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "topic" ;
+  pp:graphWeight 1 .
+
+id:sports a pp:Interest ;
+  schema:name "Sports & analytics"@en, "Sport & analytics"@nl ;
+  pp:showInGraph true ;
+  pp:graphGroup "topic" ;
+  pp:graphWeight 1 .
+
+id:gaming a pp:Interest ;
+  schema:name "Gaming" ;
+  pp:showInGraph true ;
+  pp:graphGroup "topic" ;
+  pp:graphWeight 1 .
