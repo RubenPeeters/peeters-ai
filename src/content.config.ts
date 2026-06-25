@@ -46,6 +46,20 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { papers, projects };
+const posts = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    locale: z.enum(['en', 'nl']).default('en'),
+  }),
+});
+
+export const collections = { papers, projects, posts };
 export const THEMES = themes;
 export type Theme = (typeof themes)[number];

@@ -1,0 +1,147 @@
+---
+import Base from '~/layouts/Base.astro';
+import { t, type Locale } from '~/i18n/strings';
+
+type Props = {
+  locale: Locale;
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  tags: string[];
+};
+
+const { locale, title, description, date, updated, tags } = Astro.props;
+const s = t(locale).blog;
+
+function fmt(d: Date): string {
+  return d.toLocaleDateString(locale === 'en' ? 'en-GB' : 'nl-BE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+const blogIndex = locale === 'en' ? '/blog' : '/nl/blog';
+---
+<Base locale={locale} routeKey="blog" title={title} description={description}>
+  <article class="container blog-post">
+    <header class="post-header">
+      <p class="meta">
+        <span>{s.publishedOn} {fmt(date)}</span>
+        {tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </p>
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <footer class="post-footer">
+      {updated && <p class="updated">{s.updatedOn} {fmt(updated)}</p>}
+      <p><a href={blogIndex}>&larr; {s.backToIndex}</a></p>
+    </footer>
+  </article>
+
+  <style>
+    .blog-post {
+      padding-block: var(--space-32) var(--space-96);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-48);
+    }
+    .post-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .post-header h1 {
+      font-size: var(--text-h2);
+      max-width: 28ch;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-12);
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .tag::before { content: '\B7  '; opacity: 0.5; }
+    .lede {
+      font-size: var(--text-tagline);
+      color: var(--color-text-muted);
+      max-width: 60ch;
+    }
+
+    .prose {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+    }
+    .prose :global(h2) {
+      font-size: var(--text-h3);
+      margin-top: var(--space-24);
+    }
+    .prose :global(h3) {
+      font-size: 1.25rem;
+      margin-top: var(--space-12);
+    }
+    .prose :global(pre) {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: var(--space-12);
+      overflow-x: auto;
+      font-size: var(--text-mono);
+      line-height: 1.6;
+    }
+    .prose :global(code:not(pre code)) {
+      background: var(--color-surface);
+      border-radius: 3px;
+      padding: 0.15em 0.35em;
+      font-size: 0.9em;
+    }
+    .prose :global(blockquote) {
+      border-left: 3px solid var(--color-accent);
+      padding-left: var(--space-24);
+      margin: 0;
+      font-style: italic;
+      color: var(--color-text-muted);
+    }
+    .prose :global(ul), .prose :global(ol) {
+      padding-left: var(--space-24);
+    }
+    .prose :global(img) {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .prose :global(hr) {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: var(--space-24) 0;
+    }
+
+    .post-footer {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      font-size: var(--text-small);
+      color: var(--color-text-muted);
+    }
+    .updated {
+      font-style: italic;
+    }
+  </style>
+</Base>
