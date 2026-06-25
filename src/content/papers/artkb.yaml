@@ -14,3 +14,12 @@ themes:
   - knowledge-graphs
 status: published
 featured: true
+citation:
+  bibtex: |
+    @inproceedings{blanco2026artkb,
+      title={ArtKB: A Multimodal Art Knowledge Base for Cultural Heritage},
+      author={Blanco, G. and Monopoli, T. and D'Asaro, F. and Peeters, Ruben and Duan, X. and Dimou, A. and Rizzo, G.},
+      booktitle={European Semantic Web Conference (ESWC)},
+      pages={58--75},
+      year={2026}
+    }

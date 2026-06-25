@@ -13,3 +13,12 @@ themes:
   - cultural-heritage
   - knowledge-graphs
 status: published
+citation:
+  bibtex: |
+    @inproceedings{duan2026knowledge,
+      title={Knowledge-Enhanced Multimodal Retrieval over Cultural Heritage Knowledge Graphs},
+      author={Duan, X. and D'Asaro, F. and Peeters, Ruben and Blanco, G. and Monopoli, T. and Rizzo, G. and Dimou, A.},
+      booktitle={European Semantic Web Conference (ESWC)},
+      pages={488--506},
+      year={2026}
+    }

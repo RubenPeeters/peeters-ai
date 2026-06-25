@@ -14,3 +14,13 @@ themes:
   - biomonitoring
 status: published
 featured: true
+citation:
+  bibtex: |
+    @article{peeters2025hbm,
+      title={Enhancing Data Interoperability in Human Biomonitoring Studies: The HBM Data Toolkit},
+      author={Peeters, Ruben and Martin, L. R. and Zhang, F. and Willems, H. and Gilles, L. and Theunis, J. and Bessems, J. and others},
+      journal={International Journal of Hygiene and Environmental Health},
+      volume={270},
+      pages={114669},
+      year={2025}
+    }

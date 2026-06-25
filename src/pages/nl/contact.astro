@@ -14,11 +14,18 @@ const s = t(locale);
       <a href={`mailto:${s.contact.emailLabel}`}>{s.contact.emailLabel}</a>
     </p>
 
+    <section class="collaboration" aria-labelledby="collab-heading">
+      <h2 class="section-heading" id="collab-heading">{s.contact.collaborationHeading}</h2>
+      <p>{s.contact.collaborationBody}</p>
+    </section>
+
     <section class="elsewhere" aria-labelledby="elsewhere-heading">
       <h2 class="eyebrow" id="elsewhere-heading">{s.contact.elsewhere}</h2>
       <ul>
         <li><a href="https://github.com/RubenPeeters" class="ext" rel="noopener">{s.contact.links.github}</a></li>
         <li><a href="https://scholar.google.com/citations?user=BRoMOlMAAAAJ&hl=nl" class="ext" rel="noopener">{s.contact.links.scholar}</a></li>
+        <li><a href="https://www.linkedin.com/in/ruben-peeters/" class="ext" rel="noopener">{s.contact.links.linkedin}</a></li>
+        <li><a href="https://orcid.org/0009-0003-0081-0000" class="ext" rel="noopener">{s.contact.links.orcid}</a></li>
       </ul>
     </section>
 
@@ -47,6 +54,16 @@ const s = t(locale);
     .email a {
       font-family: var(--font-sans);
       font-size: 1.25rem;
+    }
+    .collaboration {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .section-heading {
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      margin: 0;
     }
     .elsewhere ul {
       list-style: none;

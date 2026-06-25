@@ -1,0 +1,61 @@
+---
+type TimelineEntry = {
+  period: string;
+  title: string;
+  subtitle: string;
+  note?: string;
+};
+
+type Props = { entries: TimelineEntry[] };
+const { entries } = Astro.props;
+---
+<ol class="timeline">
+  {entries.map((e) => (
+    <li class="timeline-entry">
+      <p class="period">{e.period}</p>
+      <p class="entry-title">{e.title}</p>
+      <p class="subtitle">{e.subtitle}</p>
+      {e.note && <p class="note">{e.note}</p>}
+    </li>
+  ))}
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-24);
+    border-left: 2px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-32);
+  }
+  .timeline-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .period {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+  .entry-title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-body);
+    margin: 0;
+  }
+  .subtitle {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+  .note {
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+</style>

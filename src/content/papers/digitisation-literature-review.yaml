@@ -12,3 +12,11 @@ year: 2025
 themes:
   - cultural-heritage
 status: published
+citation:
+  bibtex: |
+    @incollection{drabczyk2025comprehensive,
+      title={Comprehensive Guide of the Benefits, Opportunities, Risks and Gaps in the Management of Cultural Heritage Digitisation: A Critical Literature Review},
+      author={Drabczyk, M. and Rendina, M. and Manfredini, F. and Dimou, A. and Peeters, Ruben and de Koning, J. and others},
+      booktitle={3D Research Challenges in Cultural Heritage VI},
+      year={2025}
+    }

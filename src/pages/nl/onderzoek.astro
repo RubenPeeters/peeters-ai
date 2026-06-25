@@ -2,6 +2,7 @@
 import Base from '~/layouts/Base.astro';
 import PaperList from '~/components/PaperList.astro';
 import { t } from '~/i18n/strings';
+import { THEMES } from '~/content.config';
 
 const locale = 'nl' as const;
 const s = t(locale);
@@ -11,7 +12,25 @@ const s = t(locale);
     <p class="eyebrow">{s.research.title}</p>
     <h1 class="intro">{s.research.intro}</h1>
 
-    <PaperList locale={locale} />
+    <section class="themes" aria-labelledby="themes-heading">
+      <h2 class="section-heading" id="themes-heading">{s.research.themesHeading}</h2>
+      {THEMES.map((theme) => (
+        <div class="theme-block">
+          <h3 class="theme-name">{s.research.themeLabels[theme]}</h3>
+          <p>{s.research.themeDescriptions[theme]}</p>
+        </div>
+      ))}
+    </section>
+
+    <section class="divider" aria-labelledby="featured-heading">
+      <h2 class="section-heading" id="featured-heading">{s.research.featuredHeading}</h2>
+      <PaperList locale={locale} featured={true} />
+    </section>
+
+    <section class="divider" aria-labelledby="all-heading">
+      <h2 class="section-heading" id="all-heading">{s.research.title}</h2>
+      <PaperList locale={locale} />
+    </section>
 
     <p class="scholar-link">
       <a href="https://scholar.google.com/citations?user=BRoMOlMAAAAJ&hl=nl" class="ext" rel="noopener">
@@ -34,6 +53,37 @@ const s = t(locale);
       line-height: 1.35;
       color: var(--color-text);
       max-width: 36ch;
+    }
+    .themes {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-32);
+    }
+    .section-heading {
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+    .theme-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .theme-name {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0;
+      font-weight: 500;
+    }
+    .divider {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
     }
     .scholar-link {
       font-size: var(--text-small);
