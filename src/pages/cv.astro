@@ -1,0 +1,138 @@
+---
+import Base from '~/layouts/Base.astro';
+import Timeline from '~/components/Timeline.astro';
+import PaperList from '~/components/PaperList.astro';
+import { t } from '~/i18n/strings';
+
+const locale = 'en' as const;
+const s = t(locale);
+---
+<Base locale={locale} routeKey="cv" title={s.cv.title} description={s.cv.intro}>
+  <article class="container cv-page">
+    <header class="cv-header">
+      <p class="eyebrow">{s.cv.title}</p>
+      <h1 class="intro">{s.cv.intro}</h1>
+      <button class="print-btn" type="button" onclick="window.print()">
+        {s.cv.downloadLabel}
+      </button>
+    </header>
+
+    <section class="divider" aria-labelledby="edu-heading">
+      <h2 class="section-heading" id="edu-heading">{s.cv.educationHeading}</h2>
+      <Timeline entries={s.about.education} />
+    </section>
+
+    <section class="divider" aria-labelledby="exp-heading">
+      <h2 class="section-heading" id="exp-heading">{s.cv.experienceHeading}</h2>
+      <Timeline entries={s.cv.experience} />
+    </section>
+
+    <section class="divider" aria-labelledby="skills-heading">
+      <h2 class="section-heading" id="skills-heading">{s.cv.skillsHeading}</h2>
+      <dl class="skills-grid">
+        {s.about.skills.map((group) => (
+          <div class="skill-group">
+            <dt>{group.category}</dt>
+            <dd>{group.items}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="divider" aria-labelledby="pubs-heading">
+      <h2 class="section-heading" id="pubs-heading">{s.cv.publicationsHeading}</h2>
+      <PaperList locale={locale} featured={true} />
+    </section>
+
+    <section class="divider" aria-labelledby="lang-heading">
+      <h2 class="section-heading" id="lang-heading">{s.cv.languagesHeading}</h2>
+      <ul class="lang-list">
+        {s.cv.languages.map((lang) => <li>{lang}</li>)}
+      </ul>
+    </section>
+  </article>
+
+  <style>
+    .cv-page {
+      padding-block: var(--space-32) var(--space-96);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-32);
+    }
+    .cv-page .eyebrow { margin: 0; }
+    .cv-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .intro {
+      font-family: var(--font-sans);
+      font-size: var(--text-tagline);
+      line-height: 1.35;
+      color: var(--color-text);
+      max-width: 36ch;
+    }
+    .print-btn {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: var(--space-8) var(--space-12);
+      cursor: pointer;
+      transition: background var(--duration-normal) var(--ease);
+    }
+    .print-btn:hover { background: var(--color-surface); }
+    .divider {
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .section-heading {
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+    .skills-grid {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+    .skill-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .skill-group dt {
+      font-family: var(--font-mono);
+      font-size: var(--text-small);
+      color: var(--color-text-muted);
+    }
+    .skill-group dd {
+      margin: 0;
+      font-size: var(--text-body);
+    }
+    .lang-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      font-size: var(--text-body);
+    }
+
+    @media print {
+      .cv-page { padding: 0; gap: var(--space-24); }
+      .print-btn { display: none; }
+      .divider { padding-top: var(--space-12); }
+    }
+  </style>
+</Base>

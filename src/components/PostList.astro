@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import { t, type Locale } from '~/i18n/strings';
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const s = t(locale).blog;
+
+const posts = (await getCollection('posts'))
+  .filter((p) => p.data.locale === locale && (!p.data.draft || !import.meta.env.PROD))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const blogBase = locale === 'en' ? '/blog' : '/nl/blog';
+
+function fmt(date: Date): string {
+  return date.toLocaleDateString(locale === 'en' ? 'en-GB' : 'nl-BE', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+---
+{posts.length === 0 ? (
+  <p class="no-posts">{s.noPosts}</p>
+) : (
+  <ol class="posts">
+    {posts.map((post) => (
+      <li class="post">
+        <p class="meta">
+          <span class="date">{fmt(post.data.date)}</span>
+          {post.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </p>
+        <h3 class="title">
+          <a href={`${blogBase}/${post.id}`}>{post.data.title}</a>
+        </h3>
+        <p class="description">{post.data.description}</p>
+      </li>
+    ))}
+  </ol>
+)}
+
+<style>
+  .no-posts {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-48);
+  }
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-12);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .date { color: var(--color-text); font-weight: 500; }
+  .tag { color: var(--color-text-muted); }
+  .tag::before { content: '\B7  '; opacity: 0.5; }
+  .meta .tag:first-of-type::before { content: ''; }
+  .title {
+    font-family: var(--font-sans);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    margin: var(--space-4) 0 var(--space-4);
+  }
+  .title a { border-bottom: 1px solid transparent; }
+  .description {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    max-width: none;
+  }
+</style>
