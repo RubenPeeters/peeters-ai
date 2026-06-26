@@ -70,8 +70,8 @@ function getHtmlOutput(outputs: CellOutput[]): string | null {
 <div class="notebook">
   {cells.map((cell, i) => {
     if (cell.cell_type === 'markdown') {
-      const md = joinSource(cell.source);
-      return <div class="nb-markdown" set:html={md} />;
+      const md = joinSource(cell.source).replace(/^#{1,6}\s+/gm, '');
+      return <p class="nb-markdown" set:html={md} />;
     }
 
     if (cell.cell_type === 'code') {
@@ -83,15 +83,18 @@ function getHtmlOutput(outputs: CellOutput[]): string | null {
       const svgOut = getSvgOutput(outputs);
       const htmlOut = getHtmlOutput(outputs);
       const count = cell.execution_count;
+      const hasOutput = textOut || imgOut || svgOut || htmlOut;
       return (
         <div class="nb-cell">
-          <div class="nb-input">
-            {count != null && <span class="nb-prompt">In [{count}]:</span>}
-            <Code code={code} lang={lang} theme="github-light" />
-          </div>
-          {(textOut || imgOut || svgOut || htmlOut) && (
+          <details class="nb-code-toggle">
+            <summary>Show code</summary>
+            <div class="nb-input">
+              {count != null && <span class="nb-prompt">In [{count}]:</span>}
+              <Code code={code} lang={lang} theme="github-light" />
+            </div>
+          </details>
+          {hasOutput && (
             <div class="nb-output">
-              {count != null && <span class="nb-prompt">Out [{count}]:</span>}
               <div class="nb-output-content">
                 {htmlOut ? (
                   <div class="nb-html" set:html={htmlOut} />
@@ -120,17 +123,26 @@ function getHtmlOutput(outputs: CellOutput[]): string | null {
     gap: var(--space-4);
   }
   .nb-markdown {
-    padding: var(--space-12) 0;
-  }
-  .nb-markdown :global(h1),
-  .nb-markdown :global(h2),
-  .nb-markdown :global(h3) {
-    margin-top: var(--space-12);
+    padding: var(--space-4) 0;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-style: italic;
   }
   .nb-cell {
     border: 1px solid var(--color-border);
     border-radius: 4px;
     overflow: hidden;
+  }
+  .nb-code-toggle {
+    background: var(--color-surface);
+  }
+  .nb-code-toggle summary {
+    padding: var(--space-8) var(--space-12);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    user-select: none;
   }
   .nb-input {
     display: flex;
@@ -153,9 +165,6 @@ function getHtmlOutput(outputs: CellOutput[]): string | null {
     min-width: 5.5rem;
   }
   .nb-output {
-    display: flex;
-    align-items: flex-start;
-    border-top: 1px solid var(--color-border);
     background: var(--color-bg);
   }
   .nb-output-content {
