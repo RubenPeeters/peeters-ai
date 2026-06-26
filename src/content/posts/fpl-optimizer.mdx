@@ -69,6 +69,40 @@ LightGBM finishes first with 1,066 net points despite ranking second in predicti
 
 This is a well-known dynamic in operations research: the quality of an optimization solution depends not just on the model but on the quality and calibration of its inputs. A predictor that systematically overestimates player scores will cause the solver to over-trade, because the apparent gain from each transfer exceeds the 4-point hit cost. LightGBM's more conservative, better-calibrated predictions lead to only a single paid transfer across the entire season.
 
+## Prediction accuracy over time
+
+The aggregate Spearman numbers hide how volatile week-to-week accuracy is. The line chart below shows each predictor's rolling accuracy across the season.
+
+import LineChart from '../../components/LineChart.astro';
+
+<LineChart
+  id="spearman-over-time"
+  title="Spearman correlation by gameweek"
+  xLabel="Gameweek"
+  yLabel="Spearman ρ"
+  yDomain={[0.0, 0.85]}
+  height={280}
+  series={[
+    { name: "OpenFPL", values: [
+      {x:2,y:0.77},{x:4,y:0.73},{x:6,y:0.79},{x:8,y:0.78},{x:10,y:0.77},
+      {x:12,y:0.77},{x:14,y:0.76},{x:16,y:0.76},{x:18,y:0.77},{x:20,y:0.75},
+      {x:22,y:0.74},{x:24,y:0.71}
+    ]},
+    { name: "LightGBM", values: [
+      {x:2,y:0.21},{x:4,y:0.62},{x:6,y:0.69},{x:8,y:0.71},{x:10,y:0.73},
+      {x:12,y:0.73},{x:14,y:0.70},{x:16,y:0.70},{x:18,y:0.66},{x:20,y:0.71},
+      {x:22,y:0.68},{x:24,y:0.65}
+    ]},
+    { name: "Heuristic", values: [
+      {x:2,y:0.50},{x:4,y:0.60},{x:6,y:0.64},{x:8,y:0.66},{x:10,y:0.67},
+      {x:12,y:0.67},{x:14,y:0.64},{x:16,y:0.68},{x:18,y:0.66},{x:20,y:0.71},
+      {x:22,y:0.67},{x:24,y:0.66}
+    ]},
+  ]}
+/>
+
+OpenFPL is consistently the best ranker — it starts strong and stays above 0.7 all season. LightGBM has a terrible GW2 (0.21 — effectively random) because it hasn't seen enough in-season data yet, but recovers quickly. The heuristic converges with LightGBM by mid-season — it ranks players almost as well, but its magnitude estimates are wildly off, which is what causes the transfer churn.
+
 ## The transfer cost trap
 
 The numbers tell a clear story about the tension between prediction and action. The heuristic generates predictions with a mean error of -44 points per gameweek — it consistently overestimates. When the solver sees predicted XI scores of 80-100+ points, even a 4-point transfer cost looks trivially small. So it trades 3-5 players per week, racking up hits that eat nearly 17% of its raw output.

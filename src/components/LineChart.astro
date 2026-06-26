@@ -1,0 +1,76 @@
+---
+type Series = {
+  name: string;
+  values: Array<{ x: string | number; y: number }>;
+};
+
+type Props = {
+  id: string;
+  series: Series[];
+  title?: string;
+  xLabel?: string;
+  yLabel?: string;
+  yDomain?: [number, number];
+  height?: number;
+};
+
+const { id, series, title, xLabel, yLabel, yDomain, height = 320 } = Astro.props;
+---
+
+<figure class="line-chart" data-linechart={id} data-config={JSON.stringify({ series, xLabel, yLabel, yDomain, height })}>
+  {title && <figcaption>{title}</figcaption>}
+  <div class="chart-container" id={id}></div>
+</figure>
+
+<script>
+  import * as Plot from '@observablehq/plot';
+
+  document.querySelectorAll<HTMLElement>('[data-linechart]').forEach((el) => {
+    const container = el.querySelector<HTMLElement>('.chart-container');
+    if (!container) return;
+
+    const { series, xLabel, yLabel, yDomain, height } = JSON.parse(el.dataset.config!);
+
+    const flat = series.flatMap((s: any) =>
+      s.values.map((v: any) => ({ ...v, series: s.name }))
+    );
+
+    const chart = Plot.plot({
+      marginLeft: 60,
+      marginRight: 20,
+      height,
+      x: { label: xLabel ?? null, type: typeof flat[0]?.x === 'string' ? 'point' : 'linear' },
+      y: { label: yLabel ?? null, domain: yDomain },
+      color: { legend: series.length > 1 },
+      marks: [
+        Plot.lineY(flat, { x: 'x', y: 'y', stroke: 'series', strokeWidth: 2, tip: true }),
+        Plot.dot(flat, { x: 'x', y: 'y', fill: 'series', r: 3 }),
+        Plot.ruleY([0]),
+      ],
+      style: {
+        fontFamily: 'var(--font-sans, system-ui)',
+        fontSize: '13px',
+        background: 'transparent',
+      },
+    });
+
+    container.replaceChildren(chart);
+  });
+</script>
+
+<style>
+  .line-chart {
+    margin: var(--space-24, 1.5rem) 0;
+  }
+  .line-chart figcaption {
+    font-weight: 600;
+    margin-bottom: var(--space-8, 0.5rem);
+  }
+  .chart-container {
+    overflow-x: auto;
+  }
+  .chart-container :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
