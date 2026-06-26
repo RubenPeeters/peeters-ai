@@ -1,6 +1,6 @@
 ---
-title: "Analysing 250 ranked Lulu games with the Riot API"
-description: "An ETL pipeline that pulls match data from the Riot Games API, builds per-matchup reports, and reveals which top-lane opponents Lulu thrives — or struggles — against."
+title: "Scouting Korean solo queue for off-meta Lulu builds"
+description: "Using the Riot Games API to analyse a high-elo KR Lulu one-trick's match history and surface build adaptations that haven't reached mainstream guides yet."
 date: 2026-06-26
 tags: [python, data-analysis, gaming]
 featured: true
@@ -8,29 +8,78 @@ draft: false
 locale: en
 ---
 
-I play a lot of Lulu top on the Korean server. After a few hundred games I wanted real numbers instead of gut feeling: which matchups do I actually win, and do my rune/item choices shift between them?
+Korean solo queue is where the meta gets discovered. New builds, rune pages, and lane assignments surface on KR weeks before they appear on guide sites or in competitive play. If you want to know what's coming, you watch KR.
 
-So I built a small Python ETL pipeline that talks to the Riot Games API, caches everything locally, and produces a per-matchup breakdown. The notebook below walks through the data.
+I built a small Python pipeline that pulls a player's ranked match history from the Riot Games API, filters to a specific champion, and breaks down exactly what they build and run against each lane opponent. The goal: find adaptations that aren't in any guide yet.
+
+The test subject is a high-elo KR Lulu one-trick. Lulu top is already an unconventional pick — but the builds this player runs are even more unusual.
+
+## The pipeline
 
 import Notebook from '../../components/Notebook.astro';
 
 <Notebook src="league-analysis.ipynb" />
 
-## How it works
+## Win rate by matchup
 
-The pipeline has four stages:
+The first thing to look at: which matchups does this player actually win?
 
-1. **Fetch** — match history, match details, and timeline events via the Riot Match-V5 API. A disk cache avoids redundant calls and respects rate limits.
-2. **Transform** — filter to the target champion, identify the lane opponent by team position, extract starting items from timeline events (first 60 seconds), parse rune pages.
-3. **Aggregate** — group by enemy champion and compute win rates, item frequencies, starting-item combos, and keystone distributions.
-4. **Report** — generate a plaintext matchup report sorted by sample size.
+import MatchupChart from '../../components/MatchupChart.astro';
 
-The entire thing is around 350 lines of Python across four files. No notebooks in the repo — just scripts and a `.env` for credentials. The notebook above was created separately to present the results.
+<MatchupChart
+  id="winrate"
+  title="Win rate by lane opponent (3+ games)"
+  valueLabel="Win rate"
+  valueSuffix="%"
+  data={[
+    { label: "Fiora", value: 100, games: 5 },
+    { label: "Dr. Mundo", value: 100, games: 4 },
+    { label: "Darius", value: 100, games: 3 },
+    { label: "Anivia", value: 100, games: 3 },
+    { label: "Vladimir", value: 83, games: 6 },
+    { label: "Jax", value: 80, games: 10 },
+    { label: "Nautilus", value: 75, games: 4 },
+    { label: "Aurora", value: 73, games: 11 },
+    { label: "Renekton", value: 70, games: 10 },
+    { label: "Rumble", value: 69, games: 13 },
+    { label: "Zaahen", value: 69, games: 13 },
+    { label: "Gragas", value: 67, games: 3 },
+    { label: "Kennen", value: 67, games: 3 },
+    { label: "Kled", value: 67, games: 3 },
+    { label: "Sion", value: 65, games: 17 },
+    { label: "Ornn", value: 60, games: 5 },
+    { label: "Riven", value: 60, games: 5 },
+    { label: "Yone", value: 60, games: 5 },
+    { label: "Ryze", value: 56, games: 9 },
+    { label: "Ambessa", value: 50, games: 10 },
+    { label: "Irelia", value: 43, games: 7 },
+    { label: "Nidalee", value: 33, games: 3 },
+    { label: "Tryndamere", value: 33, games: 3 },
+    { label: "K'Sante", value: 29, games: 7 },
+    { label: "Yasuo", value: 25, games: 4 },
+    { label: "Twisted Fate", value: 0, games: 4 },
+  ]}
+/>
 
-## What I learned
+Lulu top destroys immobile melee: Fiora (100% over 5 games), Dr. Mundo (100%), Jax (80% over 10 games). The worst matchups are champions with sustained all-in that Lulu can't peel — K'Sante (29%), Yasuo (25%), Irelia (43%).
 
-Lulu top is a lane bully that falls off. The data confirms the intuition: she crushes immobile melee (Fiora, Vladimir, Jax) but struggles against champions with strong all-in (K'Sante, Irelia). Electrocute is the default keystone; Phase Rush only makes sense into champions you need to kite out (Darius, Rumble).
+## The interesting finds
 
-The boot choice is the clearest adaptive signal: Plated Steelcaps into AD, Mercury's Treads into AP, Boots of Swiftness into tanks you can ignore.
+The raw numbers are useful but not surprising. The builds are where it gets interesting.
 
-Source code is on [GitHub](https://github.com/RubenPeeters/league-analysis).
+**Phase Rush into Darius.** Every guide says Electrocute on Lulu top. This player runs Phase Rush exclusively into Darius — 100% of 3 games, 100% win rate. The logic: Darius wants to stack his passive in extended trades. Phase Rush lets Lulu proc it with one combo and disengage before the bleed stacks. It's a matchup-specific adaptation you won't find on any stats site because the sample sizes are too small to surface.
+
+**Support Lulu into Nautilus.** When matched against Nautilus top (likely a support player autofilled), this player switches to an entirely different build: Summon Aery keystone, Dream Maker, Shurelya's Battlesong, Ionian Boots. They read the game state — if the opponent is playing a support champion, the game is going to be decided by teamfights, not lane. So they build to enable their team instead of trying to carry the lane.
+
+**Boot choice as a matchup read.** The boot choice maps cleanly to opponent type:
+- **Plated Steelcaps** into AD all-in (Irelia, Jax, Renekton, Ambessa, Riven)
+- **Mercury's Treads** into AP threats (Aurora, Ryze, Rumble, Ornn)
+- **Boots of Swiftness** into tanks and low-threat lanes (Sion, Zaahen, Vladimir, Dr. Mundo, Fiora)
+
+The Swiftness choice into Fiora is the non-obvious one — most players would go Steelcaps into a Fiora. But at this level, the Fiora matchup is about kiting and spacing, not tanking auto-attacks. Swiftness helps more.
+
+## Takeaway
+
+The value of scouting KR isn't copying builds. It's seeing how the best players *adapt*. The default Lulu top build (Electrocute, Doran's Ring, Luden's) works into most matchups. But a player at this level has 3–4 variations they deploy based on what they're facing. That level of matchup-specific adaptation is what separates a one-trick from someone who just plays the champion.
+
+Source code: [league-analysis on GitHub](https://github.com/RubenPeeters/league-analysis).

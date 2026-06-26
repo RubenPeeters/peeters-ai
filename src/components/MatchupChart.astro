@@ -1,0 +1,91 @@
+---
+type Props = {
+  id: string;
+  data: Array<{ label: string; value: number; games: number; detail?: string }>;
+  title?: string;
+  valueLabel?: string;
+  valueSuffix?: string;
+};
+
+const { id, data, title, valueLabel = 'Value', valueSuffix = '' } = Astro.props;
+---
+
+<figure class="matchup-chart" data-chart={id} data-config={JSON.stringify({ data, valueLabel, valueSuffix })}>
+  {title && <figcaption>{title}</figcaption>}
+  <div class="chart-container" id={id}></div>
+</figure>
+
+<script>
+  import * as Plot from '@observablehq/plot';
+
+  document.querySelectorAll<HTMLElement>('[data-chart]').forEach((el) => {
+    const container = el.querySelector<HTMLElement>('.chart-container');
+    if (!container) return;
+
+    const { data, valueLabel, valueSuffix } = JSON.parse(el.dataset.config!);
+
+    const chart = Plot.plot({
+      marginLeft: 100,
+      marginRight: 60,
+      height: Math.max(data.length * 32, 200),
+      x: { label: valueLabel, domain: [0, 100] },
+      y: { label: null },
+      marks: [
+        Plot.barX(data, {
+          x: 'value',
+          y: 'label',
+          fill: 'value',
+          sort: { y: '-x' },
+          tip: {
+            format: {
+              y: false,
+              fill: false,
+            },
+          },
+          title: (d: typeof data[number]) =>
+            `${d.label}: ${d.value}${valueSuffix}\n${d.games} games${d.detail ? '\n' + d.detail : ''}`,
+          channels: { games: 'games' },
+        }),
+        Plot.text(data, {
+          x: 'value',
+          y: 'label',
+          text: (d: typeof data[number]) => `${d.value}${valueSuffix}`,
+          dx: 4,
+          textAnchor: 'start',
+          fontSize: 12,
+          sort: { y: '-x' },
+        }),
+        Plot.ruleX([0]),
+      ],
+      color: {
+        scheme: 'YlOrRd',
+        domain: [0, 100],
+        reverse: true,
+      },
+      style: {
+        fontFamily: 'var(--font-sans, system-ui)',
+        fontSize: '13px',
+        background: 'transparent',
+      },
+    });
+
+    container.replaceChildren(chart);
+  });
+</script>
+
+<style>
+  .matchup-chart {
+    margin: var(--space-24, 1.5rem) 0;
+  }
+  .matchup-chart figcaption {
+    font-weight: 600;
+    margin-bottom: var(--space-8, 0.5rem);
+  }
+  .chart-container {
+    overflow-x: auto;
+  }
+  .chart-container :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
