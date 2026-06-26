@@ -1,0 +1,36 @@
+---
+title: "Analysing 250 ranked Lulu games with the Riot API"
+description: "An ETL pipeline that pulls match data from the Riot Games API, builds per-matchup reports, and reveals which top-lane opponents Lulu thrives — or struggles — against."
+date: 2026-06-26
+tags: [python, data-analysis, gaming]
+featured: true
+draft: false
+locale: en
+---
+
+I play a lot of Lulu top on the Korean server. After a few hundred games I wanted real numbers instead of gut feeling: which matchups do I actually win, and do my rune/item choices shift between them?
+
+So I built a small Python ETL pipeline that talks to the Riot Games API, caches everything locally, and produces a per-matchup breakdown. The notebook below walks through the data.
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="league-analysis.ipynb" />
+
+## How it works
+
+The pipeline has four stages:
+
+1. **Fetch** — match history, match details, and timeline events via the Riot Match-V5 API. A disk cache avoids redundant calls and respects rate limits.
+2. **Transform** — filter to the target champion, identify the lane opponent by team position, extract starting items from timeline events (first 60 seconds), parse rune pages.
+3. **Aggregate** — group by enemy champion and compute win rates, item frequencies, starting-item combos, and keystone distributions.
+4. **Report** — generate a plaintext matchup report sorted by sample size.
+
+The entire thing is around 350 lines of Python across four files. No notebooks in the repo — just scripts and a `.env` for credentials. The notebook above was created separately to present the results.
+
+## What I learned
+
+Lulu top is a lane bully that falls off. The data confirms the intuition: she crushes immobile melee (Fiora, Vladimir, Jax) but struggles against champions with strong all-in (K'Sante, Irelia). Electrocute is the default keystone; Phase Rush only makes sense into champions you need to kite out (Darius, Rumble).
+
+The boot choice is the clearest adaptive signal: Plated Steelcaps into AD, Mercury's Treads into AP, Boots of Swiftness into tanks you can ignore.
+
+Source code is on [GitHub](https://github.com/RubenPeeters/league-analysis).
