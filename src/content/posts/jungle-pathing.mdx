@@ -1,0 +1,75 @@
+---
+title: "Reverse-engineering jungle pathing from Riot's timeline API"
+description: "The Riot API gives player positions every 60 seconds. To reconstruct a jungler's actual path, you need interpolation that respects map geometry — and A* pathfinding on the game's navgrid."
+date: 2026-06-26
+tags: [python, data-analysis, gaming]
+featured: true
+draft: false
+locale: en
+---
+
+League of Legends junglers make hundreds of micro-decisions per game: which camp to start, which direction to clear, when to break the route for a gank. The difference between a Challenger and a Diamond jungler often comes down to *tempo* — how efficiently they convert camps into gold and experience relative to the game clock.
+
+I wanted to measure that. The Riot Games API provides match timeline data, and in theory you can reconstruct a jungler's path from it. In practice, there is a problem.
+
+## The 60-second gap
+
+The timeline API returns participant positions in `participantFrames` — one snapshot every 60 seconds. Between those snapshots, you get positions only when events fire: a kill, a ward placement, an objective take. For a jungler farming camps alone in the early game, that can mean a single data point per minute.
+
+Sixty seconds is an eternity on Summoner's Rift. A jungler clears two or three camps in that window. If you want to know *which* camps were cleared and *when*, you need to fill the gaps.
+
+## Naive interpolation walks through walls
+
+The obvious approach is linear interpolation: draw a straight line between two known positions and sample points along it at regular intervals. This works for laners moving along predictable paths, but it falls apart in the jungle.
+
+The jungle is a maze of walls, camp pits, and narrow corridors. A straight line from Gromp to Wolves cuts directly through the rock wall separating them. The actual walking path curves around it, adding roughly 20% to the distance. That extra distance matters — it affects time estimates, and wrong time estimates mean wrong tempo calculations.
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="jungle-pathing.ipynb" />
+
+## A* on the navgrid
+
+The solution is pathfinding. Summoner's Rift has a navigation grid — a 295 by 296 cell grid where each cell represents a 50-unit square and is marked either walkable or wall. The project implements A* search on this grid with octile distance as the heuristic (allowing 8-directional movement, with diagonal steps costing the square root of two).
+
+The algorithm:
+
+1. Convert game coordinates to grid cells
+2. Run A* from the start cell to the goal cell, respecting walls
+3. Convert the grid path back to game coordinates
+4. Distribute interpolated positions along the path at the requested time interval
+
+Diagonal movement is only allowed when both adjacent cardinal cells are walkable, which prevents the path from cutting corners through walls. The pathfinder also snaps start and end points to the nearest walkable cell if they land inside a wall (which happens occasionally with imprecise API coordinates).
+
+Paths are cached by grid-cell pair, so repeated queries between the same two camps are instant after the first computation.
+
+## Jungle tempo
+
+With accurate position reconstruction, the next step is measuring tempo. The system detects camp clears by correlating a player's interpolated position with known camp locations and gold-change events from the timeline. Each clear gets a timestamp, and the sequence of clears forms a *clear path* — for example, "Blue-Gromp-Wolves-Raptors-Red-Krugs" for a standard blue-side full clear.
+
+The project maintains par times for common clear paths: the time a competent jungler should finish each route, accounting for leash quality and champion clear speed. These are calibrated from high-elo VOD reviews and practice tool runs.
+
+import MatchupChart from '../../components/MatchupChart.astro';
+
+<MatchupChart
+  id="par-times"
+  title="Par times as percentage of full clear (260s = 100%)"
+  valueLabel="% of full clear"
+  valueSuffix="%"
+  data={[
+    { label: "2-camp rush to scuttle", value: 54, games: 0, detail: "140s (2:20) — fastest scuttle contest" },
+    { label: "3 camps (same side)", value: 60, games: 0, detail: "155s (2:35) — level 3 power spike" },
+    { label: "3 camps (cross-map)", value: 63, games: 0, detail: "165s (2:45) — e.g. Blue-Gromp-Red" },
+    { label: "4 camps into gank", value: 75, games: 0, detail: "195s (3:15) — standard tempo route" },
+    { label: "5 camps", value: 88, games: 0, detail: "230s (3:50) — late to scuttle" },
+    { label: "Full clear (optimal)", value: 100, games: 0, detail: "260s (4:20) — Blue-Gromp-Wolves-Raptors-Red-Krugs" },
+  ]}
+/>
+
+Comparing a player's actual clear time to par reveals tempo loss — seconds wasted to mechanical errors, suboptimal pathing, or getting collapsed on. A jungler finishing their full clear at 4:32 against a 4:20 par has lost 12 seconds of tempo. At the highest level, that is the difference between arriving at scuttle crab first or second, between making a gank window or missing it.
+
+## What is next
+
+This is part of a larger personal project analysing high-elo jungle play. The position interpolation and tempo system are working; the next steps are aggregating tempo data across many games to build champion-specific par time baselines, and correlating early tempo with win rate to quantify how much those lost seconds actually cost.
+
+The pathfinding approach generalises beyond jungle analysis — any question about player movement on the Rift (roam timing, rotation speed, vision control patterns) benefits from wall-aware position reconstruction rather than naive straight-line interpolation.

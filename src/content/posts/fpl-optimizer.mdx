@@ -1,0 +1,86 @@
+---
+title: "Can operations research beat gut-feel in Fantasy Premier League?"
+description: "Applying Mixed-Integer Linear Programming and machine learning to FPL squad selection — and discovering that the best predictor doesn't always win."
+date: 2026-06-26
+tags: [python, optimization, machine-learning]
+featured: true
+draft: false
+locale: en
+---
+
+Every Monday morning, millions of FPL managers stare at the transfer page and ask the same question: who do I bring in this week? Most rely on form, fixtures, and a vague sense that a player is "due a haul." I wanted to see what happens when you replace that intuition with a solver.
+
+The idea is straightforward. Fantasy Premier League is a constrained optimization problem. You have a budget, positional requirements, a limit of three players per club, and a transfer economy that penalizes churn. If you can predict how many points each player will score over the next few gameweeks, you can hand those predictions to a Mixed-Integer Linear Program and let it find the mathematically optimal squad.
+
+## The optimization model
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="fpl-optimizer.ipynb" />
+
+The solver uses PuLP to formulate the problem as a MILP. Every decision — is this player in my squad, in my starting XI, my captain? — is a binary variable. The objective maximizes expected points across a multi-gameweek horizon, with a decay factor that discounts future weeks (because predictions get less reliable further out) and a penalty for paid transfers.
+
+The constraints encode the FPL rulebook: exactly 15 players in the squad (2 goalkeepers, 5 defenders, 5 midfielders, 3 forwards), 11 in the starting XI, at most 3 from any single club, and a budget that tracks buying and selling prices. Free transfers roll over between gameweeks up to a cap of 5; additional transfers cost 4 points each.
+
+What makes this a multi-period problem rather than a simple one-shot is that the solver plans transfers across the full horizon simultaneously. It might hold off on a transfer this week if the player becomes cheaper next week, or bring someone in early to captain them for a favorable fixture.
+
+## Prediction matters — but not the way you'd expect
+
+The solver is only as good as its input predictions. I tested four predictors against the 2024/25 season:
+
+- **Heuristic**: a weighted average of recent points and fixture difficulty — the kind of logic most FPL managers use implicitly.
+- **LightGBM**: a gradient-boosted model trained on rolling player statistics.
+- **OpenFPL (self-trained)**: a per-position Random Forest and XGBoost ensemble, following the approach from the [OpenFPL paper](https://arxiv.org/abs/2508.09992), trained on five seasons of historical data enriched with Understat xG/xA metrics.
+- **OpenFPL (pre-trained)**: the same architecture using pre-trained model weights from the OpenFPL GitHub repository.
+
+import MatchupChart from '../../components/MatchupChart.astro';
+
+<MatchupChart
+  id="spearman"
+  title="Prediction accuracy: Spearman rank correlation (x100)"
+  valueLabel="Spearman"
+  valueSuffix=""
+  data={[
+    { label: "OpenFPL (self-trained)", value: 76, games: 24, detail: "RMSE 1.41, MAE 0.85" },
+    { label: "LightGBM", value: 67, games: 24, detail: "RMSE 1.99, MAE 1.02" },
+    { label: "Heuristic", value: 65, games: 24, detail: "RMSE 2.24, MAE 1.15" },
+    { label: "OpenFPL (pre-trained)", value: 65, games: 24, detail: "RMSE 2.00, MAE 1.15" },
+  ]}
+/>
+
+OpenFPL's self-trained ensemble clearly produces the best predictions. A Spearman correlation of 0.76 means it ranks players by expected output substantially better than the alternatives.
+
+But prediction quality alone does not determine squad performance. The solver acts on those predictions, and the interaction between prediction characteristics and the optimizer's transfer behavior is where things get interesting.
+
+<MatchupChart
+  id="net-points"
+  title="Season backtest: net points after transfer costs (24 GWs)"
+  valueLabel="Net points"
+  valueSuffix=" pts"
+  data={[
+    { label: "LightGBM", value: 1066, games: 24, detail: "1070 raw − 4 hit pts, 1 paid transfer" },
+    { label: "Heuristic", value: 953, games: 24, detail: "1141 raw − 188 hit pts, 47 paid transfers" },
+    { label: "OpenFPL (self-trained)", value: 855, games: 24, detail: "979 raw − 124 hit pts, 31 paid transfers" },
+    { label: "OpenFPL (pre-trained)", value: 841, games: 24, detail: "841 raw − 0 hit pts, 0 paid transfers" },
+  ]}
+/>
+
+LightGBM finishes first with 1,066 net points despite ranking second in prediction accuracy. The heuristic predictor actually generates the most raw points (1,141) but burns 188 of them on transfer hits — 47 paid transfers across 24 gameweeks. The solver, faced with the heuristic's inflated predictions, sees large expected gains from swapping players every week and churns aggressively.
+
+This is a well-known dynamic in operations research: the quality of an optimization solution depends not just on the model but on the quality and calibration of its inputs. A predictor that systematically overestimates player scores will cause the solver to over-trade, because the apparent gain from each transfer exceeds the 4-point hit cost. LightGBM's more conservative, better-calibrated predictions lead to only a single paid transfer across the entire season.
+
+## The transfer cost trap
+
+The numbers tell a clear story about the tension between prediction and action. The heuristic generates predictions with a mean error of -44 points per gameweek — it consistently overestimates. When the solver sees predicted XI scores of 80-100+ points, even a 4-point transfer cost looks trivially small. So it trades 3-5 players per week, racking up hits that eat nearly 17% of its raw output.
+
+OpenFPL's self-trained model sits in between: better-calibrated than the heuristic (mean error -8) but still confident enough to drive 31 paid transfers. LightGBM, with a mean error near zero, gives the solver little incentive to trade beyond free transfers.
+
+The lesson for anyone building an optimization pipeline: the objective function and the prediction model are not independent components. A well-calibrated predictor is worth more than a highly accurate one, because it produces decisions the optimizer can trust.
+
+## What's next
+
+The current system runs as a CLI tool. Before each gameweek, it scrapes the latest data, generates predictions, solves the MILP, and outputs a recommended squad. I've been running it for my team ("Jim Simons," team 7127411) since the start of the 2024/25 season.
+
+There is more to explore: multi-horizon strategy with configurable decay, chip optimization (Triple Captain, Bench Boost, Wildcard, Free Hit), and risk-averse formulations that penalize high-variance players. The backtest framework makes it possible to evaluate these variants systematically.
+
+Source code: [fpl-analysis on GitHub](https://github.com/RubenPeeters/fpl-analysis).

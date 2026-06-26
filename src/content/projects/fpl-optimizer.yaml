@@ -1,0 +1,12 @@
+title: "FPL Optimizer"
+description:
+  en: "AI-powered Fantasy Premier League squad selector — multi-period MILP optimization with LightGBM and ensemble predictors."
+  nl: "AI-gestuurde Fantasy Premier League-ploegkiezer — multi-periode MILP-optimalisatie met LightGBM en ensemblepredictors."
+repo: "https://github.com/RubenPeeters/fpl-analysis"
+year: 2026
+sortKey: 202602
+tags:
+  - Python
+  - Optimization
+  - Machine learning
+featured: true

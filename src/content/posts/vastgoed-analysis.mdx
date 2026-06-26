@@ -1,0 +1,81 @@
+---
+title: "Is the Kempen region still undervalued?"
+description: "Analysing 15 years of Belgian government real-estate data to compare apartment price growth in the Kempen region against major cities."
+date: 2026-06-26
+tags: [python, data-analysis, real-estate]
+featured: true
+draft: false
+locale: en
+---
+
+I grew up in the Kempen, the stretch of Antwerp province roughly bounded by Turnhout, Geel, and Herentals. When I started looking at apartments a few years ago, the received wisdom was clear: buy in the Kempen while it is still affordable, because prices will catch up to the cities eventually. That sounded reasonable, but I wanted to see whether the data actually supports it.
+
+Belgium publishes quarterly median transaction prices per municipality through Statbel, going back to 2010. That gives us about 34,000 rows covering every municipality in the country — enough to fit trend lines and compare regions properly.
+
+## The data
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="vastgoed-analysis.ipynb" />
+
+The summary table already tells the core story. Over the full 15-year window, the exponential model fits better than linear for every city, though the margin varies. More importantly, the growth rates diverge meaningfully: Turnhout apartments have appreciated at roughly 3.1% per year, while Antwerpen sits at 4.9% and Mechelen at 5.2%.
+
+## Growth rates across cities
+
+import MatchupChart from '../../components/MatchupChart.astro';
+
+<MatchupChart
+  id="growth-rates"
+  title="Yearly apartment price growth (exponential fit, 2010-2025)"
+  valueLabel="Growth rate"
+  valueSuffix="%/yr"
+  data={[
+    { label: "Mechelen", value: 5.2, games: 15, detail: "EUR 135K → 270K" },
+    { label: "Antwerpen", value: 4.9, games: 15, detail: "EUR 128K → 246K" },
+    { label: "Herentals", value: 4.8, games: 15, detail: "EUR 125K → 255K" },
+    { label: "Gent", value: 4.7, games: 15, detail: "EUR 170K → 310K" },
+    { label: "Geel", value: 4.2, games: 15, detail: "EUR 151K → 250K" },
+    { label: "Leuven", value: 3.7, games: 15, detail: "EUR 150K → 281K" },
+    { label: "Turnhout", value: 3.1, games: 15, detail: "EUR 141K → 237K" },
+    { label: "Brugge", value: 2.7, games: 15, detail: "EUR 179K → 255K" },
+  ]}
+/>
+
+Turnhout sits near the bottom of the comparison — only Brugge grew more slowly. Herentals, a Kempen neighbour just 15 km away, grew at 4.8% and now trades at a higher median than Turnhout. That is not what you would expect if the Kempen were moving as a single undervalued block.
+
+## Where prices stand today
+
+The growth rate chart tells you how fast prices moved, but not where they ended up. A city that grew quickly from a low base may still be affordable in absolute terms.
+
+<MatchupChart
+  id="current-prices"
+  title="Current median apartment price (Q1 2025, as % of Gent)"
+  valueLabel="Price index"
+  valueSuffix="%"
+  data={[
+    { label: "Gent", value: 100, games: 61, detail: "EUR 310,000" },
+    { label: "Leuven", value: 91, games: 61, detail: "EUR 281,000" },
+    { label: "Mechelen", value: 87, games: 61, detail: "EUR 269,500" },
+    { label: "Herentals", value: 82, games: 42, detail: "EUR 255,000" },
+    { label: "Brugge", value: 82, games: 61, detail: "EUR 255,000" },
+    { label: "Geel", value: 81, games: 52, detail: "EUR 250,000" },
+    { label: "Antwerpen", value: 79, games: 61, detail: "EUR 246,000" },
+    { label: "Turnhout", value: 76, games: 61, detail: "EUR 237,000" },
+  ]}
+/>
+
+Turnhout is the cheapest city in this comparison at EUR 237,000 — about 76% of Gent's median. But the gap is not as dramatic as people tend to assume. The Kempen towns of Geel and Herentals have already converged with Antwerpen in absolute price terms, sitting in the EUR 250-255K range.
+
+## Exponential vs linear: why it matters
+
+One of the more useful findings from this analysis: linear trend models consistently overstate growth rates compared to exponential fits. For Turnhout, the linear estimate is 3.6% per year versus 3.1% exponential. That half-percent difference compounds: over a 20-year mortgage it means predicting EUR 285K instead of EUR 265K at maturity.
+
+The exponential model wins on R-squared for every city over the full data window. Over shorter windows (five years), the two fits are nearly indistinguishable — which makes sense, since any smooth curve looks linear if you zoom in far enough. The practical takeaway: if you are projecting property values over a decade or more, use an exponential fit.
+
+## What this means for the Kempen
+
+The "buy in the Kempen because it is cheap" narrative is partly outdated. Geel and Herentals are no longer meaningfully cheaper than Antwerpen for apartments. Turnhout remains the most affordable option, but it also has the slowest growth — meaning the gap is widening, not closing.
+
+None of this is investment advice. Municipal medians smooth over enormous variation within a city, the data says nothing about specific neighbourhoods or property quality, and 15 years of history does not predict the next 15. But if you hear someone say the Kempen is undervalued, it is worth checking which part of the Kempen they mean.
+
+Source code: [vastgoed-analysis on GitHub](https://github.com/RubenPeeters/vastgoed-analysis).

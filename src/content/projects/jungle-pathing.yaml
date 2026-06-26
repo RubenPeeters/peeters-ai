@@ -1,0 +1,10 @@
+title: "Jungle Pathing Analyzer"
+description:
+  en: "Reconstructs League of Legends jungle paths from timeline data — position interpolation with A* pathfinding on the game navgrid."
+  nl: "Reconstrueert League of Legends-junglepaden uit tijdlijndata — positie-interpolatie met A*-pathfinding op de game-navgrid."
+year: 2026
+sortKey: 202606
+tags:
+  - Python
+  - Data analysis
+  - Gaming
