@@ -1,0 +1,141 @@
+---
+title: "Why do League coaches disagree? Building a knowledge graph to find out"
+description: "108 coaches, 444 sources, 3,045 pieces of advice — stored as RDF with full provenance. When coaches disagree on how to play a champion, the graph captures both sides."
+date: 2026-06-26
+tags: [python, knowledge-graphs, gaming]
+featured: true
+draft: false
+locale: en
+---
+
+There is no single correct way to play a League of Legends champion. Ask three coaches how to build Gragas jungle and you will get three different answers — not because two of them are wrong, but because they have different theories about what the champion should be doing. One coach wants burst assassin Gragas. Another wants sustained AP bruiser. A third wants tank utility.
+
+I wanted to capture that disagreement, not flatten it. So I built an RDF knowledge graph that stores every piece of coaching advice with full provenance: who said it, in which video or guide, at what timestamp, and under which patch. When two coaches recommend different keystones for the same champion, the graph keeps both — and links each recommendation to the person who made it.
+
+## The knowledge graph
+
+import Notebook from '../../components/Notebook.astro';
+
+<Notebook src="league-kg.ipynb" />
+
+## What the graph captures
+
+The advice falls into five categories. Combos make up the largest share because coaching videos tend to be mechanically focused, but the playstyle and itemization entries are where the disagreements live.
+
+import MatchupChart from '../../components/MatchupChart.astro';
+
+<MatchupChart
+  id="advice-types"
+  title="Advice entries by type across 444 sources"
+  valueLabel="Entries"
+  valueSuffix=""
+  data={[
+    { label: "Combos", value: 958, games: 444, detail: "Ability sequences, animation cancels, flash combos" },
+    { label: "Playstyle", value: 749, games: 444, detail: "Lane bully, scaling, splitpush, roam, etc." },
+    { label: "Matchups", value: 552, games: 444, detail: "How to play into specific opponents" },
+    { label: "Itemization", value: 405, games: 444, detail: "Build paths, situational items, boot choice" },
+    { label: "Runes", value: 381, games: 444, detail: "Keystone and secondary rune pages" },
+  ]}
+/>
+
+## The coaches who disagree the most
+
+Not every champion generates disagreement. Champions with a single dominant playstyle — Malphite is a tank, Annie is a burst mage — tend to produce consensus. The interesting cases are champions with enough flexibility that coaches genuinely differ on what the champion should be doing.
+
+<MatchupChart
+  id="coach-coverage"
+  title="Champions with the most independent coaching sources"
+  valueLabel="Sources"
+  valueSuffix=""
+  data={[
+    { label: "Lee Sin", value: 5, games: 4, detail: "4 coaches — builds range from full lethality to bruiser" },
+    { label: "Gragas", value: 6, games: 3, detail: "3 coaches — assassin vs. bruiser vs. utility tank" },
+    { label: "LeBlanc", value: 3, games: 3, detail: "3 coaches — all agree on Electrocute, differ on playstyle" },
+    { label: "Singed", value: 3, games: 3, detail: "3 coaches — Conqueror vs. Death's Touch vs. Phase Rush" },
+    { label: "Fizz", value: 3, games: 3, detail: "3 coaches — scaling carry vs. pick assassin vs. roamer" },
+    { label: "Rengar", value: 3, games: 3, detail: "3 coaches — power farmer vs. ganker vs. splitpusher" },
+    { label: "Syndra", value: 3, games: 3, detail: "3 coaches — 3 entirely different core build paths" },
+    { label: "Rumble", value: 3, games: 3, detail: "3 coaches — jungle pathing and teamfight role differ" },
+  ]}
+/>
+
+## Case study: Gragas jungle
+
+Gragas is the clearest example of genuine disagreement. Three coaches, three different visions of what the champion does.
+
+**Fz Frost** runs Dark Harvest with Lich Bane rush — full burst assassin. The idea: Gragas's E+Flash into body slam, auto, Q, R is enough to one-shot a carry if you have the AP. He builds Shadowflame and Deathcap to maximize single-rotation damage.
+
+**Sawyer Jungle** runs Electrocute with Sudden Impact — also burst, but with a different build path. The distinction matters: Electrocute rewards short combos, Dark Harvest rewards finishing kills. The choice reflects whether you think Gragas should be starting fights or cleaning them up.
+
+**Sloppy Walrus** takes a completely different approach: sustained AP with Presence of Mind for mana and Lost Chapter into Prototype. He explicitly recommends against Bone Plating, which the other two coaches don't even mention. Different defensive rune, different mana strategy, different core item.
+
+<MatchupChart
+  id="gragas-runes"
+  title="Gragas jungle: keystone by coach"
+  valueLabel="Keystones"
+  valueSuffix=""
+  data={[
+    { label: "Fz Frost", value: 3, games: 4, detail: "Dark Harvest — scales with kills, rewards resets" },
+    { label: "Sawyer Jungle", value: 1, games: 1, detail: "Electrocute — burst on short trades" },
+    { label: "Sloppy Walrus", value: 1, games: 1, detail: "Sustained AP — Presence of Mind, Lost Chapter" },
+  ]}
+/>
+
+None of them are wrong. They are optimizing for different game states. Fz Frost assumes you will snowball. Sawyer assumes you need to win skirmishes early. Sloppy Walrus assumes the game goes long enough that mana efficiency matters. The knowledge graph keeps all three perspectives and lets you query by coach to see the full reasoning.
+
+## Case study: Fizz — assassin or scaler?
+
+Fizz is another champion where coaches assign fundamentally different identities.
+
+**3 Minute LoL** labels Fizz as a "Scaling Hypercarry" and "Pick" assassin. This is the standard view: Fizz wants to farm to level 6, then roam and pick off isolated targets.
+
+**Zwag Xerath** sees Fizz as a "Skirmishing Jungler" — a completely different role context. When Fizz goes jungle, the champion identity shifts from patient scaler to early-game skirmisher.
+
+**EcoreLoL** assigns three labels: "Roamer," "Pick," and "Splitpusher." The splitpush label is the surprising one — EcoreLoL sees Fizz as a champion who can take towers safely because of E (Playful/Trickster) as an escape, and recommends Lich Bane for tower damage.
+
+<MatchupChart
+  id="fizz-styles"
+  title="Fizz: playstyle labels assigned by each coach"
+  valueLabel="Labels"
+  valueSuffix=""
+  data={[
+    { label: "EcoreLoL", value: 3, games: 1, detail: "Roamer + Pick + Splitpusher" },
+    { label: "3 Minute LoL", value: 2, games: 1, detail: "Scaling Hypercarry + Pick" },
+    { label: "Zwag Xerath", value: 1, games: 1, detail: "Skirmishing Jungler" },
+  ]}
+/>
+
+## The playstyle landscape
+
+Across all 148 champions and 108 coaches, some playstyle labels dominate. Lane Bully is the most common assignment — it is also the least controversial, since most coaches agree on which champions bully lane. The disagreements cluster around the scaling and splitpush labels, where a champion's identity depends on game context.
+
+<MatchupChart
+  id="playstyles"
+  title="Playstyle archetype frequency across all advice"
+  valueLabel="Assignments"
+  valueSuffix=""
+  data={[
+    { label: "Lane Bully", value: 150, games: 749, detail: "20% — least controversial label" },
+    { label: "Scaling Hypercarry", value: 113, games: 749, detail: "15% — most disagreement here" },
+    { label: "Splitpusher", value: 77, games: 749, detail: "10% — context-dependent" },
+    { label: "Pick", value: 71, games: 749, detail: "9% — assassin-style one-shot" },
+    { label: "Ganking Jungler", value: 52, games: 749, detail: "7% — early pressure" },
+    { label: "Power Farmer", value: 52, games: 749, detail: "7% — scaling jungle" },
+    { label: "Roamer", value: 46, games: 749, detail: "6% — map presence" },
+    { label: "Skirmishing Jungler", value: 18, games: 749, detail: "2% — 2v2 focused" },
+  ]}
+/>
+
+## How it's built
+
+The ontology extends three W3C standards: **PROV-O** for provenance (who said what, when), **SKOS** for controlled vocabularies (the playstyle archetypes, ability slots, rune paths), and **schema.org** for source metadata (video URLs, timestamps, guide pages). Champion and item identifiers are anchored to Riot's Data Dragon API, with `owl:sameAs` links to Wikidata and Leaguepedia for interoperability.
+
+Each coaching source (a YouTube video or a MobaFire guide) gets its own named graph in TriG format. This means you can query "what does Fz Frost think about Gragas" without touching anyone else's data — the named graph acts as a scope boundary.
+
+The data is extracted semi-automatically: YouTube transcripts are parsed with timestamps, structured into advice nodes, and linked to the coach and source. Each advice node carries the original quote, a normalized `adviceText`, and typed links to the game entities it references (champions, items, runes, abilities).
+
+## What's next
+
+The graph is designed to power two things: a **SPARQL endpoint** for structured queries ("which coaches recommend Electrocute on champions where another coach recommends Conqueror?") and a **RAG backend** for LLM-based coaching tools. The provenance chain means every generated answer can cite its source down to the video timestamp.
+
+Source code: [league-kg on GitHub](https://github.com/RubenPeeters/league-kg).
