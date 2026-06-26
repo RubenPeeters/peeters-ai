@@ -28,7 +28,7 @@ const { id, data, title, valueLabel = 'Value', valueSuffix = '' } = Astro.props;
       marginLeft: 100,
       marginRight: 60,
       height: Math.max(data.length * 32, 200),
-      x: { label: valueLabel, domain: [0, 100] },
+      x: { label: valueLabel },
       y: { label: null },
       marks: [
         Plot.barX(data, {
@@ -59,7 +59,6 @@ const { id, data, title, valueLabel = 'Value', valueSuffix = '' } = Astro.props;
       ],
       color: {
         scheme: 'YlOrRd',
-        domain: [0, 100],
         reverse: true,
       },
       style: {
