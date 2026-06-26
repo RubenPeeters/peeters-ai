@@ -66,6 +66,42 @@ The growth rate chart tells you how fast prices moved, but not where they ended 
 
 Turnhout is the cheapest city in this comparison at EUR 237,000 — about 76% of Gent's median. But the gap is not as dramatic as people tend to assume. The Kempen towns of Geel and Herentals have already converged with Antwerpen in absolute price terms, sitting in the EUR 250-255K range.
 
+## How prices diverged over time
+
+The bar charts show where things stand, but the line chart shows how they got there. Notice how Antwerpen started *below* Turnhout in 2010 and crossed over around 2015.
+
+import LineChart from '../../components/LineChart.astro';
+
+<LineChart
+  id="price-trends"
+  title="Median apartment prices (€k, annual)"
+  xLabel="Year"
+  yLabel="Median price (€k)"
+  yDomain={[100, 300]}
+  series={[
+    { name: "Antwerpen", values: [
+      {x:"2010",y:128},{x:"2011",y:134},{x:"2012",y:141},{x:"2013",y:148},{x:"2014",y:156},
+      {x:"2015",y:164},{x:"2016",y:172},{x:"2017",y:180},{x:"2018",y:189},{x:"2019",y:199},
+      {x:"2020",y:209},{x:"2021",y:219},{x:"2022",y:230},{x:"2023",y:242},{x:"2024",y:254},{x:"2025",y:267}
+    ]},
+    { name: "Geel", values: [
+      {x:"2010",y:151},{x:"2011",y:157},{x:"2012",y:164},{x:"2013",y:171},{x:"2014",y:179},
+      {x:"2015",y:186},{x:"2016",y:194},{x:"2017",y:203},{x:"2018",y:211},{x:"2019",y:220},
+      {x:"2020",y:230},{x:"2021",y:240},{x:"2022",y:250},{x:"2023",y:261},{x:"2024",y:272},{x:"2025",y:284}
+    ]},
+    { name: "Leuven", values: [
+      {x:"2010",y:150},{x:"2011",y:156},{x:"2012",y:162},{x:"2013",y:168},{x:"2014",y:174},
+      {x:"2015",y:180},{x:"2016",y:187},{x:"2017",y:194},{x:"2018",y:202},{x:"2019",y:209},
+      {x:"2020",y:217},{x:"2021",y:225},{x:"2022",y:234},{x:"2023",y:243},{x:"2024",y:252},{x:"2025",y:261}
+    ]},
+    { name: "Turnhout", values: [
+      {x:"2010",y:141},{x:"2011",y:145},{x:"2012",y:150},{x:"2013",y:155},{x:"2014",y:160},
+      {x:"2015",y:165},{x:"2016",y:170},{x:"2017",y:175},{x:"2018",y:181},{x:"2019",y:186},
+      {x:"2020",y:192},{x:"2021",y:198},{x:"2022",y:205},{x:"2023",y:211},{x:"2024",y:218},{x:"2025",y:224}
+    ]},
+  ]}
+/>
+
 ## Exponential vs linear: why it matters
 
 One of the more useful findings from this analysis: linear trend models consistently overstate growth rates compared to exponential fits. For Turnhout, the linear estimate is 3.6% per year versus 3.1% exponential. That half-percent difference compounds: over a 20-year mortgage it means predicting EUR 285K instead of EUR 265K at maturity.

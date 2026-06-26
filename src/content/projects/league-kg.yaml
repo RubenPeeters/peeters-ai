@@ -1,0 +1,12 @@
+title: "League Knowledge Graph"
+description:
+  en: "An RDF/OWL knowledge graph of League of Legends coaching advice — 108 coaches, 3,045 advice entries with full provenance."
+  nl: "Een RDF/OWL-kennisgraaf van League of Legends coachingadvies — 108 coaches, 3.045 adviezen met volledige herkomst."
+repo: "https://github.com/RubenPeeters/league-kg"
+year: 2025
+sortKey: 202511
+tags:
+  - Python
+  - Knowledge graphs
+  - RDF
+featured: true

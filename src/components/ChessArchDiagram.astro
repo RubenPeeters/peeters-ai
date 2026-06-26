@@ -1,0 +1,72 @@
+---
+---
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;margin:1.5rem 0" role="img" aria-label="Architecture diagram">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#625b56"/></marker>
+  </defs>
+  <style>{`
+    svg text { font-family: Inter, system-ui, sans-serif; fill: #25211f; }
+    .box { rx: 6; stroke: #c9c0b5; stroke-width: 1.5; }
+    .label { font-size: 13px; font-weight: 600; }
+    .sub { font-size: 11px; fill: #625b56; }
+    .route { font-size: 10px; fill: #625b56; }
+    .arrow { stroke: #625b56; stroke-width: 1.5; fill: none; marker-end: url(#ah); }
+    .bg-browser { fill: #f1ebe1; }
+    .bg-caddy { fill: #e8dfd4; }
+    .bg-service { fill: #fbf7f0; }
+    .bg-data { fill: #eae4da; }
+  `}</style>
+
+  <rect class="box bg-browser" x="20" y="130" width="110" height="60"/>
+  <text class="label" x="75" y="158" text-anchor="middle">Browser</text>
+  <text class="sub" x="75" y="174" text-anchor="middle">React SPA</text>
+
+  <rect class="box bg-caddy" x="190" y="100" width="100" height="120"/>
+  <text class="label" x="240" y="148" text-anchor="middle">Caddy</text>
+  <text class="sub" x="240" y="166" text-anchor="middle">:80 · TLS</text>
+  <text class="sub" x="240" y="182" text-anchor="middle">reverse proxy</text>
+
+  <rect class="box bg-service" x="370" y="10" width="140" height="48"/>
+  <text class="label" x="440" y="32" text-anchor="middle">Auth API</text>
+  <text class="sub" x="440" y="48" text-anchor="middle">:3000 · JWT · OAuth</text>
+
+  <rect class="box bg-service" x="370" y="80" width="140" height="48"/>
+  <text class="label" x="440" y="102" text-anchor="middle">Game Server</text>
+  <text class="sub" x="440" y="118" text-anchor="middle">:4000 · WebSocket</text>
+
+  <rect class="box bg-service" x="370" y="150" width="140" height="48"/>
+  <text class="label" x="440" y="172" text-anchor="middle">Social API</text>
+  <text class="sub" x="440" y="188" text-anchor="middle">:3001 · SSE · Glicko-2</text>
+
+  <rect class="box bg-service" x="370" y="220" width="140" height="48"/>
+  <text class="label" x="440" y="242" text-anchor="middle">Frontend</text>
+  <text class="sub" x="440" y="258" text-anchor="middle">nginx · Stockfish.js</text>
+
+  <rect class="box bg-data" x="580" y="50" width="120" height="48"/>
+  <text class="label" x="640" y="72" text-anchor="middle">Redis</text>
+  <text class="sub" x="640" y="88" text-anchor="middle">state · pub/sub</text>
+
+  <rect class="box bg-data" x="580" y="150" width="120" height="48"/>
+  <text class="label" x="640" y="172" text-anchor="middle">PostgreSQL</text>
+  <text class="sub" x="640" y="188" text-anchor="middle">users · ratings</text>
+
+  <line class="arrow" x1="130" y1="160" x2="185" y2="160"/>
+  <line class="arrow" x1="290" y1="125" x2="365" y2="34"/>
+  <line class="arrow" x1="290" y1="145" x2="365" y2="104"/>
+  <line class="arrow" x1="290" y1="170" x2="365" y2="174"/>
+  <line class="arrow" x1="290" y1="200" x2="365" y2="244"/>
+  <line class="arrow" x1="510" y1="104" x2="575" y2="74"/>
+  <line class="arrow" x1="510" y1="174" x2="575" y2="174"/>
+  <line class="arrow" x1="510" y1="34" x2="575" y2="166"/>
+
+  <path class="arrow" d="M510,110 L545,110 L545,74 L575,74" style="stroke-dasharray:5,3"/>
+  <text class="route" x="546" y="128" text-anchor="middle">game:finished</text>
+
+  <text class="route" x="330" y="28" text-anchor="middle">/api/*</text>
+  <text class="route" x="330" y="98" text-anchor="middle">/ws*</text>
+  <text class="route" x="330" y="168" text-anchor="middle">/api/social/*</text>
+  <text class="route" x="330" y="240" text-anchor="middle">/*</text>
+
+  <rect x="15" y="295" width="690" height="35" rx="4" fill="#f1ebe1" stroke="#c9c0b5" stroke-width="1"/>
+  <text class="sub" x="360" y="317" text-anchor="middle">Docker Compose · VPS · GitHub Actions deploy on push to main</text>
+</svg>

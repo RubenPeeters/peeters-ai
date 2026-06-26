@@ -63,6 +63,42 @@ import MatchupChart from '../../components/MatchupChart.astro';
 
 Lulu top destroys immobile melee: Fiora (100% over 5 games), Dr. Mundo (100%), Jax (80% over 10 games). The worst matchups are champions with sustained all-in that Lulu can't peel — K'Sante (29%), Yasuo (25%), Irelia (43%).
 
+## Keystone adaptation
+
+Electrocute is the default — but not the only option. The interesting part is when this player deviates.
+
+<MatchupChart
+  id="keystones"
+  title="Keystone usage across all 164 Lulu games"
+  valueLabel="Games"
+  valueSuffix=""
+  data={[
+    { label: "Electrocute", value: 138, games: 164, detail: "84% — default burst keystone" },
+    { label: "Summon Aery", value: 11, games: 164, detail: "7% — into Nautilus, some tanks" },
+    { label: "Arcane Comet", value: 8, games: 164, detail: "5% — poke-heavy lanes" },
+    { label: "Phase Rush", value: 5, games: 164, detail: "3% — exclusively into Darius/Rumble" },
+    { label: "Press the Attack", value: 4, games: 164, detail: "2% — rare, extended trades" },
+  ]}
+/>
+
+## Boot choice by matchup type
+
+The boot pick is the clearest signal of how this player reads the lane opponent.
+
+<MatchupChart
+  id="boots"
+  title="Boot choice by opponent category"
+  valueLabel="Win rate"
+  valueSuffix="%"
+  data={[
+    { label: "Swiftness → tanks", value: 72, games: 49, detail: "Sion, Zaahen, Vladimir, Fiora, Dr. Mundo" },
+    { label: "Merc Treads → AP", value: 67, games: 30, detail: "Aurora, Ryze, Rumble, Ornn" },
+    { label: "Steelcaps → AD", value: 63, games: 42, detail: "Irelia, Jax, Renekton, Ambessa, Riven" },
+  ]}
+/>
+
+Boots of Swiftness into tanks has the highest win rate — these are the matchups Lulu controls. Steelcaps into AD is defensive; the win rate drops because these are the harder matchups. The boot choice doesn't cause the win rate — it reflects the difficulty.
+
 ## The interesting finds
 
 The raw numbers are useful but not surprising. The builds are where it gets interesting.

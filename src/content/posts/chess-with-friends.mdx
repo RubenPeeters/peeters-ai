@@ -12,20 +12,17 @@ A few friends wanted to play chess against each other without juggling lichess a
 
 ## The architecture
 
-Four Node.js services behind a Caddy reverse proxy, with PostgreSQL for persistence and Redis for real-time state:
+Four Node.js services behind a Caddy reverse proxy, with PostgreSQL for persistence and Redis for real-time state.
 
-```
-browser ──▶ Caddy :80 ──▶ /ws*          → game    :4000  (WebSocket)
-                   ──▶ /api/social/*  → social  :3001  (HTTP, SSE)
-                   ──▶ /api/*         → api     :3000  (HTTP)
-                   ──▶ /              → frontend :80   (React SPA)
-```
+import ChessArchDiagram from '../../components/ChessArchDiagram.astro';
+
+<ChessArchDiagram />
 
 **Auth** handles registration, login, and OAuth (Google/GitHub). It issues 7-day JWTs — every other service validates these independently.
 
 **Game** is the authoritative chess engine. Clients connect via WebSocket, but the server validates every move with chess.js. The client is never trusted. Game state lives in Redis so a restart doesn't lose in-progress games.
 
-**Social** manages friends, invites, match history, and Glicko-2 ratings. It subscribes to a `game:finished` Redis pub/sub channel — when a game ends, it recomputes ratings transactionally. A separate SSE endpoint pushes notifications to connected browsers.
+**Social** manages friends, invites, match history, and Glicko-2 ratings. It subscribes to the `game:finished` Redis pub/sub channel — when a game ends, it recomputes ratings transactionally. A separate SSE endpoint pushes notifications to connected browsers.
 
 **Frontend** is a React SPA with react-chessboard for the board UI and a Stockfish Web Worker for post-game analysis.
 
