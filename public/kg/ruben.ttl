@@ -237,7 +237,7 @@ id:section-projects a pp:SiteSection ;
   pp:graphWeight 4 .
 
 id:section-blog a pp:SiteSection ;
-  schema:name "Blog"@en, "Blog"@nl ;
+  schema:name "Writing"@en, "Teksten"@nl ;
   schema:description
     "Technical articles, project write-ups, and reflections."@en,
     "Technische artikels, projectverslagen en reflecties."@nl ;

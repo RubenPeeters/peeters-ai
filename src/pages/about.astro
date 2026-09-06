@@ -1,15 +1,21 @@
 ---
 import Base from '~/layouts/Base.astro';
 import Timeline from '~/components/Timeline.astro';
-import { t } from '~/i18n/strings';
+import { t, pathFor } from '~/i18n/strings';
 
 const locale = 'en' as const;
 const s = t(locale);
 ---
 <Base locale={locale} routeKey="about" title={s.about.title} description={s.about.intro}>
   <article class="container about">
-    <p class="eyebrow">{s.about.title}</p>
-    <h1 class="intro">{s.about.intro}</h1>
+    <h1>{s.about.title}</h1>
+    <p class="intro">{s.about.intro}</p>
+
+    <nav class="about-links" aria-label={s.about.title}>
+      <a href={pathFor('cv', locale)}>{s.cv.title}</a>
+      <a href={pathFor('contact', locale)}>{s.contact.title}</a>
+      <a href={pathFor('projects', locale)}>{s.projects.title}</a>
+    </nav>
 
     <p class="currently">
       <span class="dot" aria-hidden="true"></span>
@@ -60,7 +66,6 @@ const s = t(locale);
       flex-direction: column;
       gap: var(--space-32);
     }
-    .about .eyebrow { margin: 0; }
     .intro {
       font-family: var(--font-sans);
       font-size: var(--text-tagline);

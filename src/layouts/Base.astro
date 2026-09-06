@@ -16,7 +16,7 @@ type Props = {
   title?: string;
   description?: string;
   /*
-    Chromeless layout hides the brand pill, primary nav, and footer; the
+    Chromeless layout hides the brand link, primary nav, and footer; the
     graph landing uses this so it can act as its own navigation. The lang
     switch stays, floating in the corner.
   */
@@ -60,7 +60,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#fbf7f0" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalUrl} />
@@ -84,12 +84,6 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <link rel="alternate" hreflang={otherLocale} href={otherUrl} />
     <link rel="alternate" hreflang="x-default" href={new URL(pathFor(routeKey, 'en'), Astro.site).href} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&display=swap"
-    />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
     <ClientRouter />
@@ -109,9 +103,9 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       </nav>
     ) : (
       <header class="container site-header">
-        <a href={pathFor('home', locale)} class="pill brand" aria-label={s.siteName}>RP</a>
+        <a href={pathFor('home', locale)} class="brand" aria-label={s.siteName}>{s.siteName}</a>
         {navKeys.length > 0 && (
-          <nav class="site-nav" aria-label="Sections">
+          <nav class="site-nav" aria-label={s.navigation.sections}>
             <ul>
               {navKeys.map((key) => (
                 <li>
@@ -138,6 +132,8 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         </nav>
       </header>
     )}
+
+    {!chromeless && <p class="container graph-return"><a href={pathFor('home', locale)}>&larr; {s.navigation.backToGraph}</a></p>}
 
     <main id="main">
       <slot />
@@ -179,13 +175,12 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-block: var(--space-32) var(--space-96);
+        padding-block: var(--space-24);
         gap: var(--space-16);
         flex-wrap: wrap;
       }
-      .brand {
-        font-weight: 500;
-      }
+      .brand { font-weight: 600; color: var(--color-text); text-decoration: none; }
+      .graph-return { font-size: var(--text-small); }
       .site-nav ul {
         display: flex;
         gap: var(--space-24);
@@ -200,7 +195,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         transition: color var(--dur) var(--ease);
       }
       .site-nav a:hover { color: var(--color-accent); }
-      .site-nav a[aria-current='page'] { color: var(--color-text); }
+      .site-nav a[aria-current='page'] { color: var(--color-text); font-weight: 600; }
       .lang-switch {
         display: flex;
         gap: var(--space-8);

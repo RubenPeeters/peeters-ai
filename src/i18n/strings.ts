@@ -38,7 +38,7 @@ export const routes: Record<RouteKey, RouteDef> = {
   },
   blog: {
     paths: { en: '/blog', nl: '/nl/blog' },
-    navLabel: { en: 'Blog', nl: 'Blog' },
+    navLabel: { en: 'Writing', nl: 'Teksten' },
     published: true,
   },
   cv: {
@@ -58,9 +58,7 @@ export function pathFor(routeKey: RouteKey, locale: Locale): string {
 }
 
 export function publishedNavRoutes(): RouteKey[] {
-  return (Object.keys(routes) as RouteKey[]).filter(
-    (k) => k !== 'home' && routes[k].published,
-  );
+  return (['blog', 'research', 'about'] as RouteKey[]).filter((key) => routes[key].published);
 }
 
 type TaglineParts = {
@@ -163,6 +161,7 @@ type CVCopy = {
 
 type Strings = {
   siteName: string;
+  navigation: { sections: string; backToGraph: string };
   eyebrow: string;
   tagline: string;
   taglineParts: TaglineParts;
@@ -224,6 +223,7 @@ const nlTagline: TaglineParts = {
 
 const en: Strings = {
   siteName: 'Ruben Peeters',
+  navigation: { sections: 'Sections', backToGraph: 'Back to the graph' },
   eyebrow: 'PhD candidate · KU Leuven',
   taglineParts: enTagline,
   tagline: joinTagline(enTagline),
@@ -356,7 +356,7 @@ const en: Strings = {
     more: 'More on GitHub',
   },
   blog: {
-    title: 'Blog',
+    title: 'Writing',
     intro: 'Occasional writing on research, tools, and things I find interesting.',
     readMore: 'Read more',
     publishedOn: 'Published',
@@ -411,6 +411,7 @@ const en: Strings = {
 
 const nl: Strings = {
   siteName: 'Ruben Peeters',
+  navigation: { sections: 'Secties', backToGraph: 'Terug naar de graaf' },
   eyebrow: 'Doctoraatsonderzoeker · KU Leuven',
   taglineParts: nlTagline,
   tagline: joinTagline(nlTagline),
@@ -544,7 +545,7 @@ const nl: Strings = {
     more: 'Meer op GitHub',
   },
   blog: {
-    title: 'Blog',
+    title: 'Teksten',
     intro: 'Af en toe schrijven over onderzoek, tools en dingen die me interesseren.',
     readMore: 'Lees meer',
     publishedOn: 'Gepubliceerd',

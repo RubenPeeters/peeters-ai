@@ -9,7 +9,7 @@ Source for **peeters.ai**, Ruben Peeters' personal website.
 - Stack: Astro + TypeScript, deployed to GitHub Pages
 - Tone: formal, warm, approachable — signals expertise without being stiff
 - Languages: Dutch (NL) and English (EN), with a toggle
-- Design direction: "Claude design" — warm cream background, coral accent, sans-serif throughout (Doumont-style legibility), generous whitespace, content-centered, minimal chrome
+- Design direction: white background, dark text, restrained blue links, plain document-like inner pages, compact readable spacing. Preserve the interactive RDF graph as the homepage entrance.
 
 ## Working agreement
 

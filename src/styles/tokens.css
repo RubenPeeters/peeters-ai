@@ -1,22 +1,22 @@
-/* Warm academic palette: paper, ink, restrained plum, and research-graph hues. */
+/* White paper, dark text, blue links; distinct hues for graph categories. */
 :root {
   /* Surface */
-  --color-bg: #fbf7f0;
-  --color-surface: #f1ebe1;
-  --color-border: #c9c0b5;
+  --color-bg: #ffffff;
+  --color-surface: #f5f6f8;
+  --color-border: #d7dce2;
 
   /* Ink */
-  --color-text: #25211f;
-  --color-text-muted: #625b56;
+  --color-text: #202124;
+  --color-text-muted: #565d66;
 
   /* Accents */
-  --color-accent: #765166;
-  --color-accent-hover: #583849;
+  --color-accent: #245b9e;
+  --color-accent-hover: #173f70;
   --color-tertiary: #a86452;
 
   /* Knowledge graph */
   --color-graph-link: #aaa099;
-  --color-graph-person: #765166;
+  --color-graph-person: #245b9e;
   --color-graph-organization: #9a5c49;
   --color-graph-skill: #376f68;
   --color-graph-topic: #48658d;
@@ -26,10 +26,10 @@
   --color-graph-education: #5b7e4c;
   --color-graph-section: #b4474f;
 
-  /* Literata carries the scholarly voice; Inter keeps interfaces quiet. */
-  --font-serif: 'Literata', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* System fonts keep pages close to a plain document. */
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
 
   /* Body 18px / 1.65 */
   --text-body: 1.125rem;
@@ -56,7 +56,7 @@
   --space-96: 6rem;
 
   /* Layout — narrow column for reading; landing graph escapes this measure */
-  --measure: 40rem;
+  --measure: 46rem;
 
   /* Motion */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
