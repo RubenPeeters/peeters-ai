@@ -26,7 +26,7 @@ type Props = {
 const { locale, routeKey, title, description, chromeless = false } = Astro.props;
 const s = t(locale);
 
-const pageTitle = title ? `${title} — ${s.siteName}` : s.siteName;
+const pageTitle = title ? `${title} | ${s.siteName}` : s.siteName;
 const pageDescription = description ?? s.tagline;
 
 const otherLocale: Locale = locale === 'en' ? 'nl' : 'en';

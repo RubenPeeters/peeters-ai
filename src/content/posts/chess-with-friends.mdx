@@ -8,7 +8,7 @@ draft: false
 locale: en
 ---
 
-A few friends wanted to play chess against each other without juggling lichess accounts and random matchmaking. So I built us a private platform. What started as a weekend project grew into a properly architected system — not because it needed to, but because the problems were interesting.
+A few friends wanted to play chess against each other without juggling lichess accounts and random matchmaking. So I built us a private platform. What started as a weekend project grew into a properly architected system, not because it needed to, but because the problems were interesting.
 
 ## The architecture
 
@@ -18,26 +18,26 @@ import ChessArchDiagram from '../../components/ChessArchDiagram.astro';
 
 <ChessArchDiagram />
 
-**Auth** handles registration, login, and OAuth (Google/GitHub). It issues 7-day JWTs — every other service validates these independently.
+**Auth** handles registration, login, and OAuth (Google/GitHub). It issues 7-day JWTs; every other service validates these independently.
 
 **Game** is the authoritative chess engine. Clients connect via WebSocket, but the server validates every move with chess.js. The client is never trusted. Game state lives in Redis so a restart doesn't lose in-progress games.
 
-**Social** manages friends, invites, match history, and Glicko-2 ratings. It subscribes to the `game:finished` Redis pub/sub channel — when a game ends, it recomputes ratings transactionally. A separate SSE endpoint pushes notifications to connected browsers.
+**Social** manages friends, invites, match history, and Glicko-2 ratings. It subscribes to the `game:finished` Redis pub/sub channel; when a game ends, it recomputes ratings transactionally. A separate SSE endpoint pushes notifications to connected browsers.
 
 **Frontend** is a React SPA with react-chessboard for the board UI and a Stockfish Web Worker for post-game analysis.
 
 ## The interesting problems
 
-**Authoritative clocks.** The server stores remaining time per player in Redis. On each move, it records a timestamp. When a client asks for the current clock, the server computes `stored_time - (now - last_timestamp)` for the active player. Increment is granted on every move. This means a 3+2 game displays 3:02 after white's first move — the increment applies even though no time was consumed. A small quirk, but it matches how FIDE clocks work.
+**Authoritative clocks.** The server stores remaining time per player in Redis. On each move, it records a timestamp. When a client asks for the current clock, the server computes `stored_time - (now - last_timestamp)` for the active player. Increment is granted on every move. This means a 3+2 game displays 3:02 after white's first move; the increment applies even though no time was consumed. A small quirk, but it matches how FIDE clocks work.
 
-**WebSocket reconnection.** Browsers disconnect constantly — tab switches, network blips, laptop lids closing. The client sends a `rejoin` message with the game ID after every reconnect. The server replays the current FEN, clocks, and move history. From the player's perspective, the game just continues. Linear backoff up to 10 attempts, then the client gives up.
+**WebSocket reconnection.** Browsers disconnect constantly: tab switches, network blips, laptop lids closing. The client sends a `rejoin` message with the game ID after every reconnect. The server replays the current FEN, clocks, and move history. From the player's perspective, the game just continues. Linear backoff up to 10 attempts, then the client gives up.
 
 **Ratings per time control.** Glicko-2 ratings are tracked separately for bullet, blitz, rapid, and classical. A database trigger seeds a default rating row for each time control when a user registers. The leaderboard shows all four, but friends mostly care about their blitz rating because that's what we play.
 
-**Cross-service events without HTTP.** The game service doesn't call the social service directly. Instead, it publishes to Redis pub/sub, and the social service subscribes. This keeps the services decoupled — the game service doesn't need to know that ratings exist, and the social service doesn't need to know how games are played. Adding a new consumer (analytics, match archiving) is one more subscriber.
+**Cross-service events without HTTP.** The game service doesn't call the social service directly. Instead, it publishes to Redis pub/sub, and the social service subscribes. This keeps the services decoupled: the game service doesn't need to know that ratings exist, and the social service doesn't need to know how games are played. Adding a new consumer (analytics, match archiving) is one more subscriber.
 
 ## Deployment
 
-A push to `main` triggers a GitHub Actions workflow that SSHes to a VPS, pulls the latest code, rebuilds all containers, and restarts. The whole stack is Docker Compose — no Kubernetes, no orchestrator. For a platform serving a dozen friends, that's exactly right.
+A push to `main` triggers a GitHub Actions workflow that SSHes to a VPS, pulls the latest code, rebuilds all containers, and restarts. The whole stack is Docker Compose: no Kubernetes, no orchestrator. For a platform serving a dozen friends, that's exactly right.
 
 Source code: [chess-with-friends on GitHub](https://github.com/RubenPeeters/chess-with-friends).

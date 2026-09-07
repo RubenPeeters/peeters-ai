@@ -12,7 +12,7 @@ Korean solo queue is where the meta gets discovered. New builds, rune pages, and
 
 I built a small Python pipeline that pulls a player's ranked match history from the Riot Games API, filters to a specific champion, and breaks down exactly what they build and run against each lane opponent. The goal: find adaptations that aren't in any guide yet.
 
-The test subject is a high-elo KR Lulu one-trick. Lulu top is already an unconventional pick — but the builds this player runs are even more unusual.
+The test subject is a high-elo KR Lulu one-trick. Lulu top is already an unconventional pick, but the builds this player runs are even more unusual.
 
 ## The pipeline
 
@@ -61,11 +61,11 @@ import MatchupChart from '../../components/MatchupChart.astro';
   ]}
 />
 
-Lulu top destroys immobile melee: Fiora (100% over 5 games), Dr. Mundo (100%), Jax (80% over 10 games). The worst matchups are champions with sustained all-in that Lulu can't peel — K'Sante (29%), Yasuo (25%), Irelia (43%).
+Lulu top destroys immobile melee: Fiora (100% over 5 games), Dr. Mundo (100%), Jax (80% over 10 games). The worst matchups are champions with sustained all-in that Lulu can't peel: K'Sante (29%), Yasuo (25%), Irelia (43%).
 
 ## Keystone adaptation
 
-Electrocute is the default — but not the only option. The interesting part is when this player deviates.
+Electrocute is the default, but not the only option. The interesting part is when this player deviates.
 
 <MatchupChart
   id="keystones"
@@ -73,11 +73,11 @@ Electrocute is the default — but not the only option. The interesting part is 
   valueLabel="Games"
   valueSuffix=""
   data={[
-    { label: "Electrocute", value: 138, games: 164, detail: "84% — default burst keystone" },
-    { label: "Summon Aery", value: 11, games: 164, detail: "7% — into Nautilus, some tanks" },
-    { label: "Arcane Comet", value: 8, games: 164, detail: "5% — poke-heavy lanes" },
-    { label: "Phase Rush", value: 5, games: 164, detail: "3% — exclusively into Darius/Rumble" },
-    { label: "Press the Attack", value: 4, games: 164, detail: "2% — rare, extended trades" },
+    { label: "Electrocute", value: 138, games: 164, detail: "84%: default burst keystone" },
+    { label: "Summon Aery", value: 11, games: 164, detail: "7%: into Nautilus, some tanks" },
+    { label: "Arcane Comet", value: 8, games: 164, detail: "5%: poke-heavy lanes" },
+    { label: "Phase Rush", value: 5, games: 164, detail: "3%: exclusively into Darius/Rumble" },
+    { label: "Press the Attack", value: 4, games: 164, detail: "2%: rare, extended trades" },
   ]}
 />
 
@@ -97,22 +97,22 @@ The boot pick is the clearest signal of how this player reads the lane opponent.
   ]}
 />
 
-Boots of Swiftness into tanks has the highest win rate — these are the matchups Lulu controls. Steelcaps into AD is defensive; the win rate drops because these are the harder matchups. The boot choice doesn't cause the win rate — it reflects the difficulty.
+Boots of Swiftness into tanks has the highest win rate; these are the matchups Lulu controls. Steelcaps into AD is defensive; the win rate drops because these are the harder matchups. The boot choice doesn't cause the win rate; it reflects the difficulty.
 
 ## The interesting finds
 
 The raw numbers are useful but not surprising. The builds are where it gets interesting.
 
-**Phase Rush into Darius.** Every guide says Electrocute on Lulu top. This player runs Phase Rush exclusively into Darius — 100% of 3 games, 100% win rate. The logic: Darius wants to stack his passive in extended trades. Phase Rush lets Lulu proc it with one combo and disengage before the bleed stacks. It's a matchup-specific adaptation you won't find on any stats site because the sample sizes are too small to surface.
+**Phase Rush into Darius.** Every guide says Electrocute on Lulu top. This player runs Phase Rush exclusively into Darius: 100% of 3 games, 100% win rate. The logic: Darius wants to stack his passive in extended trades. Phase Rush lets Lulu proc it with one combo and disengage before the bleed stacks. It's a matchup-specific adaptation you won't find on any stats site because the sample sizes are too small to surface.
 
-**Support Lulu into Nautilus.** When matched against Nautilus top (likely a support player autofilled), this player switches to an entirely different build: Summon Aery keystone, Dream Maker, Shurelya's Battlesong, Ionian Boots. They read the game state — if the opponent is playing a support champion, the game is going to be decided by teamfights, not lane. So they build to enable their team instead of trying to carry the lane.
+**Support Lulu into Nautilus.** When matched against Nautilus top (likely a support player autofilled), this player switches to an entirely different build: Summon Aery keystone, Dream Maker, Shurelya's Battlesong, Ionian Boots. They read the game state: if the opponent is playing a support champion, the game is going to be decided by teamfights, not lane. So they build to enable their team instead of trying to carry the lane.
 
 **Boot choice as a matchup read.** The boot choice maps cleanly to opponent type:
 - **Plated Steelcaps** into AD all-in (Irelia, Jax, Renekton, Ambessa, Riven)
 - **Mercury's Treads** into AP threats (Aurora, Ryze, Rumble, Ornn)
 - **Boots of Swiftness** into tanks and low-threat lanes (Sion, Zaahen, Vladimir, Dr. Mundo, Fiora)
 
-The Swiftness choice into Fiora is the non-obvious one — most players would go Steelcaps into a Fiora. But at this level, the Fiora matchup is about kiting and spacing, not tanking auto-attacks. Swiftness helps more.
+The Swiftness choice into Fiora is the non-obvious one; most players would go Steelcaps into a Fiora. But at this level, the Fiora matchup is about kiting and spacing, not tanking auto-attacks. Swiftness helps more.
 
 ## Takeaway
 
