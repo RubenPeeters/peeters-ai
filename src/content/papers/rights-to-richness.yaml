@@ -13,6 +13,7 @@ themes:
   - cultural-heritage
   - knowledge-graphs
 status: preprint
+featured: true
 citation:
   bibtex: |
     @inproceedings{peeters2025rights,

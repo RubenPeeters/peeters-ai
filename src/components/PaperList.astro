@@ -59,7 +59,7 @@ function toRis(d: typeof sorted[number]['data']): string {
     const ris = toRis(paper.data);
     const citeId = `cite-${paper.id}`;
     return (
-      <li class="paper">
+      <li class="paper" id={featured === undefined ? `paper-${paper.id}` : undefined}>
         <p class="meta">
           <span class="year">{year}</span>
           {showStatusPill && <span class="status">{s.statusLabels[status]}</span>}

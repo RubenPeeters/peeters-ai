@@ -2,6 +2,7 @@
 @prefix pp: <https://peeters.ai/ontology/> .
 @prefix schema: <https://schema.org/> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -144,12 +145,22 @@ id:hbm-toolkit a schema:ResearchProject ;
 
 id:paper-artkb a schema:ScholarlyArticle ;
   schema:name "ArtKB: A Multimodal Art Knowledge Base" ;
+  schema:description "Combines an RDF graph, visual embeddings, and digital assets."@en,
+    "Combineert een RDF-graaf, visuele embeddings en digitale objecten."@nl ;
+  schema:url <https://doi.org/10.1007/978-3-032-25159-6_4> ;
+  dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> ;
+  pp:usesMethod id:hybrid-storage ;
+  pp:usesOntology id:cacao ;
+  pp:usesDataset id:wikidata ;
+  pp:addressesQuestion id:question-integrated-heritage ;
+  pp:pathEn "/research#paper-artkb" ;
+  pp:pathNl "/nl/onderzoek#paper-artkb" ;
   schema:author id:ruben ;
   schema:about id:artkb, id:cultural-heritage, id:knowledge-graphs ;
   schema:datePublished "2026"^^xsd:gYear ;
   pp:showInGraph true ;
   pp:graphGroup "publication" ;
-  pp:graphWeight 2 .
+  pp:graphWeight 4 .
 
 id:paper-retrieval a schema:ScholarlyArticle ;
   schema:name "Knowledge-enhanced multimodal retrieval" ;
@@ -324,3 +335,119 @@ id:gaming a pp:Interest ;
   pp:showInGraph true ;
   pp:graphGroup "topic" ;
   pp:graphWeight 1 .
+
+# Source-backed enrichment. Source URNs identify local manuscripts documented in docs/paper-graph.md.
+
+id:paper-rights a schema:ScholarlyArticle ;
+  schema:name "Rights to Richness"@en, "Rights to Richness"@nl ;
+  schema:description "Models cultural-heritage context and machine-readable reuse rights through CACAO and ArtKB."@en, "Modelleert erfgoedcontext en machineleesbare hergebruikrechten via CACAO en ArtKB."@nl ;
+  dct:source <urn:peeters-ai:source:rights-to-richness-manuscript> ;
+  schema:author id:ruben ; pp:authorPosition 1 ; schema:about id:artkb, id:cultural-heritage ; pp:usesOntology id:cacao, id:odrl ; pp:usesMethod id:competency-questions ; pp:addressesQuestion id:question-rights-context ; pp:pathEn "/research#paper-rights-to-richness" ; pp:pathNl "/nl/onderzoek#paper-rights-to-richness" ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 4 .
+
+id:paper-text2kg-failures a schema:ScholarlyArticle ;
+  schema:name "Text2KG failure modes"@en, "Text2KG-faalwijzen"@nl ;
+  schema:description "Manuscript comparing monolithic and agentic extraction, contract checks, and SHACL repair on event-centric heritage graphs."@en, "Manuscript dat monolithische en agentgebaseerde extractie, contractcontroles en SHACL-herstel vergelijkt op eventgerichte erfgoedgrafen."@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+  schema:author id:ruben ; pp:authorPosition 1 ; schema:about id:cultural-heritage ; pp:usesOntology id:cacao, id:cidoc-crm ; pp:usesMethod id:validation-comparison ; pp:usesDataset id:heritagekgbench, id:text2kgbench ; pp:addressesQuestion id:question-extraction-failures ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 4 .
+
+id:paper-table-annotation a schema:ScholarlyArticle ;
+  schema:name "Rank-Route-Rerank"@en, "Rank-Route-Rerank"@nl ;
+  schema:description "Second-author manuscript on cost-efficient column typing: a small model ranks candidates and routes uncertain columns to a large model."@en, "Manuscript als tweede auteur over kostenefficiënte kolomtypering: een klein model rangschikt kandidaten en stuurt onzekere kolommen naar een groot model."@nl ;
+  dct:source <urn:peeters-ai:source:rank-route-rerank-manuscript> ;
+  schema:author id:ruben ; pp:authorPosition 2 ; pp:usesMethod id:confidence-routing ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 1 .
+
+id:cacao a owl:Ontology ;
+  schema:name "CACAO"@en, "CACAO"@nl ;
+  schema:description "Extends CIDOC-CRM with contextual concepts and connects cultural artefacts to ODRL rights policies."@en, "Breidt CIDOC-CRM uit met contextuele concepten en verbindt erfgoedobjecten met ODRL-rechtenbeleid."@nl ;
+  dct:source <urn:peeters-ai:source:rights-to-richness-manuscript> ;
+  pp:usesOntology id:cidoc-crm, id:odrl ;
+  pp:showInGraph true ; pp:graphGroup "ontology" ; pp:graphWeight 2 .
+
+id:cidoc-crm a owl:Ontology ;
+  schema:name "CIDOC-CRM"@en, "CIDOC-CRM"@nl ;
+  schema:description "Event-centric conceptual model used for cultural-heritage representation."@en, "Eventgericht conceptueel model voor het representeren van cultureel erfgoed."@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "ontology" ; pp:graphWeight 1 .
+
+id:odrl a owl:Ontology ;
+  schema:name "ODRL"@en, "ODRL"@nl ;
+  schema:description "Policy vocabulary used for machine-readable rights in CACAO."@en, "Beleidsvocabularium voor machineleesbare rechten in CACAO."@nl ;
+  dct:source <urn:peeters-ai:source:rights-to-richness-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "ontology" ; pp:graphWeight 1 .
+
+id:hybrid-storage a pp:Method ;
+  schema:name "RDF, vectors, and objects"@en, "RDF, vectoren en objecten"@nl ;
+  schema:description "ArtKB combines GraphDB, Qdrant, and MinIO through a FastAPI backend."@en, "ArtKB combineert GraphDB, Qdrant en MinIO via een FastAPI-backend."@nl ;
+  dct:source <https://github.com/links-ads/eswc26-artkb> ;
+  pp:usesTechnology id:rdf, id:sparql ;
+  pp:showInGraph true ; pp:graphGroup "method" ; pp:graphWeight 1 .
+
+id:competency-questions a pp:Method ;
+  schema:name "Competency-question validation"@en, "Validatie met competentievragen"@nl ;
+  schema:description "Uses stakeholder requirements and SPARQL competency questions to evaluate the ontology against ArtKB."@en, "Gebruikt stakeholdervereisten en SPARQL-competentievragen om de ontologie tegen ArtKB te evalueren."@nl ;
+  dct:source <urn:peeters-ai:source:rights-to-richness-manuscript> ;
+  pp:usesTechnology id:sparql ;
+  pp:showInGraph true ; pp:graphGroup "method" ; pp:graphWeight 1 .
+
+id:validation-comparison a pp:Method ;
+  schema:name "Extraction and validation study"@en, "Extractie- en validatiestudie"@nl ;
+  schema:description "Compares stage-local Design-by-Contract checks and post-hoc SHACL repair, then examines extraction failure modes."@en, "Vergelijkt lokale Design-by-Contract-controles en SHACL-herstel achteraf, en onderzoekt vervolgens extractiefouten."@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "method" ; pp:graphWeight 1 .
+
+id:confidence-routing a pp:Method ;
+  schema:name "Confidence-based routing"@en, "Routering op basis van zekerheid"@nl ;
+  schema:description "A small-model shortlist and confidence threshold limit which columns need LLM reranking."@en, "Een kandidatenlijst van een klein model en een zekerheidsdrempel beperken welke kolommen LLM-herrangschikking nodig hebben."@nl ;
+  dct:source <urn:peeters-ai:source:rank-route-rerank-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "method" ; pp:graphWeight 1 .
+
+id:wikidata a schema:Dataset ;
+  schema:name "Wikidata"@en, "Wikidata"@nl ;
+  schema:description "Source of structured heritage data for ArtKB."@en, "Bron van gestructureerde erfgoeddata voor ArtKB."@nl ;
+  dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> ;
+
+  pp:showInGraph true ; pp:graphGroup "dataset" ; pp:graphWeight 1 .
+
+id:heritagekgbench a schema:Dataset ;
+  schema:name "HeritageKGBench"@en, "HeritageKGBench"@nl ;
+  schema:description "Thirty museum texts annotated against CIDOC-CRM and CACAO in the local manuscript."@en, "Dertig museumteksten geannoteerd met CIDOC-CRM en CACAO in het lokale manuscript."@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+  pp:usesOntology id:cidoc-crm, id:cacao ;
+  pp:showInGraph true ; pp:graphGroup "dataset" ; pp:graphWeight 1 .
+
+id:text2kgbench a schema:Dataset ;
+  schema:name "Text2KGBench"@en, "Text2KGBench"@nl ;
+  schema:description "General-domain benchmark used before transferring the extraction variants to heritage text."@en, "Algemeen benchmark gebruikt voordat de extractievarianten op erfgoedtekst worden toegepast."@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "dataset" ; pp:graphWeight 1 .
+
+id:question-rights-context a pp:ResearchQuestion ;
+  schema:name "Rights and context"@en, "Rechten en context"@nl ;
+  schema:description "Editorial summary: how can integrated heritage data retain context and express reuse permissions?"@en, "Redactionele samenvatting: hoe kan geïntegreerde erfgoeddata context behouden en hergebruikrechten uitdrukken?"@nl ;
+  dct:source <urn:peeters-ai:source:rights-to-richness-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "question" ; pp:graphWeight 1 .
+
+id:question-extraction-failures a pp:ResearchQuestion ;
+  schema:name "Why heritage extraction fails"@en, "Waarom erfgoedextractie faalt"@nl ;
+  schema:description "Editorial summary: where do extraction and validation fail on event-centric, ambiguous heritage text?"@en, "Redactionele samenvatting: waar falen extractie en validatie bij eventgerichte, ambigue erfgoedtekst?"@nl ;
+  dct:source <urn:peeters-ai:source:text2kg-failure-manuscript> ;
+
+  pp:showInGraph true ; pp:graphGroup "question" ; pp:graphWeight 1 .
+
+id:question-integrated-heritage a pp:ResearchQuestion ;
+  schema:name "Integrated heritage data"@en, "Geïntegreerde erfgoeddata"@nl ;
+  schema:description "Editorial summary: how can symbolic knowledge, visual representations, and digital assets work together?"@en, "Redactionele samenvatting: hoe kunnen symbolische kennis, visuele representaties en digitale objecten samenwerken?"@nl ;
+  dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> ;
+
+  pp:showInGraph true ; pp:graphGroup "question" ; pp:graphWeight 1 .
+
+id:artkb pp:usesOntology id:cacao ; pp:usesMethod id:hybrid-storage ; pp:usesDataset id:wikidata ; dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> .

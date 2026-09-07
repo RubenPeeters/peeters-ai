@@ -80,3 +80,29 @@ pp:pathEn a owl:DatatypeProperty ;
 pp:pathNl a owl:DatatypeProperty ;
   rdfs:label "Dutch path"@en ;
   rdfs:range xsd:string .
+
+pp:ResearchQuestion a owl:Class ;
+  rdfs:label "research question"@en, "onderzoeksvraag"@nl .
+
+pp:Method a owl:Class ;
+  rdfs:label "method"@en, "methode"@nl .
+
+pp:addressesQuestion a owl:ObjectProperty ;
+  rdfs:label "addresses"@en, "onderzoekt"@nl ;
+  rdfs:range pp:ResearchQuestion .
+
+pp:usesMethod a owl:ObjectProperty ;
+  rdfs:label "uses method"@en, "gebruikt methode"@nl ;
+  rdfs:range pp:Method .
+
+pp:usesDataset a owl:ObjectProperty ;
+  rdfs:label "uses data from"@en, "gebruikt data uit"@nl ;
+  rdfs:range schema:Dataset .
+
+pp:usesOntology a owl:ObjectProperty ;
+  rdfs:label "uses ontology"@en, "gebruikt ontologie"@nl ;
+  rdfs:range owl:Ontology .
+
+pp:authorPosition a owl:DatatypeProperty ;
+  rdfs:label "author position"@en, "auteurspositie"@nl ;
+  rdfs:range xsd:positiveInteger .
