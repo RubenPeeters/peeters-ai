@@ -283,6 +283,7 @@ const clientCopy = {
   }
   .kg-node[data-clickable='true']:hover .kg-click-ring,
   .kg-node[data-clickable='true']:focus .kg-click-ring { stroke-width: 4; }
+  .kg-node[data-image='true'] > circle:not(.kg-click-ring) { fill: #fff; }
   .kg-node image { pointer-events: none; }
   .kg-key {
     margin-top: var(--space-12);
@@ -711,6 +712,7 @@ const clientCopy = {
         .attr('class', 'kg-node')
         .attr('data-group', (node) => node.group)
         .attr('data-clickable', (node) => String(Boolean(node.href)))
+        .attr('data-image', (node) => String(Boolean(node.image)))
         .attr('data-priority', (node) => node.weight >= 3 || node.degree >= 6 ? 'high' : 'normal')
         .attr('tabindex', 0)
         .attr('role', (node) => node.href ? 'link' : 'img')
@@ -727,12 +729,13 @@ const clientCopy = {
         .each(function (node, index) {
           const group = select(this);
           const clipId = `kg-image-${locale}-${index}`;
+          const imageSize = (node.radius - 3) * (node.group === 'person' ? 2 : Math.SQRT2);
           group.append('clipPath').attr('id', clipId)
             .append('circle').attr('r', node.radius - 3);
           group.append('image')
             .attr('href', node.image!)
-            .attr('x', -node.radius + 3).attr('y', -node.radius + 3)
-            .attr('width', (node.radius - 3) * 2).attr('height', (node.radius - 3) * 2)
+            .attr('x', -imageSize / 2).attr('y', -imageSize / 2)
+            .attr('width', imageSize).attr('height', imageSize)
             .attr('preserveAspectRatio', node.group === 'person' ? 'xMidYMid slice' : 'xMidYMid meet')
             .attr('clip-path', `url(#${clipId})`)
             .attr('aria-hidden', 'true')

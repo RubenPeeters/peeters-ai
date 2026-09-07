@@ -24,6 +24,7 @@ id:ruben a schema:Person ;
   pp:graphWeight 5 .
 
 id:ku-leuven a schema:CollegeOrUniversity ;
+  schema:image "/kg/images/ku-leuven.svg" ;
   schema:name "KU Leuven" ;
   schema:description
     "University in Leuven, Belgium."@en,
@@ -41,6 +42,7 @@ id:phd-researcher a pp:Role ;
   pp:graphWeight 2 .
 
 id:knowledge-graphs a pp:Skill, pp:Interest ;
+  schema:image "/kg/images/knowledge-graphs.svg" ;
   schema:name "Knowledge graphs"@en, "Kennisgrafen"@nl ;
   schema:description
     "Connecting heterogeneous knowledge so that people and machines can use it."@en,
@@ -51,6 +53,7 @@ id:knowledge-graphs a pp:Skill, pp:Interest ;
   pp:graphWeight 4 .
 
 id:multimodal-ml a pp:Skill, pp:Interest ;
+  schema:image "/kg/images/multimodal-ml.svg" ;
   schema:name "Multimodal ML"@en, "Multimodale ML"@nl ;
   pp:usesTechnology id:python ;
   pp:showInGraph true ;
@@ -58,18 +61,21 @@ id:multimodal-ml a pp:Skill, pp:Interest ;
   pp:graphWeight 3 .
 
 id:rdf a pp:Skill ;
+  schema:image "/kg/images/rdf.svg" ;
   schema:name "RDF" ;
   pp:showInGraph true ;
   pp:graphGroup "technology" ;
   pp:graphWeight 1 .
 
 id:sparql a pp:Skill ;
+  schema:image "/kg/images/sparql.svg" ;
   schema:name "SPARQL" ;
   pp:showInGraph true ;
   pp:graphGroup "technology" ;
   pp:graphWeight 1 .
 
 id:python a pp:Skill ;
+  schema:image "/kg/images/python.svg" ;
   schema:name "Python" ;
   pp:showInGraph true ;
   pp:graphGroup "technology" ;
@@ -82,6 +88,7 @@ id:typescript a pp:Skill ;
   pp:graphWeight 1 .
 
 id:cultural-heritage a pp:Interest ;
+  schema:image "/kg/images/cultural-heritage.svg" ;
   schema:name "Cultural heritage"@en, "Cultureel erfgoed"@nl ;
   schema:description
     "Making digitised heritage easier to discover, understand, and reuse."@en,
@@ -91,6 +98,7 @@ id:cultural-heritage a pp:Interest ;
   pp:graphWeight 4 .
 
 id:human-biomonitoring a pp:Interest ;
+  schema:image "/kg/images/human-biomonitoring.svg" ;
   schema:name "Human biomonitoring" ;
   schema:description
     "Improving interoperability between environmental health datasets."@en,
@@ -281,6 +289,7 @@ id:section-contact a pp:SiteSection ;
   pp:graphWeight 4 .
 
 id:ugent a schema:CollegeOrUniversity ;
+  schema:image "/kg/images/ugent.png" ;
   schema:name "Ghent University (UGent)"@en, "Universiteit Gent (UGent)"@nl ;
   pp:showInGraph true ;
   pp:graphGroup "organization" ;
