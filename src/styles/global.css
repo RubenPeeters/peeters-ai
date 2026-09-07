@@ -48,23 +48,12 @@ h3 {
 
 p { margin: 0; max-width: 68ch; text-wrap: pretty; }
 
-/*
-  Page lede — the section's one message, carried by the <h1> so it leads the
-  document outline. Kept at body weight and tracking so it reads as a sentence,
-  not a heavy title; the h1 defaults above would otherwise overstate it.
-*/
-h1.intro {
-  font-weight: 400;
-  letter-spacing: -0.015em;
-}
-
-/*
-  Inline links: ink-colored with a transparent underline that warms to azure on hover.
-  Underline doesn't flash on — it warms.
-*/
+/* Links remain identifiable without hovering. */
 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  text-decoration-thickness: 1px;
   border-bottom: 1px solid transparent;
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
@@ -100,14 +89,14 @@ a.ext:hover::after {
   color: var(--color-text-muted);
 }
 
-/* Outline pill — for monogram brand and language toggle */
+/* Plain brand and language links. */
 .pill {
   display: inline-flex;
   align-items: center;
   gap: var(--space-8);
-  padding: var(--space-4) var(--space-12);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
+  padding: var(--space-4) 0;
+  border: none;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: var(--text-mono);
   letter-spacing: 0.08em;
@@ -164,3 +153,52 @@ a.ext:hover::after {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Inner pages share a compact reading rhythm without resizing the graph. */
+body:not(.is-chromeless) {
+  --text-h1: clamp(2rem, 5vw, 2.5rem);
+  --text-tagline: 1.125rem;
+  --space-48: 2rem;
+  --space-96: 3rem;
+}
+body:not(.is-chromeless) h1,
+body:not(.is-chromeless) h2,
+body:not(.is-chromeless) h3 {
+  font-family: var(--font-sans);
+  letter-spacing: normal;
+}
+body:not(.is-chromeless) .intro { max-width: none; }
+body:not(.is-chromeless) .eyebrow,
+body:not(.is-chromeless) .meta,
+body:not(.is-chromeless) .theme-name {
+  text-transform: none;
+  letter-spacing: normal;
+}
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  font-size: var(--text-small);
+}
+
+mark {
+  background: #fff0a8;
+  color: inherit;
+  padding-inline: 0.08em;
+}
+.prose .callout {
+  --callout-color: #245b9e;
+  --callout-bg: #f0f6fd;
+  border-left: 3px solid var(--callout-color);
+  background: var(--callout-bg);
+  padding: 0.75rem 1rem;
+  font-style: normal;
+  color: var(--color-text);
+}
+.prose .callout-tip { --callout-color: #276749; --callout-bg: #eff8f2; }
+.prose .callout-warning { --callout-color: #865800; --callout-bg: #fff8e8; }
+.prose .callout > * { margin: 0; }
+.prose .callout > * + * { margin-top: 0.75rem; }
+.prose .callout-title { font-weight: 600; color: var(--callout-color); }
+.prose summary.callout-title { cursor: pointer; }
+.prose summary.callout-title:focus-visible { outline: 2px solid var(--callout-color); outline-offset: 4px; }

@@ -30,6 +30,10 @@ src/
 public/         # Static assets served as-is
 ```
 
+## Authoring
+
+See [writing syntax](docs/writing.md) for highlights and note, tip, and warning callouts in Markdown and MDX.
+
 ## Contributing
 
 This is a personal site, so external contributions aren't expected. Internal workflow:

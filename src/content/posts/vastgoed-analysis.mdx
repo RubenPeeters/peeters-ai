@@ -10,7 +10,7 @@ locale: en
 
 I grew up in the Kempen, the stretch of Antwerp province roughly bounded by Turnhout, Geel, and Herentals. When I started looking at apartments a few years ago, the received wisdom was clear: buy in the Kempen while it is still affordable, because prices will catch up to the cities eventually. That sounded reasonable, but I wanted to see whether the data actually supports it.
 
-Belgium publishes quarterly median transaction prices per municipality through Statbel, going back to 2010. That gives us about 34,000 rows covering every municipality in the country — enough to fit trend lines and compare regions properly.
+Belgium publishes quarterly median transaction prices per municipality through Statbel, going back to 2010. That gives us about 34,000 rows covering every municipality in the country, enough to fit trend lines and compare regions properly.
 
 ## The data
 
@@ -41,7 +41,7 @@ import MatchupChart from '../../components/MatchupChart.astro';
   ]}
 />
 
-Turnhout sits near the bottom of the comparison — only Brugge grew more slowly. Herentals, a Kempen neighbour just 15 km away, grew at 4.8% and now trades at a higher median than Turnhout. That is not what you would expect if the Kempen were moving as a single undervalued block.
+Turnhout sits near the bottom of the comparison; only Brugge grew more slowly. Herentals, a Kempen neighbour just 15 km away, grew at 4.8% and now trades at a higher median than Turnhout. That is not what you would expect if the Kempen were moving as a single undervalued block.
 
 ## Where prices stand today
 
@@ -64,7 +64,7 @@ The growth rate chart tells you how fast prices moved, but not where they ended 
   ]}
 />
 
-Turnhout is the cheapest city in this comparison at EUR 237,000 — about 76% of Gent's median. But the gap is not as dramatic as people tend to assume. The Kempen towns of Geel and Herentals have already converged with Antwerpen in absolute price terms, sitting in the EUR 250-255K range.
+Turnhout is the cheapest city in this comparison at EUR 237,000, about 76% of Gent's median. But the gap is not as dramatic as people tend to assume. The Kempen towns of Geel and Herentals have already converged with Antwerpen in absolute price terms, sitting in the EUR 250-255K range.
 
 ## How prices diverged over time
 
@@ -106,11 +106,11 @@ import LineChart from '../../components/LineChart.astro';
 
 One of the more useful findings from this analysis: linear trend models consistently overstate growth rates compared to exponential fits. For Turnhout, the linear estimate is 3.6% per year versus 3.1% exponential. That half-percent difference compounds: over a 20-year mortgage it means predicting EUR 285K instead of EUR 265K at maturity.
 
-The exponential model wins on R-squared for every city over the full data window. Over shorter windows (five years), the two fits are nearly indistinguishable — which makes sense, since any smooth curve looks linear if you zoom in far enough. The practical takeaway: if you are projecting property values over a decade or more, use an exponential fit.
+The exponential model wins on R-squared for every city over the full data window. Over shorter windows (five years), the two fits are nearly indistinguishable, which makes sense, since any smooth curve looks linear if you zoom in far enough. The practical takeaway: if you are projecting property values over a decade or more, use an exponential fit.
 
 ## What this means for the Kempen
 
-The "buy in the Kempen because it is cheap" narrative is partly outdated. Geel and Herentals are no longer meaningfully cheaper than Antwerpen for apartments. Turnhout remains the most affordable option, but it also has the slowest growth — meaning the gap is widening, not closing.
+The "buy in the Kempen because it is cheap" narrative is partly outdated. Geel and Herentals are no longer meaningfully cheaper than Antwerpen for apartments. Turnhout remains the most affordable option, but it also has the slowest growth, meaning the gap is widening, not closing.
 
 None of this is investment advice. Municipal medians smooth over enormous variation within a city, the data says nothing about specific neighbourhoods or property quality, and 15 years of history does not predict the next 15. But if you hear someone say the Kempen is undervalued, it is worth checking which part of the Kempen they mean.
 

@@ -10,8 +10,8 @@ const s = t(locale);
 <Base locale={locale} routeKey="cv" title={s.cv.title} description={s.cv.intro}>
   <article class="container cv-page">
     <header class="cv-header">
-      <p class="eyebrow">{s.cv.title}</p>
-      <h1 class="intro">{s.cv.intro}</h1>
+      <h1>{s.cv.title}</h1>
+      <p class="intro">{s.cv.intro}</p>
       <button class="print-btn" type="button" onclick="window.print()">
         {s.cv.downloadLabel}
       </button>
@@ -59,7 +59,6 @@ const s = t(locale);
       flex-direction: column;
       gap: var(--space-32);
     }
-    .cv-page .eyebrow { margin: 0; }
     .cv-header {
       display: flex;
       flex-direction: column;
