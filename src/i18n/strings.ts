@@ -123,6 +123,8 @@ type GraphCopy = {
   eyebrow: string;
   intro: string;
   hint: string;
+  linkHint: string;
+  openPage: string;
   loading: string;
   loadError: string;
   dataLink: string;
@@ -236,7 +238,9 @@ const en: Strings = {
     eyebrow: 'Knowledge graph · portfolio',
     intro:
       'Research, software, and side projects are connected here as one explorable knowledge graph.',
-    hint: 'Drag nodes, scroll to zoom, or select a highlighted section.',
+    hint: 'Drag nodes, scroll to zoom, or focus a node for details.',
+    linkHint: 'Blue rings and arrows open a page. Pictures have larger previews on hover or focus.',
+    openPage: 'Open page',
     loading: 'Building the graph from RDF…',
     loadError: 'The graph could not be loaded. Use the section links instead.',
     dataLink: 'View the RDF data',
@@ -428,7 +432,9 @@ const nl: Strings = {
     eyebrow: 'Kennisgraaf · portfolio',
     intro:
       'Onderzoek, software en bijprojecten komen hier samen in één verkenbare kennisgraaf.',
-    hint: 'Sleep knopen, scroll om te zoomen of kies een uitgelichte sectie.',
+    hint: 'Sleep knopen, scroll om te zoomen of focus een knoop voor details.',
+    linkHint: 'Blauwe ringen en pijlen openen een pagina. Afbeeldingen hebben een grotere voorvertoning bij aanwijzen of focus.',
+    openPage: 'Open pagina',
     loading: 'De graaf wordt opgebouwd uit RDF…',
     loadError: 'De graaf kon niet worden geladen. Gebruik de sectielinks.',
     dataLink: 'Bekijk de RDF-data',

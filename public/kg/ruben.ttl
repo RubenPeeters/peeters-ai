@@ -451,3 +451,13 @@ id:question-integrated-heritage a pp:ResearchQuestion ;
   pp:showInGraph true ; pp:graphGroup "question" ; pp:graphWeight 1 .
 
 id:artkb pp:usesOntology id:cacao ; pp:usesMethod id:hybrid-storage ; pp:usesDataset id:wikidata ; dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> .
+
+# Graph images are local assets, with origins recorded in docs/graph-images.md.
+id:ruben schema:image "/kg/images/ruben.jpg" ;
+  pp:pathEn "/about" ; pp:pathNl "/nl/over-mij" .
+id:paper-rights schema:image "/kg/images/cacao.png" .
+id:cacao schema:image "/kg/images/cacao.png" .
+id:paper-text2kg-failures schema:image "/kg/images/text2kg-pipeline.png" .
+id:paper-artkb schema:image "/kg/images/artkb.png" .
+id:artkb schema:image "/kg/images/artkb.png" ;
+  pp:pathEn "/research#paper-artkb" ; pp:pathNl "/nl/onderzoek#paper-artkb" .
