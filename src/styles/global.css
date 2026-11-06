@@ -25,21 +25,24 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: var(--font-serif);
   font-weight: 600;
-  letter-spacing: -0.025em;
   margin: 0;
   text-wrap: balance;
 }
 
+/* Bagel Fat One ships one weight; anything heavier would be faux bold.
+   Page titles are display-l, section titles display-m (design/tokens.css). */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
 h1 {
-  font-size: var(--text-h1);
-  line-height: var(--leading-tight);
-  letter-spacing: -0.025em;
+  font-size: 40px;
+  line-height: 1;
 }
 h2 {
-  font-size: var(--text-h2);
-  line-height: var(--leading-snug);
+  font-size: 28px;
+  line-height: 1.1;
 }
 h3 {
   font-size: var(--text-h3);
@@ -156,16 +159,9 @@ a.ext:hover::after {
 
 /* Inner pages share a compact reading rhythm without resizing the graph. */
 body:not(.is-chromeless) {
-  --text-h1: clamp(2rem, 5vw, 2.5rem);
   --text-tagline: 1.125rem;
   --space-48: 2rem;
   --space-96: 3rem;
-}
-body:not(.is-chromeless) h1,
-body:not(.is-chromeless) h2,
-body:not(.is-chromeless) h3 {
-  font-family: var(--font-sans);
-  letter-spacing: normal;
 }
 body:not(.is-chromeless) .intro { max-width: none; }
 body:not(.is-chromeless) .eyebrow,
@@ -183,22 +179,21 @@ body:not(.is-chromeless) .theme-name {
 
 mark {
   background: #fff0a8;
-  color: inherit;
+  color: var(--line);
   padding-inline: 0.08em;
 }
 .prose .callout {
   --callout-color: #245b9e;
-  --callout-bg: #f0f6fd;
   border-left: 3px solid var(--callout-color);
-  background: var(--callout-bg);
+  background: color-mix(in srgb, var(--callout-color) 8%, var(--color-surface));
   padding: 0.75rem 1rem;
   font-style: normal;
   color: var(--color-text);
 }
-.prose .callout-tip { --callout-color: #276749; --callout-bg: #eff8f2; }
-.prose .callout-warning { --callout-color: #865800; --callout-bg: #fff8e8; }
+.prose .callout-tip { --callout-color: #276749; }
+.prose .callout-warning { --callout-color: #865800; }
 .prose .callout > * { margin: 0; }
 .prose .callout > * + * { margin-top: 0.75rem; }
-.prose .callout-title { font-weight: 600; color: var(--callout-color); }
+.prose .callout-title { font-weight: 600; color: color-mix(in srgb, var(--callout-color) 60%, var(--color-text)); }
 .prose summary.callout-title { cursor: pointer; }
 .prose summary.callout-title:focus-visible { outline: 2px solid var(--callout-color); outline-offset: 4px; }

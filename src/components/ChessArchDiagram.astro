@@ -7,7 +7,7 @@
   <style>{`
     svg text { font-family: Inter, system-ui, sans-serif; fill: #25211f; }
     .box { rx: 6; stroke: #c9c0b5; stroke-width: 1.5; }
-    .label { font-size: 13px; font-weight: 600; }
+    .label { font-size: 13px; font-weight: 600; letter-spacing: normal; }
     .sub { font-size: 11px; fill: #625b56; }
     .route { font-size: 10px; fill: #625b56; }
     .arrow { stroke: #625b56; stroke-width: 1.5; fill: none; marker-end: url(#ah); }
@@ -16,6 +16,8 @@
     .bg-service { fill: #fbf7f0; }
     .bg-data { fill: #eae4da; }
   `}</style>
+  <!-- fixed light backdrop: the diagram's greys are tuned for light and must stay readable on the dark canvas -->
+  <rect width="720" height="340" rx="8" fill="#fdfbf7"/>
 
   <rect class="box bg-browser" x="20" y="130" width="110" height="60"/>
   <text class="label" x="75" y="158" text-anchor="middle">Browser</text>

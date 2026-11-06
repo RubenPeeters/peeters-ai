@@ -1,0 +1,158 @@
+/* Copied from `RubenPeeters/design` at commit `087a9b9` (087a9b99b53e962039de2ed7bb6fa4df39e63d32). Do not edit here: change the design repo, then re-copy. */
+/* Peeters Design System: generated from tokens.json by scripts/build-tokens.mjs. Do not edit. */
+
+:root, [data-theme="light"] {
+  --canvas: #edf0e9;
+  --surface: #ffffff;
+  --surface-sunken: #f3f5f0;
+  --hairline: #dce1d8;
+  --text: #1c2420;
+  --muted: #5b675f;
+  --btn: #1c2420;
+  --on-btn: #ffffff;
+  --focus: #1c2420;
+  --warn-bg: #fce6d4;
+  --warn-text: #9a4a12;
+  --ok-bg: #e3f0da;
+  --ok-text: #2f6b2a;
+  --paper: #f3ebd8;
+  --line: #1f1d1a;
+  --ink-blue: #3b82c4;
+  --ink-sky: #4f8fd6;
+  --ink-lime: #9cc63f;
+  --ink-pink: #f29bc4;
+  --ink-teal: #7fc6c2;
+  --ink-yellow: #f4c542;
+  --ink-orange: #f26b2e;
+  --shadow-card: 0 1px 2px rgba(20,30,20,0.05), 0 8px 24px -12px rgba(20,30,20,0.12);
+}
+
+[data-theme="dark"] {
+  --canvas: #141815;
+  --surface: #1d221e;
+  --surface-sunken: #262c27;
+  --hairline: #2e352f;
+  --text: #e9ede6;
+  --muted: #9aa69d;
+  --btn: #e9ede6;
+  --on-btn: #141815;
+  --focus: #e9ede6;
+  --warn-bg: #3d2716;
+  --warn-text: #f2b88c;
+  --ok-bg: #1f2d1c;
+  --ok-text: #a8d99a;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #141815;
+    --surface: #1d221e;
+    --surface-sunken: #262c27;
+    --hairline: #2e352f;
+    --text: #e9ede6;
+    --muted: #9aa69d;
+    --btn: #e9ede6;
+    --on-btn: #141815;
+    --focus: #e9ede6;
+    --warn-bg: #3d2716;
+    --warn-text: #f2b88c;
+    --ok-bg: #1f2d1c;
+    --ok-text: #a8d99a;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+    color-scheme: dark;
+  }
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-input: 10px;
+  --radius-print: 12px;
+  --radius-card: 18px;
+  --radius-pill: 999px;
+  --stroke-line: 2.5px;
+  --stroke-print: 2px;
+  --font-display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --font-sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+.display-xl {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.display-l {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.display-m {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.display-s {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 23px;
+  font-weight: 400;
+}
+
+.small {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.button {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.data {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}

@@ -10,7 +10,7 @@ Source for **peeters.ai**, Ruben Peeters' personal website.
 - Tone: formal, warm, approachable. Signals expertise without being stiff.
 - Copy: avoid em dashes in both languages; use natural sentence punctuation instead.
 - Languages: Dutch (NL) and English (EN), with a toggle
-- Design direction: white background, dark text, restrained blue links, plain document-like inner pages, compact readable spacing. Preserve the interactive RDF graph as the homepage entrance.
+- Design: the Peeters Design System (RubenPeeters/design), copied into src/styles/design/. Preserve the interactive RDF graph as the homepage entrance.
 
 ## Working agreement (forge)
 
