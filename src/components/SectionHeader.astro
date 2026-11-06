@@ -1,0 +1,66 @@
+---
+import Print from '~/components/Print.astro';
+
+type Props = {
+  title: string;
+  intro: string;
+  kind: 'lissajous' | 'rose' | 'superformula' | 'spiral' | 'hills';
+};
+const { title, intro, kind } = Astro.props;
+
+// Notation, so the same in both languages.
+const formulas: Record<Props['kind'], string> = {
+  lissajous: 'x = sin(3t + π/2), y = sin 2t',
+  rose: 'r = cos 4θ',
+  superformula: 'r(φ) = (|cos(mφ/4)|^n₂ + |sin(mφ/4)|^n₃)^(−1/n₁)',
+  spiral: 'r = a·e^(0.12θ)',
+  hills: 'y = h + a·sin(fx + φ)',
+};
+const args: Partial<Record<Props['kind'], string | number>> = { superformula: 'projects', spiral: 1 };
+---
+<header class="section-header bleed tint0">
+  <div class="container inner">
+    <h1>{title}</h1>
+    <p class="formula">{formulas[kind]}</p>
+    <p class="intro">{intro}</p>
+  </div>
+  <Print kind={kind} arg={args[kind]} />
+</header>
+
+<style>
+  .section-header { border-bottom: 1px solid var(--hairline); }
+  .inner {
+    padding-block: var(--space-64);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+  .section-header .inner > * { max-width: 52%; margin: 0; }
+  .formula {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    color: var(--text);
+  }
+  .intro {
+    font-family: var(--font-sans);
+    font-size: var(--text-tagline);
+    line-height: 1.35;
+  }
+  .section-header > :global(.art) {
+    width: 560px;
+    height: 560px;
+    top: 50%;
+    right: -140px;
+    transform: translateY(-50%);
+  }
+  @media (max-width: 640px) {
+    .inner { padding-block: var(--space-48); }
+    .section-header .inner > * { max-width: 62%; }
+    .section-header > :global(.art) {
+      width: 340px;
+      height: 340px;
+      right: -200px;
+      opacity: 0.6;
+    }
+  }
+</style>

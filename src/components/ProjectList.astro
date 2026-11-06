@@ -16,9 +16,9 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
     return (
       <li class="card project">
         {progress === undefined ? (
-          <Print kind="superformula" arg={project.id} size="badge" />
+          <Print kind="superformula" arg={project.id} size="mark" />
         ) : (
-          <Print kind="spiral" arg={progress} size="badge" label={s.progressLabel.replace('{n}', String(Math.round(progress * 100)))} />
+          <Print kind="spiral" arg={progress} size="mark" label={s.progressLabel.replace('{n}', String(Math.round(progress * 100)))} />
         )}
         <p class="meta">
           <span class="chip">{year}</span>
@@ -56,7 +56,7 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
     align-content: start;
   }
   .project > :global(*) { grid-column: 1; }
-  .project > :global(.print) { grid-column: 2; grid-row: 1 / span 3; }
+  .project > :global(.art) { grid-column: 2; grid-row: 1 / span 3; }
   .meta {
     display: flex;
     flex-wrap: wrap;

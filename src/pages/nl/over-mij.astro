@@ -1,18 +1,15 @@
 ---
 import Base from '~/layouts/Base.astro';
 import Timeline from '~/components/Timeline.astro';
-import Print from '~/components/Print.astro';
+import SectionHeader from '~/components/SectionHeader.astro';
 import { t, pathFor } from '~/i18n/strings';
 
 const locale = 'nl' as const;
 const s = t(locale);
 ---
 <Base locale={locale} routeKey="about" title={s.about.title} description={s.about.intro}>
+  <SectionHeader title={s.about.title} intro={s.about.intro} kind="spiral" />
   <article class="container reading body about">
-    <h1>{s.about.title}</h1>
-    <p class="intro">{s.about.intro}</p>
-    <Print kind="hills" />
-
     <nav class="about-links" aria-label={s.about.title}>
       <a href={pathFor('cv', locale)}>{s.cv.title}</a>
       <a href={pathFor('contact', locale)}>{s.contact.title}</a>
@@ -67,13 +64,6 @@ const s = t(locale);
       display: flex;
       flex-direction: column;
       gap: var(--space-24);
-    }
-    .intro {
-      font-family: var(--font-sans);
-      font-size: var(--text-tagline);
-      line-height: 1.35;
-      color: var(--color-text);
-      max-width: 36ch;
     }
     .currently {
       display: flex;

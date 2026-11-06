@@ -50,23 +50,26 @@ test('every print draws without throwing', () => {
   }
 });
 
-test('pages place their prints and load the script only where needed', async () => {
+test('section pages open with one header art and no framed print', async () => {
   const projects = (await readdir(new URL('../src/content/projects', import.meta.url))).map((f) => f.replace('.yaml', ''));
-  const papers = (await readdir(new URL('../src/content/papers', import.meta.url))).length;
   const placements = {
+    research: 'data-print="lissajous"', 'nl/onderzoek': 'data-print="lissajous"',
     blog: 'data-print="rose"', 'nl/blog': 'data-print="rose"',
-    contact: 'data-print="lissajous"', 'nl/contact': 'data-print="lissajous"',
-    about: 'data-print="hills"', 'nl/over-mij': 'data-print="hills"',
-    research: `data-print="sunflower" data-arg="${papers}"`, 'nl/onderzoek': `data-print="sunflower" data-arg="${papers}"`,
+    projects: 'data-print="superformula" data-arg="projects"', 'nl/projecten': 'data-print="superformula" data-arg="projects"',
+    about: 'data-print="spiral" data-arg="1"', 'nl/over-mij': 'data-print="spiral" data-arg="1"',
+    contact: 'data-print="hills"', 'nl/contact': 'data-print="hills"',
   };
   for (const [path, print] of Object.entries(placements)) {
     const html = await page(`/${path}`);
-    assert.ok(html.includes(print), path);
+    const header = html.match(/<header class="section-header bleed tint0"[\s\S]*?<\/header>/)?.[0] ?? '';
+    assert.ok(header.includes(print), path);
+    assert.equal((html.match(/class="art"/g) ?? []).length, 1, path);
+    assert.ok(!/class="print/.test(html), path);
     assert.ok(html.includes('/design/equation-art.js'), path);
   }
   for (const path of ['projects', 'nl/projecten']) {
     const html = await page(`/${path}`);
-    for (const slug of projects) assert.ok(html.includes(`data-print="superformula" data-arg="${slug}"`), `${path}: ${slug}`);
+    for (const slug of projects) assert.match(html, new RegExp(`class="art mark"[^>]*data-print="(superformula" data-arg="${slug}|spiral)"`), `${path}: ${slug}`);
   }
   assert.ok(!(await page('/cv')).includes('equation-art.js'));
 });
