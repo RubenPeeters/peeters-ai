@@ -289,7 +289,7 @@ id:section-contact a pp:SiteSection ;
   pp:graphWeight 4 .
 
 id:ugent a schema:CollegeOrUniversity ;
-  schema:image "/kg/images/ugent.png" ;
+  schema:image "/kg/images/ugent.svg" ;
   schema:name "Ghent University (UGent)"@en, "Universiteit Gent (UGent)"@nl ;
   pp:showInGraph true ;
   pp:graphGroup "organization" ;
@@ -462,11 +462,11 @@ id:question-integrated-heritage a pp:ResearchQuestion ;
 id:artkb pp:usesOntology id:cacao ; pp:usesMethod id:hybrid-storage ; pp:usesDataset id:wikidata ; dct:source <https://doi.org/10.1007/978-3-032-25159-6_4> .
 
 # Graph images are local assets, with origins recorded in docs/graph-images.md.
-id:ruben schema:image "/kg/images/ruben.jpg" ;
+id:ruben schema:image "/kg/images/ruben.svg" ;
   pp:pathEn "/about" ; pp:pathNl "/nl/over-mij" .
-id:paper-rights schema:image "/kg/images/cacao.png" .
-id:cacao schema:image "/kg/images/cacao.png" .
-id:paper-text2kg-failures schema:image "/kg/images/text2kg-pipeline.png" .
-id:paper-artkb schema:image "/kg/images/artkb.png" .
-id:artkb schema:image "/kg/images/artkb.png" ;
+id:paper-rights schema:image "/kg/images/cacao.svg" .
+id:cacao schema:image "/kg/images/cacao.svg" .
+id:paper-text2kg-failures schema:image "/kg/images/text2kg.svg" .
+id:paper-artkb schema:image "/kg/images/artkb.svg" .
+id:artkb schema:image "/kg/images/artkb.svg" ;
   pp:pathEn "/research#paper-artkb" ; pp:pathNl "/nl/onderzoek#paper-artkb" .
