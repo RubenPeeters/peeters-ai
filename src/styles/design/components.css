@@ -1,0 +1,32 @@
+/* Copied from `RubenPeeters/design` at commit `087a9b9` (087a9b99b53e962039de2ed7bb6fa4df39e63d32). Do not edit here: change the design repo, then re-copy. */
+/* Colourways: the same design with the inks swapped, like a poster printed in three runs.
+   Set data-colourway on any container; the default is green. */
+:root { --ink0: var(--ink-lime); --ink1: var(--ink-pink); --ink2: var(--ink-teal); --ink3: var(--ink-orange); }
+[data-colourway="blue"]   { --ink0: var(--ink-blue);   --ink1: var(--ink-yellow); --ink2: var(--ink-pink);   --ink3: var(--ink-orange); }
+[data-colourway="green"]  { --ink0: var(--ink-lime);   --ink1: var(--ink-pink);   --ink2: var(--ink-teal);   --ink3: var(--ink-orange); }
+[data-colourway="orange"] { --ink0: var(--ink-orange); --ink1: var(--ink-sky);    --ink2: var(--ink-yellow); --ink3: var(--ink-pink); }
+
+/* Print: an equation-art tile */
+.print { display: block; width: 100%; max-width: 100%; aspect-ratio: 1; background: var(--paper); border: var(--stroke-print) solid var(--line); border-radius: var(--radius-print); }
+.print .ink0 { fill: var(--ink0); } .print .ink1 { fill: var(--ink1); } .print .ink2 { fill: var(--ink2); } .print .ink3 { fill: var(--ink3); }
+.print .paper { fill: var(--paper); }
+.print .ln { stroke: var(--line); stroke-width: var(--stroke-line); stroke-linejoin: round; stroke-linecap: round; }
+.print .ht { opacity: .38; }
+
+/* Buttons: pills. One primary per view. */
+.btn { font: 500 14px/20px var(--font-sans); border-radius: var(--radius-pill); padding: 8px 18px; border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2); }
+.btn-primary { background: var(--btn); color: var(--on-btn); }
+.btn-secondary { background: var(--surface-sunken); color: var(--text); border-color: var(--hairline); }
+.btn-ghost { background: transparent; color: var(--text); }
+.btn:focus-visible, .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.btn:disabled { opacity: .5; cursor: default; }
+
+/* Chips */
+.chip { font: 500 12.5px/18px var(--font-sans); display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-pill); padding: 3px 10px; color: var(--text); background: var(--surface-sunken); }
+.chip-outline { background: transparent; border: 1px solid var(--hairline); }
+.chip-warn { background: var(--warn-bg); color: var(--warn-text); }
+.chip-ok { background: var(--ok-bg); color: var(--ok-text); }
+.chip .tile { width: 10px; height: 10px; border-radius: 3px; border: 1px solid var(--line); background: var(--ink0); }
+
+/* Card */
+.card { background: var(--surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-4); color: var(--text); }
