@@ -32,7 +32,7 @@ for (const [locale, paths] of Object.entries(pages)) {
     for (const key of ['research', 'projects', 'blog']) {
       const html = await page(paths[key]);
       if (html.includes('class="no-posts"')) continue;
-      assert.match(html, /<li class="card (paper|project|post)"/, key);
+      assert.match(html, /<li class="card (paper|project|post)[ "]/, key);
       assert.match(html, /class="chip chip-outline"/, key);
     }
   });

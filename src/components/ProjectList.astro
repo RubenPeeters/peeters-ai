@@ -9,23 +9,23 @@ const s = t(locale).projects;
 
 const projects = await getCollection('projects');
 const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
+const tints = ['tint1', 'tint2', 'tint0'];
 ---
 <ol class="projects">
-  {sorted.map((project) => {
+  {sorted.map((project, i) => {
     const { title, description, repo, demo, year, tags, progress } = project.data;
     return (
-      <li class="card project">
-        {progress === undefined ? (
-          <Print kind="superformula" arg={project.id} size="badge" />
-        ) : (
-          <Print kind="spiral" arg={progress} size="badge" label={s.progressLabel.replace('{n}', String(Math.round(progress * 100)))} />
-        )}
+      <li class:list={['card project bleed', tints[i % tints.length]]}>
+        <Print kind="superformula" arg={project.id} />
         <p class="meta">
           <span class="chip">{year}</span>
           {tags.map((tag) => <span class="chip chip-outline">{tag}</span>)}
         </p>
         <h3 class="title">{title}</h3>
         <p class="desc">{description[locale]}</p>
+        {progress !== undefined && (
+          <p class="progress">{s.progressLabel.replace('{n}', String(Math.round(progress * 100)))}</p>
+        )}
         <p class="links">
           {repo && (
             <a href={repo} class="btn btn-secondary ext" rel="noopener">{s.labels.repo}</a>
@@ -44,19 +44,22 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: var(--space-16);
   }
   .project {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: var(--space-16);
-    row-gap: var(--space-8);
-    align-content: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
   }
-  .project > :global(*) { grid-column: 1; }
-  .project > :global(.print) { grid-column: 2; grid-row: 1 / span 3; }
+  .project > :global(:not(.art)) { max-width: 74%; }
+  .project > :global(.art) {
+    width: 230px;
+    height: 230px;
+    right: -80px;
+    bottom: -95px;
+  }
   .meta {
     display: flex;
     flex-wrap: wrap;
@@ -73,6 +76,11 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
   }
   .desc {
     color: var(--color-text);
+  }
+  .progress {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    margin: 0;
   }
   .links {
     display: flex;

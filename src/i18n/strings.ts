@@ -114,7 +114,6 @@ type ResearchCopy = {
   citeApa: string;
   citeRis: string;
   scholarLink: string;
-  printLabel: string;
 };
 
 type GraphCopy = {
@@ -147,6 +146,7 @@ type BlogCopy = {
   tagLabel: string;
   noPosts: string;
   backToIndex: string;
+  minRead: string;
 };
 
 type CVCopy = {
@@ -363,14 +363,13 @@ const en: Strings = {
     citeApa: 'APA',
     citeRis: 'RIS',
     scholarLink: 'Full list on Google Scholar',
-    printLabel: 'A sunflower with one seed per publication: {n} seeds',
   },
   projects: {
     title: 'Projects',
     intro:
       'Side projects: mostly excuses to try something new in Python and TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
-    progressLabel: 'Progress: {n}%',
+    progressLabel: '{n}% done',
     more: 'More on GitHub',
   },
   blog: {
@@ -382,6 +381,7 @@ const en: Strings = {
     tagLabel: 'Tags',
     noPosts: 'No posts yet. Check back soon.',
     backToIndex: 'All posts',
+    minRead: 'min read',
   },
   cv: {
     title: 'CV',
@@ -561,14 +561,13 @@ const nl: Strings = {
     citeApa: 'APA',
     citeRis: 'RIS',
     scholarLink: 'Volledige lijst op Google Scholar',
-    printLabel: 'Een zonnebloem met één zaadje per publicatie: {n} zaadjes',
   },
   projects: {
     title: 'Projecten',
     intro:
       'Bijprojecten: vooral excuses om iets nieuws te proberen in Python en TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
-    progressLabel: 'Voortgang: {n}%',
+    progressLabel: '{n}% klaar',
     more: 'Meer op GitHub',
   },
   blog: {
@@ -580,6 +579,7 @@ const nl: Strings = {
     tagLabel: 'Tags',
     noPosts: 'Nog geen berichten. Kijk binnenkort nog eens.',
     backToIndex: 'Alle berichten',
+    minRead: 'min lezen',
   },
   cv: {
     title: 'CV',

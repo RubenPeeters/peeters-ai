@@ -30,3 +30,40 @@
 
 /* Card */
 .card { background: var(--surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-4); color: var(--text); }
+
+/* Colour beyond the prints (2026-11-06). Tints: an ink mixed into the surface, for headers,
+   cards and empty states; text stays `text`. Ink fill: one poster card per view, flat in the
+   colourway's fill ink, with `line` text in both themes (every fill ink reaches 4.5:1 with line;
+   blue does not, so the blue colourway fills with yellow). */
+:root, [data-colourway] {
+  --tint0: color-mix(in srgb, var(--ink0) 30%, var(--surface));
+  --tint1: color-mix(in srgb, var(--ink1) 32%, var(--surface));
+  --tint2: color-mix(in srgb, var(--ink2) 32%, var(--surface));
+  --tint3: color-mix(in srgb, var(--ink3) 26%, var(--surface));
+  --ink-fill: var(--ink-lime);
+}
+[data-colourway="blue"] { --ink-fill: var(--ink-yellow); }
+[data-colourway="orange"] { --ink-fill: var(--ink-orange); }
+.tint0 { background: var(--tint0); } .tint1 { background: var(--tint1); } .tint2 { background: var(--tint2); } .tint3 { background: var(--tint3); }
+.ink-card { background: var(--ink-fill); color: var(--line); outline: var(--stroke-print) solid var(--line); border-radius: var(--radius-card); --ln: var(--line); }
+.ink-card .chip { background: var(--paper); color: var(--line); }
+.ink-card .chip-outline { background: transparent; border-color: var(--line); }
+.ink-card .btn-primary { background: var(--line); color: var(--paper); }
+.ink-card .btn-secondary { background: var(--paper); color: var(--line); border-color: var(--line); }
+
+/* Art in the layout: the same drawings without the paper square. Large, cropped by its
+   container (.bleed), behind the content. Lines take the text colour, so it works in both themes. */
+.art { display: block; overflow: visible; --ln: var(--text); }
+.ink-card .art, .ink-card.art { --ln: var(--line); }
+.art .ink0 { fill: var(--ink0); } .art .ink1 { fill: var(--ink1); } .art .ink2 { fill: var(--ink2); } .art .ink3 { fill: var(--ink3); }
+.art .paper { fill: var(--surface-sunken); }
+.ink-card .art .paper { fill: var(--paper); }
+.art .ln { stroke: var(--ln); stroke-width: var(--stroke-line); stroke-linejoin: round; stroke-linecap: round; }
+.art .ht { opacity: .3; }
+.art path[stroke="#1f1d1a"], .art circle[stroke="#1f1d1a"] { stroke: var(--ln); }
+.art pattern circle { fill: var(--ln); }
+.bleed { position: relative; overflow: hidden; isolation: isolate; }
+.bleed > .art { position: absolute; z-index: -1; pointer-events: none; }
+/* Mark: the art at icon size (24-40px), thinner lines, for lists. */
+.art.mark { width: 34px; height: 34px; flex: none; }
+.art.mark .ln { stroke-width: 1.4px; }

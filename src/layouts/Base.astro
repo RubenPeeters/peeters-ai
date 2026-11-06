@@ -272,7 +272,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       }
       .site-nav a { padding: 6px 14px; }
       .site-nav a:hover { background: var(--surface-sunken); }
-      .site-nav a[aria-current='page'] { background: var(--btn); color: var(--on-btn); }
+      .site-nav a[aria-current='page'] { background: var(--ink3); color: var(--line); }
       .lang-switch { display: flex; }
       .site-header .lang-switch,
       .theme-switch {
@@ -306,6 +306,11 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       }
       .lang-switch.floating a:hover {
         color: var(--color-text);
+      }
+      /* On wide screens it sits on the home graph's paper, which stays light in both themes. */
+      @media (min-width: 901px) {
+        .lang-switch.floating a,
+        .lang-switch.floating a:hover { color: var(--line); }
       }
       .site-footer {
         padding-block: var(--space-48) var(--space-32);
