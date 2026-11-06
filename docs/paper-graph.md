@@ -19,6 +19,14 @@ ArtKB uses it to organise cultural-heritage data.
 | `urn:peeters-ai:source:rank-route-rerank-manuscript` | Local sibling project `2027-vldb-rank-route-rerank`: `main.tex` title/authors, `sections_vldb2027/0_Abstract.tex`. |
 | ArtKB paper | [Publisher abstract](https://doi.org/10.1007/978-3-032-25159-6_4): RDF, multimodal data, CACAO, Wikidata. |
 | ArtKB implementation | [Authors' repository](https://github.com/links-ads/eswc26-artkb): GraphDB, Qdrant, MinIO and FastAPI. |
+| Knowledge-graph-driven recommendation | `src/content/papers/kg-recommendation.yaml`: title, authors (second author), year, venue DHBenelux 2026. Links to `/research#paper-kg-recommendation`. |
+| From Silos to Semantics | `src/content/papers/silos-to-semantics.yaml`: title, authors (first author), year, venue DHBenelux 2026. Links to `/research#paper-silos-to-semantics`. |
+| Heritage digitisation review | `src/content/papers/digitisation-literature-review.yaml`: title, authors (fifth author), year. Links to `/research#paper-digitisation-literature-review`. |
+| REEVALUATE framework | `src/content/papers/reevaluate.yaml`: title, authors (first author), year. Links to `/research#paper-reevaluate`. |
+| Topic: LLM-based KG construction | Existing Text2KG node; local sibling project `2025-llm-agent-kgc`. |
+| Topic: Tables to knowledge graphs | Existing Rank-Route-Rerank node; local sibling projects `2027-vldb-rank-route-rerank` and `adhesives-table-annotation`. |
+| Topic: Temporal knowledge graphs | Vault page `rp4-temporal-kg-thesis` (master's thesis Ruben supervises as promoter). |
+| Topic: Benchmarks and LLM evaluation | Existing Text2KG node and the HeritageKGBench README. |
 
 Local-source URNs are identifiers, not public download links. Manuscripts and
 private source files are not copied into the site. File hashes below record the
@@ -42,6 +50,11 @@ versions inspected. The paper titles/abstracts may change before publication.
   No matching public source was found. Do not invent its title expansion, methods,
   datasets, venue, or acceptance. When a source becomes available, use weight 1.
 - No 3D or image work is included.
+- Since 2026-11-06 the four published papers above are in the graph too. Their
+  publication nodes use weight 2 for first-author work and weight 1 otherwise,
+  and their `dct:source` is their own anchor on the research page. Manuscripts in
+  progress stay out of the graph, apart from the existing Text2KG and
+  Rank-Route-Rerank nodes (see docs/decisions.md).
 
 ## Verification
 

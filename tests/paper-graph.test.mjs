@@ -78,3 +78,14 @@ test('every graph image is a local illustration that exists', async () => {
     await readFile(new URL(`../public${image}`, import.meta.url));
   }
 });
+
+// Reads the built site, so run `pnpm build` first.
+test('every graph link opens an existing page and anchor in both languages', async () => {
+  for (const predicate of ['pathEn', 'pathNl']) {
+    for (const subject of data.getSubjects(pp(predicate), null, null)) {
+      const [path, anchor] = objects(subject, pp(predicate))[0].value.split('#');
+      const html = await readFile(new URL(`../dist${path}/index.html`, import.meta.url), 'utf8');
+      if (anchor) assert.match(html, new RegExp(`id="${anchor}"`), `${subject.value} ${predicate}`);
+    }
+  }
+});

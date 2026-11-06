@@ -200,7 +200,7 @@ id:chess-with-friends a schema:SoftwareApplication ;
 id:league-analysis a schema:SoftwareSourceCode ;
   schema:name "League Analysis" ;
   schema:author id:ruben ;
-  pp:hasTopic id:sports ;
+  pp:hasTopic id:gaming ;
   pp:usesTechnology id:python ;
   pp:showInGraph true ;
   pp:graphGroup "side-project" ;
@@ -307,7 +307,6 @@ id:vito a schema:Organization ;
 id:msc-industrial-engineering a schema:EducationalOccupationalCredential ;
   schema:name "MSc Industrial Engineering"@en, "MSc Industrieel Ingenieur"@nl ;
   schema:recognizedBy id:ugent ;
-  pp:hasTopic id:knowledge-graphs ;
   pp:showInGraph true ;
   pp:graphGroup "education" ;
   pp:graphWeight 2 .
@@ -470,3 +469,149 @@ id:paper-text2kg-failures schema:image "/kg/images/text2kg.svg" .
 id:paper-artkb schema:image "/kg/images/artkb.svg" .
 id:artkb schema:image "/kg/images/artkb.svg" ;
   pp:pathEn "/research#paper-artkb" ; pp:pathNl "/nl/onderzoek#paper-artkb" .
+
+# --- Published papers missing from the graph. Source: src/content/papers/*.yaml (title, authors, year).
+id:paper-kg-recommendation a schema:ScholarlyArticle ;
+  schema:name "Knowledge-graph-driven recommendation"@en, "Kennisgraafgestuurde aanbevelingen"@nl ;
+  schema:description "Personalised recommendation for cultural-heritage artefacts, driven by a knowledge graph. DHBenelux 2026."@en, "Gepersonaliseerde aanbevelingen voor erfgoedobjecten, gestuurd door een kennisgraaf. DHBenelux 2026."@nl ;
+  dct:source <https://peeters.ai/research#paper-kg-recommendation> ;
+  schema:author id:ruben ; pp:authorPosition 2 ; schema:about id:cultural-heritage, id:knowledge-graphs ;
+  schema:datePublished "2026"^^xsd:gYear ;
+  pp:pathEn "/research#paper-kg-recommendation" ; pp:pathNl "/nl/onderzoek#paper-kg-recommendation" ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 1 .
+
+id:paper-silos-to-semantics a schema:ScholarlyArticle ;
+  schema:name "From Silos to Semantics"@en, "From Silos to Semantics"@nl ;
+  schema:description "A multimodal, rights-aware ecosystem for cultural heritage. DHBenelux 2026."@en, "Een multimodaal, rechtenbewust ecosysteem voor cultureel erfgoed. DHBenelux 2026."@nl ;
+  dct:source <https://peeters.ai/research#paper-silos-to-semantics> ;
+  schema:author id:ruben ; pp:authorPosition 1 ; schema:about id:cultural-heritage, id:knowledge-graphs ;
+  schema:datePublished "2026"^^xsd:gYear ;
+  pp:pathEn "/research#paper-silos-to-semantics" ; pp:pathNl "/nl/onderzoek#paper-silos-to-semantics" ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 2 .
+
+id:paper-digitisation-review a schema:ScholarlyArticle ;
+  schema:name "Heritage digitisation review"@en, "Review erfgoeddigitalisering"@nl ;
+  schema:description "Critical literature review of the benefits, opportunities, risks and gaps in managing cultural-heritage digitisation."@en, "Kritische literatuurstudie over de voordelen, kansen, risico's en lacunes in het beheer van erfgoeddigitalisering."@nl ;
+  dct:source <https://peeters.ai/research#paper-digitisation-literature-review> ;
+  schema:author id:ruben ; pp:authorPosition 5 ; schema:about id:cultural-heritage ;
+  schema:datePublished "2025"^^xsd:gYear ;
+  pp:pathEn "/research#paper-digitisation-literature-review" ; pp:pathNl "/nl/onderzoek#paper-digitisation-literature-review" ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 1 .
+
+id:paper-reevaluate a schema:ScholarlyArticle ;
+  schema:name "REEVALUATE framework"@en, "REEVALUATE-kader"@nl ;
+  schema:description "Framework report for safe, open, collaborative and inclusive digitisation and management of cultural heritage."@en, "Kaderrapport voor veilige, open, collaboratieve en inclusieve digitalisering en beheer van cultureel erfgoed."@nl ;
+  dct:source <https://peeters.ai/research#paper-reevaluate> ;
+  schema:author id:ruben ; pp:authorPosition 1 ; schema:about id:reevaluate, id:cultural-heritage, id:knowledge-graphs ;
+  schema:datePublished "2025"^^xsd:gYear ;
+  pp:pathEn "/research#paper-reevaluate" ; pp:pathNl "/nl/onderzoek#paper-reevaluate" ;
+  pp:showInGraph true ; pp:graphGroup "publication" ; pp:graphWeight 2 .
+
+# --- Research topics. Sources: the existing paper nodes; manuscript folders 2025-llm-agent-kgc,
+# 2027-vldb-rank-route-rerank and adhesives-table-annotation; HeritageKGBench README.
+id:llm-kgc a pp:Interest ;
+  schema:name "LLM-based KG construction"@en, "KG-constructie met LLM's"@nl ;
+  schema:description "Turning text into knowledge graphs with language models, and finding out where that fails."@en, "Tekst omzetten in kennisgrafen met taalmodellen, en nagaan waar dat misloopt."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 3 .
+
+id:tables-to-kgs a pp:Interest ;
+  schema:name "Tables to knowledge graphs"@en, "Van tabellen naar kennisgrafen"@nl ;
+  schema:description "Annotating table columns with types so tabular data can join a knowledge graph."@en, "Tabelkolommen annoteren met types zodat tabeldata in een kennisgraaf terechtkan."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 2 .
+
+id:temporal-kgs a pp:Interest ;
+  schema:name "Temporal knowledge graphs"@en, "Temporele kennisgrafen"@nl ;
+  schema:description "Capturing how facts change over time in knowledge graphs built with LLMs."@en, "Vastleggen hoe feiten in de tijd veranderen in kennisgrafen die met LLM's gebouwd worden."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 1 .
+
+id:benchmarks a pp:Interest ;
+  schema:name "Benchmarks and LLM evaluation"@en, "Benchmarks en LLM-evaluatie"@nl ;
+  schema:description "Building benchmarks and measuring what language models get right and wrong."@en, "Benchmarks bouwen en meten wat taalmodellen goed en fout doen."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 2 .
+
+id:paper-text2kg-failures schema:about id:llm-kgc, id:benchmarks .
+id:paper-table-annotation schema:about id:tables-to-kgs .
+id:heritagekgbench pp:hasTopic id:benchmarks .
+id:phd-researcher pp:hasTopic id:llm-kgc, id:benchmarks .
+
+# --- Teaching and supervision. Sources: vault pages webai-end-year-project-2025-26 (course YI4249,
+# TA Ruben Peeters) and rp4-temporal-kg-thesis (promoter Ruben Peeters); Flanders Make affiliation
+# from Ruben's author block in the 2026-qualitative-logic manuscript.
+id:teaching-assistant a pp:Role ;
+  schema:name "Teaching assistant, Web AI"@en, "Assistent, Web AI"@nl ;
+  schema:description "Teaching assistant for the KU Leuven Web AI course. Student knowledge graphs from the end-of-year project became HeritageKGBench gold annotations."@en, "Assistent voor het KU Leuven-vak Web AI. De kennisgrafen uit het eindproject werden gouden annotaties voor HeritageKGBench."@nl ;
+  schema:affiliation id:ku-leuven ;
+  pp:hasTopic id:knowledge-graphs ;
+  pp:showInGraph true ; pp:graphGroup "role" ; pp:graphWeight 1 .
+
+id:thesis-supervisor a pp:Role ;
+  schema:name "Master-thesis supervisor"@en, "Promotor masterproeven"@nl ;
+  schema:affiliation id:ku-leuven ;
+  pp:hasTopic id:temporal-kgs ;
+  pp:showInGraph true ; pp:graphGroup "role" ; pp:graphWeight 1 .
+
+id:flanders-make a schema:Organization ;
+  schema:name "Flanders Make" ;
+  schema:description "Strategic research centre for the manufacturing industry; affiliation through KU Leuven."@en, "Strategisch onderzoekscentrum voor de maakindustrie; affiliatie via KU Leuven."@nl ;
+  pp:showInGraph true ; pp:graphGroup "organization" ; pp:graphWeight 1 .
+
+id:ruben pp:hasRole id:teaching-assistant, id:thesis-supervisor ;
+  schema:affiliation id:flanders-make ;
+  pp:interestedIn id:llm-kgc, id:tables-to-kgs, id:temporal-kgs, id:benchmarks .
+
+# --- Side projects on /projects. Source: src/content/projects/*.yaml.
+id:fpl-optimizer a schema:SoftwareSourceCode ;
+  schema:name "FPL Optimizer" ;
+  schema:author id:ruben ; pp:hasTopic id:sports ; pp:usesTechnology id:python ;
+  pp:pathEn "/projects" ; pp:pathNl "/nl/projecten" ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+id:jungle-pathing a schema:SoftwareSourceCode ;
+  schema:name "Jungle Pathing Analyzer" ;
+  schema:author id:ruben ; pp:hasTopic id:gaming ; pp:usesTechnology id:python ;
+  pp:pathEn "/projects" ; pp:pathNl "/nl/projecten" ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+id:league-kg a schema:SoftwareSourceCode ;
+  schema:name "League Knowledge Graph" ;
+  schema:author id:ruben ; pp:hasTopic id:gaming, id:knowledge-graphs ; pp:usesTechnology id:rdf, id:python ;
+  pp:pathEn "/projects" ; pp:pathNl "/nl/projecten" ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+# --- Own tools. Sources: READMEs/CLAUDE.md of jarvis, dev-workflow (forge), design, ni-han-bao.
+id:jarvis a schema:SoftwareApplication ;
+  schema:name "Jarvis" ;
+  schema:description "Personal app for tasks, goals and planning."@en, "Persoonlijke app voor taken, doelen en planning."@nl ;
+  schema:author id:ruben ; pp:usesTechnology id:typescript ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+id:forge a schema:SoftwareApplication ;
+  schema:name "forge" ;
+  schema:description "Turns GitHub issues into reviewed pull requests with AI coding agents."@en, "Zet GitHub-issues om in nagekeken pull requests met AI-codeeragenten."@nl ;
+  schema:author id:ruben ; pp:usesTechnology id:python ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+id:design-system a schema:CreativeWork ;
+  schema:name "Peeters Design System" ;
+  schema:description "One visual system for this site and Jarvis, including the equation art."@en, "Eén visueel systeem voor deze site en Jarvis, inclusief de vergelijkingskunst."@nl ;
+  schema:author id:ruben ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+id:ni-han-bao a schema:SoftwareApplication ;
+  schema:name "ni-han-bao" ;
+  schema:description "Discord bot for a group of friends, with a website of server statistics and a shared Riftbound card collection."@en, "Discordbot voor een vriendengroep, met een website met serverstatistieken en een gedeelde Riftbound-kaartcollectie."@nl ;
+  schema:author id:ruben ; pp:hasTopic id:riftbound ; pp:usesTechnology id:typescript ;
+  pp:showInGraph true ; pp:graphGroup "side-project" ; pp:graphWeight 1 .
+
+# --- Interests. Source: Ruben, 2026-11-06; philosophy pages in the kb-llm-obsidian vault.
+id:philosophy a pp:Interest ;
+  schema:name "Philosophy"@en, "Filosofie"@nl ;
+  schema:description "Plato, Aristotle and the Stoics."@en, "Plato, Aristoteles en de stoïcijnen."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 1 .
+
+id:riftbound a pp:Interest ;
+  schema:name "Riftbound" ;
+  schema:description "Trading card game."@en, "Ruilkaartspel."@nl ;
+  pp:showInGraph true ; pp:graphGroup "topic" ; pp:graphWeight 1 .
+
+id:ruben pp:interestedIn id:philosophy, id:riftbound .

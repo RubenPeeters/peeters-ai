@@ -253,6 +253,7 @@ const clientCopy = {
   .kg-node:focus text {
     opacity: 1;
   }
+  .kg-node.is-label-hidden:not(:hover):not(:focus) text { opacity: 0; }
 
   .kg-node:hover circle,
   .kg-node:focus circle,
@@ -580,6 +581,10 @@ const clientCopy = {
       ?? '';
   }
 
+  function isPriority(node: GraphNode) {
+    return node.weight >= 3 || node.degree >= 6;
+  }
+
   function linkedNode(linkEnd: string | GraphNode) {
     return typeof linkEnd === 'string' ? linkEnd : linkEnd.id;
   }
@@ -701,7 +706,7 @@ const clientCopy = {
         .attr('data-group', (node) => node.group)
         .attr('data-clickable', (node) => String(Boolean(node.href)))
         .attr('data-image', (node) => String(Boolean(node.image)))
-        .attr('data-priority', (node) => node.weight >= 3 || node.degree >= 6 ? 'high' : 'normal')
+        .attr('data-priority', (node) => isPriority(node) ? 'high' : 'normal')
         .attr('tabindex', 0)
         .attr('role', (node) => node.href ? 'link' : 'img')
         .attr('aria-label', (node) => {
@@ -766,6 +771,31 @@ const clientCopy = {
       };
       simulation.on('tick', renderGraph);
 
+      // Greedy label placement: once the layout settles, a label that would overlap another
+      // node or a more important label stays hidden until its node is hovered or focused.
+      const labelRank = (node: GraphNode) =>
+        (node.group === 'person' ? 100 : 0) + (node.group === 'section' ? 50 : 0) + node.weight * 4 + node.degree;
+      function declutterLabels() {
+        const placed: [number, number, number, number][] = [];
+        const ranked = nodeSelection.filter((node) => Boolean(node.href) || isPriority(node)).nodes()
+          .map((element) => [element, select<SVGGElement, GraphNode>(element).datum()] as const)
+          .sort(([, a], [, b]) => labelRank(b) - labelRank(a));
+        for (const [element, node] of ranked) {
+          const left = (node.x ?? 0) + node.radius + 7;
+          const top = (node.y ?? 0) - 9;
+          const box: [number, number, number, number] = [left, top, left + element.querySelector('text')!.getComputedTextLength(), top + 14];
+          const overlaps = (other: [number, number, number, number]) =>
+            box[0] < other[2] && other[0] < box[2] && box[1] < other[3] && other[1] < box[3];
+          // Section links are the site's navigation, so only another label can hide them.
+          const blockedByNode = node.group !== 'section' && nodes.some((other) => other !== node
+            && overlaps([other.x! - other.radius, other.y! - other.radius, other.x! + other.radius, other.y! + other.radius]));
+          const hidden = node.group !== 'person' && (placed.some(overlaps) || blockedByNode);
+          element.classList.toggle('is-label-hidden', hidden);
+          if (!hidden) placed.push(box);
+        }
+      }
+      simulation.on('end', declutterLabels);
+
       const zoomBehavior = zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.45, 3.2])
         .on('zoom', (event) => viewport.attr('transform', event.transform.toString()));
@@ -780,7 +810,11 @@ const clientCopy = {
         const maxY = Math.max(...ys) + 70;
         const graphWidth = Math.max(1, maxX - minX);
         const graphHeight = Math.max(1, maxY - minY);
-        const scale = Math.min(1.45, 1080 / graphWidth, 620 / graphHeight);
+        // The viewBox is letterboxed into a stage of any shape, so fit to the area actually on screen.
+        const meet = Math.min(svgElement!.clientWidth / 1200, svgElement!.clientHeight / 720) || 1;
+        const visibleWidth = svgElement!.clientWidth / meet || 1200;
+        const visibleHeight = svgElement!.clientHeight / meet || 720;
+        const scale = Math.min(1.45, (visibleWidth - 120) / graphWidth, (visibleHeight - 100) / graphHeight);
         const translateX = 600 - ((minX + maxX) / 2) * scale;
         const translateY = 360 - ((minY + maxY) / 2) * scale;
         const transform = zoomIdentity.translate(translateX, translateY).scale(scale);
@@ -870,6 +904,7 @@ const clientCopy = {
         simulation.stop();
         for (let index = 0; index < 160; index += 1) simulation.tick();
         renderGraph();
+        declutterLabels();
         fitGraph(false);
       } else {
         const fitTimer = window.setTimeout(() => fitGraph(), 1100);
