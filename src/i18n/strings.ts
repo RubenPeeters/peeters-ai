@@ -114,7 +114,6 @@ type ResearchCopy = {
   citeApa: string;
   citeRis: string;
   scholarLink: string;
-  printLabel: string;
 };
 
 type GraphCopy = {
@@ -363,7 +362,6 @@ const en: Strings = {
     citeApa: 'APA',
     citeRis: 'RIS',
     scholarLink: 'Full list on Google Scholar',
-    printLabel: 'A sunflower with one seed per publication: {n} seeds',
   },
   projects: {
     title: 'Projects',
@@ -561,7 +559,6 @@ const nl: Strings = {
     citeApa: 'APA',
     citeRis: 'RIS',
     scholarLink: 'Volledige lijst op Google Scholar',
-    printLabel: 'Een zonnebloem met één zaadje per publicatie: {n} zaadjes',
   },
   projects: {
     title: 'Projecten',

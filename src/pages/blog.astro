@@ -1,18 +1,15 @@
 ---
 import Base from '~/layouts/Base.astro';
 import PostList from '~/components/PostList.astro';
-import Print from '~/components/Print.astro';
+import SectionHeader from '~/components/SectionHeader.astro';
 import { t } from '~/i18n/strings';
 
 const locale = 'en' as const;
 const s = t(locale);
 ---
 <Base locale={locale} routeKey="blog" title={s.blog.title} description={s.blog.intro}>
+  <SectionHeader title={s.blog.title} intro={s.blog.intro} kind="rose" />
   <article class="container blog-index">
-    <h1>{s.blog.title}</h1>
-    <p class="intro">{s.blog.intro}</p>
-    <Print kind="rose" />
-
     <PostList locale={locale} />
   </article>
 
@@ -22,13 +19,6 @@ const s = t(locale);
       display: flex;
       flex-direction: column;
       gap: var(--space-48);
-    }
-    .intro {
-      font-family: var(--font-sans);
-      font-size: var(--text-tagline);
-      line-height: 1.35;
-      color: var(--color-text);
-      max-width: 36ch;
     }
   </style>
 </Base>
