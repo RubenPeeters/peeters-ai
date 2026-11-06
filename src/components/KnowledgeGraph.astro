@@ -717,14 +717,14 @@ const clientCopy = {
         .each(function (node, index) {
           const group = select(this);
           const clipId = `kg-image-${locale}-${index}`;
-          const imageSize = (node.radius - 3) * (node.group === 'person' ? 2 : Math.SQRT2);
+          const imageSize = (node.radius - 3) * 2;
           group.append('clipPath').attr('id', clipId)
             .append('circle').attr('r', node.radius - 3);
           group.append('image')
             .attr('href', node.image!)
             .attr('x', -imageSize / 2).attr('y', -imageSize / 2)
             .attr('width', imageSize).attr('height', imageSize)
-            .attr('preserveAspectRatio', node.group === 'person' ? 'xMidYMid slice' : 'xMidYMid meet')
+            .attr('preserveAspectRatio', 'xMidYMid slice')
             .attr('clip-path', `url(#${clipId})`)
             .attr('aria-hidden', 'true')
             .on('error', function () { select(this).remove(); });

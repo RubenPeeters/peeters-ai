@@ -69,3 +69,12 @@ test('homepage section routes are unchanged and paper anchors stay bilingual', (
     assert.equal(objects(id(paper), pp('pathNl'))[0].value, '/nl/onderzoek#paper-' + anchor);
   }
 });
+
+test('every graph image is a local illustration that exists', async () => {
+  const images = data.getObjects(null, schema('image'), null).map((o) => o.value);
+  assert.ok(images.length >= 13);
+  for (const image of images) {
+    assert.match(image, /^\/kg\/images\/[\w-]+\.svg$/);
+    await readFile(new URL(`../public${image}`, import.meta.url));
+  }
+});
