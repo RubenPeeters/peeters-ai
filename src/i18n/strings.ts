@@ -146,6 +146,7 @@ type BlogCopy = {
   tagLabel: string;
   noPosts: string;
   backToIndex: string;
+  minRead: string;
 };
 
 type CVCopy = {
@@ -380,6 +381,7 @@ const en: Strings = {
     tagLabel: 'Tags',
     noPosts: 'No posts yet. Check back soon.',
     backToIndex: 'All posts',
+    minRead: 'min read',
   },
   cv: {
     title: 'CV',
@@ -577,6 +579,7 @@ const nl: Strings = {
     tagLabel: 'Tags',
     noPosts: 'Nog geen berichten. Kijk binnenkort nog eens.',
     backToIndex: 'Alle berichten',
+    minRead: 'min lezen',
   },
   cv: {
     title: 'CV',
