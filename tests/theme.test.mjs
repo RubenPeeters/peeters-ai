@@ -43,12 +43,14 @@ test('the OS colour scheme no longer decides the theme', async () => {
   assert.doesNotMatch(html, /media="\(prefers-color-scheme/);
 });
 
-test('header has a Light/Dark switch in both languages', async () => {
-  for (const [path, label, light, dark] of [['/research', 'Theme', 'Light', 'Dark'], ['/nl/onderzoek', 'Thema', 'Licht', 'Donker']]) {
+test('header has one theme button with a sun and a moon in both languages', async () => {
+  for (const [path, toDark, toLight] of [['/research', 'Switch to dark theme', 'Switch to light theme'], ['/nl/onderzoek', 'Schakel naar donker thema', 'Schakel naar licht thema']]) {
     const html = await page(path);
-    assert.match(html, new RegExp(`role="group" aria-label="${label}" class="theme-switch"`), path);
-    assert.match(html, new RegExp(`data-theme-choice="light" aria-pressed="true"[^>]*>\\s*${light}\\s*<`), path);
-    assert.match(html, new RegExp(`data-theme-choice="dark" aria-pressed="false"[^>]*>\\s*${dark}\\s*<`), path);
+    const button = html.match(/<button type="button" class="theme-toggle"[\s\S]*?<\/button>/)?.[0] ?? '';
+    assert.match(button, new RegExp(`aria-label="${toDark}" data-to-dark="${toDark}" data-to-light="${toLight}"`), path);
+    assert.match(button, /<svg class="moon"/, path);
+    assert.match(button, /<svg class="sun"/, path);
+    assert.doesNotMatch(html, /aria-pressed|theme-switch/, path);
   }
 });
 

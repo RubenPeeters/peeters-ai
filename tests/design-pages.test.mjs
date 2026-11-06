@@ -10,16 +10,25 @@ const pages = {
   en: { research: '/research', projects: '/projects', blog: '/blog', cv: '/cv', about: '/about' },
   nl: { research: '/nl/onderzoek', projects: '/nl/projecten', blog: '/nl/blog', cv: '/nl/cv', about: '/nl/over-mij' },
 };
+const contact = { en: '/contact', nl: '/nl/contact' };
 
 for (const [locale, paths] of Object.entries(pages)) {
-  test(`${locale}: header has the wordmark, at most one current pill and both language segments`, async () => {
-    for (const path of Object.values(paths)) {
+  test(`${locale}: header has the wordmark, all six sections, at most one current pill and the other language`, async () => {
+    const other = locale === 'en' ? { code: 'nl', name: 'Nederlands', home: '/nl/onderzoek' } : { code: 'en', name: 'English', home: '/research' };
+    for (const path of [...Object.values(paths), contact[locale]]) {
       const html = await page(path);
-      assert.match(html, /class="brand display-m"[^>]*>Ruben Peeters</, path);
-      assert.ok(count(html, /aria-current="page"/g) <= 1, path);
-      assert.match(html, new RegExp(`<span aria-current="true"[^>]*>${locale.toUpperCase()}</span>`), path);
-      assert.match(html, /aria-expanded="false" aria-controls="site-nav"/, path);
+      const header = html.match(/<header class="site-header"[\s\S]*?<\/header>/)?.[0] ?? '';
+      assert.match(header, /class="brand display-m"[^>]*>Ruben Peeters</, path);
+      const nav = [...header.matchAll(/<li[^>]*>\s*<a href="([^"]+)"/g)].map((m) => m[1]);
+      assert.deepEqual(nav, ['blog', 'research', 'projects', 'about', 'cv', 'contact'].map((k) => ({ ...paths, contact: contact[locale] })[k]), path);
+      assert.ok(count(header, /aria-current="page"/g) <= 1, path);
+      const lang = header.match(/<a [^>]*class="lang-link"[^>]*>\s*([A-Z]+)\s*<\/a>/);
+      assert.equal(lang?.[1], other.code.toUpperCase(), path);
+      assert.match(lang[0], new RegExp(`lang="${other.code}" hreflang="${other.code}" aria-label="${other.name}"`), path);
+      assert.doesNotMatch(header, /aria-current="true"|aria-pressed/, path);
+      assert.match(header, /aria-expanded="false" aria-controls="site-nav"/, path);
     }
+    assert.match(await page(paths.research), new RegExp(`href="${other.home}" class="lang-link"`));
   });
 
   test(`${locale}: at most one primary button per page, and it is on the CV`, async () => {
