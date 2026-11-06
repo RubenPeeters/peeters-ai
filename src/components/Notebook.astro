@@ -90,7 +90,7 @@ function getHtmlOutput(outputs: CellOutput[]): string | null {
             <summary>Show code</summary>
             <div class="nb-input">
               {count != null && <span class="nb-prompt">In [{count}]:</span>}
-              <Code code={code} lang={lang} theme="github-light" />
+              <Code code={code} lang={lang} themes={{ light: 'github-light', dark: 'github-dark' }} />
             </div>
           </details>
           {hasOutput && (
