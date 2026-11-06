@@ -18,9 +18,9 @@ const formulas: Record<Props['kind'], string> = {
 };
 const args: Partial<Record<Props['kind'], string | number>> = { superformula: 'projects', spiral: 1 };
 ---
-<header class="section-header bleed tint0">
+<header class="section-header bleed">
   <div class="container inner">
-    <h1>{title}</h1>
+    <h1 class="accent-rule">{title}</h1>
     <p class="formula">{formulas[kind]}</p>
     <p class="intro">{intro}</p>
   </div>

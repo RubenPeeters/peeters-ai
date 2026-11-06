@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
@@ -43,3 +43,13 @@ for (const [locale, paths] of Object.entries(pages)) {
     }
   });
 }
+
+test('the page stays white: no element uses a tint class, and no stylesheet defines one', async () => {
+  const dist = new URL('../dist/', import.meta.url);
+  const files = (await readdir(dist, { recursive: true })).filter((f) => /\.(html|css)$/.test(f));
+  assert.ok(files.length > 0);
+  for (const f of files) {
+    const text = await readFile(new URL(f, dist), 'utf8');
+    assert.doesNotMatch(text, /class="[^"]*\btint\d|\.tint\d|--tint\d/, f);
+  }
+});

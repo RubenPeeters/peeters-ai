@@ -84,7 +84,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#edf0e9" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalUrl} />
@@ -244,7 +244,9 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       }
 
       .site-header { background: var(--surface); }
+      /* Wider than the reading measure so name, nav, EN/NL and Light/Dark share one line on desktop. */
       .header-inner {
+        max-width: 64rem;
         display: flex;
         align-items: center;
         flex-wrap: wrap;

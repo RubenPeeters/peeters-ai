@@ -61,7 +61,7 @@ test('section pages open with one header art and no framed print', async () => {
   };
   for (const [path, print] of Object.entries(placements)) {
     const html = await page(`/${path}`);
-    const header = html.match(/<header class="section-header bleed tint0"[\s\S]*?<\/header>/)?.[0] ?? '';
+    const header = html.match(/<header class="section-header bleed"[\s\S]*?<\/header>/)?.[0] ?? '';
     assert.ok(header.includes(print), path);
     const cards = path.endsWith('projects') || path.endsWith('projecten') ? projects.length : 0;
     assert.equal((html.match(/class="art"/g) ?? []).length, 1 + cards, path);
@@ -71,7 +71,9 @@ test('section pages open with one header art and no framed print', async () => {
   for (const path of ['projects', 'nl/projecten']) {
     const html = await page(`/${path}`);
     const list = html.match(/<ol class="projects"[\s\S]*?<\/ol>/)?.[0] ?? '';
-    assert.equal((list.match(/<li class="card project bleed tint[0-2]"/g) ?? []).length, projects.length, path);
+    assert.equal((list.match(/<li class="card project bleed"/g) ?? []).length, projects.length, path);
+    const tiles = [...list.matchAll(/<span class="tile (ink[0-2])" aria-hidden="true"/g)].map((m) => m[1]);
+    assert.deepEqual(tiles, projects.map((_, i) => `ink${i % 3}`), path);
     for (const slug of projects) assert.match(list, new RegExp(`class="art"[^>]*data-print="superformula" data-arg="${slug}"`), `${path}: ${slug}`);
     assert.ok(!/data-print="spiral"/.test(list), path);
   }
