@@ -41,6 +41,7 @@ const projects = defineCollection({
     demo: z.string().url().optional(),
     year: z.union([z.number().int(), z.string()]),
     sortKey: z.number().int(),
+    progress: z.number().min(0).max(1).optional(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
   }),

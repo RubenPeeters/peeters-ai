@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Print from '~/components/Print.astro';
 import { t, type Locale } from '~/i18n/strings';
 
 type Props = { locale: Locale };
@@ -11,9 +12,14 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
 ---
 <ol class="projects">
   {sorted.map((project) => {
-    const { title, description, repo, demo, year, tags } = project.data;
+    const { title, description, repo, demo, year, tags, progress } = project.data;
     return (
       <li class="card project">
+        {progress === undefined ? (
+          <Print kind="superformula" arg={project.id} size="badge" />
+        ) : (
+          <Print kind="spiral" arg={progress} size="badge" label={s.progressLabel.replace('{n}', String(Math.round(progress * 100)))} />
+        )}
         <p class="meta">
           <span class="chip">{year}</span>
           {tags.map((tag) => <span class="chip chip-outline">{tag}</span>)}
@@ -43,10 +49,14 @@ const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
     gap: var(--space-16);
   }
   .project {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: var(--space-16);
+    row-gap: var(--space-8);
+    align-content: start;
   }
+  .project > :global(*) { grid-column: 1; }
+  .project > :global(.print) { grid-column: 2; grid-row: 1 / span 3; }
   .meta {
     display: flex;
     flex-wrap: wrap;
