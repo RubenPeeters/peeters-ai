@@ -17,7 +17,7 @@ export default defineConfig({
     format: 'directory',
   },
   markdown: {
-    shikiConfig: { theme: 'github-light' },
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },
     rehypePlugins: [rehypeWriting],
   },
   integrations: [
