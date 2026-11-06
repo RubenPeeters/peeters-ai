@@ -8,7 +8,7 @@ const locale = 'nl' as const;
 const s = t(locale);
 ---
 <Base locale={locale} routeKey="research" title={s.research.title} description={s.research.intro}>
-  <article class="container research">
+  <article class="container reading body research">
     <h1>{s.research.title}</h1>
     <p class="intro">{s.research.intro}</p>
 
@@ -44,7 +44,7 @@ const s = t(locale);
       padding-block: var(--space-32) var(--space-96);
       display: flex;
       flex-direction: column;
-      gap: var(--space-48);
+      gap: var(--space-24);
     }
     .intro {
       font-family: var(--font-sans);
@@ -77,7 +77,7 @@ const s = t(locale);
     }
     .divider {
       border-top: 1px solid var(--color-border);
-      padding-top: var(--space-32);
+      padding-top: var(--space-24);
       display: flex;
       flex-direction: column;
       gap: var(--space-24);

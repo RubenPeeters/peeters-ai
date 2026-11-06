@@ -70,6 +70,10 @@ a:focus-visible {
   border-radius: 2px;
 }
 
+/* Links styled as buttons keep the button's own border and no underline. */
+a.btn { text-decoration: none; }
+a.btn-secondary:hover { border-color: var(--hairline); }
+
 /* External-link nudge */
 a.ext::after {
   content: ' ↗';
@@ -92,26 +96,6 @@ a.ext:hover::after {
   color: var(--color-text-muted);
 }
 
-/* Plain brand and language links. */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-4) 0;
-  border: none;
-  border-radius: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-mono);
-  letter-spacing: 0.08em;
-  color: var(--color-text);
-  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
-}
-.pill:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
-}
-
 ::selection {
   background: var(--color-accent);
   color: var(--color-bg);
@@ -121,6 +105,16 @@ a.ext:hover::after {
   max-width: var(--measure);
   margin-inline: auto;
   padding-inline: clamp(var(--space-24), 4vw, var(--space-48));
+}
+
+/* The site's --space-4 (0.25rem) shadows the design's 16px one that .card pads with. */
+.card { padding: var(--space-16); }
+
+/* Reading pages: one column near 65 characters per line, in design `body` text.
+   Pages put 48px (design space-12; the site's --space-12 is 0.75rem) between sections. */
+.reading {
+  box-sizing: content-box;
+  max-width: 65ch;
 }
 
 @media print {
