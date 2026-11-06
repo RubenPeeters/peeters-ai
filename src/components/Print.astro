@@ -1,0 +1,45 @@
+---
+// Empty until /design/equation-art.js fills it, so pages without JavaScript show a blank tile.
+type Props = {
+  kind: 'rose' | 'lissajous' | 'hills' | 'sunflower' | 'superformula' | 'spiral';
+  // sunflower: seed count; spiral: progress 0..1; superformula: seed string
+  arg?: string | number;
+  size?: 'header' | 'badge';
+  // only for prints that carry a value; the rest are decorative
+  label?: string;
+};
+const { kind, arg, size = 'header', label } = Astro.props;
+---
+<svg viewBox="0 0 240 240" class:list={['print', size]} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} data-print={kind} data-arg={arg}></svg>
+
+<script>
+  type Art = Record<string, (svg: SVGSVGElement, arg?: unknown) => void> & {
+    superParams: (seed: string) => unknown;
+  };
+
+  const lib = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '/design/equation-art.js';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.append(script);
+  });
+
+  const fill = () => {
+    const art = (window as unknown as { PeetersArt: Art }).PeetersArt;
+    document.querySelectorAll<SVGSVGElement>('svg[data-print]').forEach((svg) => {
+      const { print = '', arg = '' } = svg.dataset;
+      art[print](svg, print === 'superformula' ? art.superParams(arg) : Number(arg));
+    });
+  };
+
+  // This module may first run after a client-side navigation, when astro:page-load has already fired.
+  const run = () => lib.then(fill);
+  run();
+  document.addEventListener('astro:page-load', run);
+</script>
+
+<style>
+  .header { width: clamp(7.5rem, 30vw, 11rem); }
+  .badge { width: 4.5rem; flex-shrink: 0; }
+</style>
