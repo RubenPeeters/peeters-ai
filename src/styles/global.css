@@ -30,17 +30,18 @@ h1, h2, h3 {
   text-wrap: balance;
 }
 
-/* Bagel Fat One ships one weight; anything heavier would be faux bold. */
+/* Bagel Fat One ships one weight; anything heavier would be faux bold.
+   Page titles are display-l, section titles display-m (design/tokens.css). */
 h1, h2 {
   font-family: var(--font-display);
   font-weight: 400;
 }
 h1 {
-  font-size: var(--text-h1);
+  font-size: 40px;
   line-height: 1;
 }
 h2 {
-  font-size: var(--text-h2);
+  font-size: 28px;
   line-height: 1.1;
 }
 h3 {
@@ -158,7 +159,6 @@ a.ext:hover::after {
 
 /* Inner pages share a compact reading rhythm without resizing the graph. */
 body:not(.is-chromeless) {
-  --text-h1: clamp(2rem, 5vw, 2.5rem);
   --text-tagline: 1.125rem;
   --space-48: 2rem;
   --space-96: 3rem;
