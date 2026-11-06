@@ -2,10 +2,10 @@
 /* Peeters Design System: generated from tokens.json by scripts/build-tokens.mjs. Do not edit. */
 
 :root, [data-theme="light"] {
-  --canvas: #edf0e9;
+  --canvas: #ffffff;
   --surface: #ffffff;
-  --surface-sunken: #f3f5f0;
-  --hairline: #dce1d8;
+  --surface-sunken: #f4f5f3;
+  --hairline: #e4e6e1;
   --text: #1c2420;
   --muted: #5b675f;
   --btn: #1c2420;

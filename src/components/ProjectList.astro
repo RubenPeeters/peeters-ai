@@ -9,19 +9,19 @@ const s = t(locale).projects;
 
 const projects = await getCollection('projects');
 const sorted = [...projects].sort((a, b) => b.data.sortKey - a.data.sortKey);
-const tints = ['tint1', 'tint2', 'tint0'];
+const inks = ['ink0', 'ink1', 'ink2'];
 ---
 <ol class="projects">
   {sorted.map((project, i) => {
     const { title, description, repo, demo, year, tags, progress } = project.data;
     return (
-      <li class:list={['card project bleed', tints[i % tints.length]]}>
+      <li class="card project bleed">
         <Print kind="superformula" arg={project.id} />
         <p class="meta">
           <span class="chip">{year}</span>
           {tags.map((tag) => <span class="chip chip-outline">{tag}</span>)}
         </p>
-        <h3 class="title">{title}</h3>
+        <h3 class="title"><span class:list={['tile', inks[i % inks.length]]} aria-hidden="true"></span>{title}</h3>
         <p class="desc">{description[locale]}</p>
         {progress !== undefined && (
           <p class="progress">{s.progressLabel.replace('{n}', String(Math.round(progress * 100)))}</p>
@@ -45,7 +45,6 @@ const tints = ['tint1', 'tint2', 'tint0'];
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: var(--space-16);
   }
   .project {
@@ -53,12 +52,16 @@ const tints = ['tint1', 'tint2', 'tint0'];
     flex-direction: column;
     gap: var(--space-8);
   }
-  .project > :global(:not(.art)) { max-width: 74%; }
+  .project > :global(:not(.art)) { max-width: 70%; }
   .project > :global(.art) {
-    width: 230px;
-    height: 230px;
-    right: -80px;
-    bottom: -95px;
+    width: 220px;
+    height: 220px;
+    right: -60px;
+    bottom: -90px;
+  }
+  /* Below ~510px the art's visible 160 x 130 px corner reaches into the 70% text column, so it gets its own space. */
+  @media (max-width: 640px) {
+    .project { padding-bottom: 130px; }
   }
   .meta {
     display: flex;
@@ -74,8 +77,21 @@ const tints = ['tint1', 'tint2', 'tint0'];
     font-weight: 500;
     margin: var(--space-4) 0 var(--space-4);
   }
+  .tile {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: var(--space-8);
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    vertical-align: 0.05em;
+  }
+  .ink0 { background: var(--ink0); }
+  .ink1 { background: var(--ink1); }
+  .ink2 { background: var(--ink2); }
   .desc {
     color: var(--color-text);
+    line-height: 1.5;
   }
   .progress {
     font-family: var(--font-mono);
