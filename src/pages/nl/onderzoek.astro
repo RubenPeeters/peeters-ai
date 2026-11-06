@@ -1,16 +1,20 @@
 ---
 import Base from '~/layouts/Base.astro';
 import PaperList from '~/components/PaperList.astro';
+import Print from '~/components/Print.astro';
 import { t } from '~/i18n/strings';
 import { THEMES } from '~/content.config';
+import { getCollection } from 'astro:content';
 
 const locale = 'nl' as const;
 const s = t(locale);
+const papers = await getCollection('papers');
 ---
 <Base locale={locale} routeKey="research" title={s.research.title} description={s.research.intro}>
   <article class="container reading body research">
     <h1>{s.research.title}</h1>
     <p class="intro">{s.research.intro}</p>
+    <Print kind="sunflower" arg={papers.length} label={s.research.printLabel.replace('{n}', String(papers.length))} />
 
     <section class="themes" aria-labelledby="themes-heading">
       <h2 class="section-heading" id="themes-heading">{s.research.themesHeading}</h2>
