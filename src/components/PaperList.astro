@@ -59,12 +59,13 @@ function toRis(d: typeof sorted[number]['data']): string {
     const ris = toRis(paper.data);
     const citeId = `cite-${paper.id}`;
     return (
-      <li class="paper" id={featured === undefined ? `paper-${paper.id}` : undefined}>
+      <li class="card paper" id={featured === undefined ? `paper-${paper.id}` : undefined}>
         <p class="meta">
-          <span class="year">{year}</span>
-          {showStatusPill && <span class="status">{s.statusLabels[status]}</span>}
+          <span class="chip">{year}</span>
+          {showStatusPill && <span class="chip">{s.statusLabels[status]}</span>}
+          <span class="chip chip-outline">{venue}</span>
           {themes.map((theme) => (
-            <span class="theme">{s.themeLabels[theme]}</span>
+            <span class="chip chip-outline">{s.themeLabels[theme]}</span>
           ))}
         </p>
         <h3 class="title">
@@ -84,10 +85,9 @@ function toRis(d: typeof sorted[number]['data']): string {
             </>
           ))}
         </p>
-        <p class="venue">{venue}</p>
         {hasCitation && (
           <div class="cite-wrapper">
-            <button class="cite-toggle" type="button" aria-expanded="false" aria-controls={citeId} data-cite-toggle>
+            <button class="btn btn-secondary" type="button" aria-expanded="false" aria-controls={citeId} data-cite-toggle>
               {s.citeButton}
             </button>
             <div class="cite-panel" id={citeId} hidden data-cite-panel>
@@ -148,7 +148,7 @@ function toRis(d: typeof sorted[number]['data']): string {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-48);
+    gap: var(--space-16);
   }
   .paper {
     display: flex;
@@ -158,24 +158,9 @@ function toRis(d: typeof sorted[number]['data']): string {
   .meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-12);
-    font-family: var(--font-mono);
-    font-size: var(--text-mono);
-    letter-spacing: 0.06em;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    margin: 0;
+    gap: var(--space-8);
+    max-width: none;
   }
-  .year { color: var(--color-text); font-weight: 500; }
-  .status {
-    color: var(--color-accent);
-  }
-  .theme {
-    color: var(--color-text-muted);
-  }
-  .theme::before { content: '\B7  '; opacity: 0.5; }
-  .meta .theme:first-of-type::before { content: ''; }
   .title {
     font-family: var(--font-sans);
     font-size: 1.375rem;
@@ -195,31 +180,8 @@ function toRis(d: typeof sorted[number]['data']): string {
     color: var(--color-text);
     font-weight: 500;
   }
-  .venue {
-    font-family: var(--font-sans);
-    font-style: italic;
-    font-size: var(--text-small);
-    color: var(--color-text-muted);
-    max-width: none;
-  }
   .cite-wrapper {
     margin-top: var(--space-4);
-  }
-  .cite-toggle {
-    font-family: var(--font-mono);
-    font-size: var(--text-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    background: none;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: var(--space-4) var(--space-12);
-    cursor: pointer;
-    transition: background var(--duration-normal) var(--ease);
-  }
-  .cite-toggle:hover {
-    background: var(--color-surface);
   }
   .cite-panel {
     margin-top: var(--space-8);

@@ -25,7 +25,7 @@ function fmt(d: Date): string {
 const blogIndex = locale === 'en' ? '/blog' : '/nl/blog';
 ---
 <Base locale={locale} routeKey="blog" title={title} description={description}>
-  <article class="container blog-post">
+  <article class="container reading body blog-post">
     <header class="post-header">
       <p class="meta">
         <span>{s.publishedOn} {fmt(date)}</span>
@@ -87,11 +87,13 @@ const blogIndex = locale === 'en' ? '/blog' : '/nl/blog';
       gap: var(--space-24);
     }
     .prose :global(h2) {
-      font-size: var(--text-h3);
       margin-top: var(--space-24);
     }
     .prose :global(h3) {
-      font-size: 1.25rem;
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 400;
       margin-top: var(--space-12);
     }
     .prose :global(pre) {

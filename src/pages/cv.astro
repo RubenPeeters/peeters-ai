@@ -8,11 +8,11 @@ const locale = 'en' as const;
 const s = t(locale);
 ---
 <Base locale={locale} routeKey="cv" title={s.cv.title} description={s.cv.intro}>
-  <article class="container cv-page">
+  <article class="container reading body cv-page">
     <header class="cv-header">
       <h1>{s.cv.title}</h1>
       <p class="intro">{s.cv.intro}</p>
-      <button class="print-btn" type="button" onclick="window.print()">
+      <button class="btn btn-primary print-btn" type="button" onclick="window.print()">
         {s.cv.downloadLabel}
       </button>
     </header>
@@ -57,7 +57,7 @@ const s = t(locale);
       padding-block: var(--space-32) var(--space-96);
       display: flex;
       flex-direction: column;
-      gap: var(--space-32);
+      gap: var(--space-24);
     }
     .cv-header {
       display: flex;
@@ -71,24 +71,10 @@ const s = t(locale);
       color: var(--color-text);
       max-width: 36ch;
     }
-    .print-btn {
-      align-self: flex-start;
-      font-family: var(--font-mono);
-      font-size: var(--text-mono);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--color-accent);
-      background: none;
-      border: 1px solid var(--color-border);
-      border-radius: 4px;
-      padding: var(--space-8) var(--space-12);
-      cursor: pointer;
-      transition: background var(--duration-normal) var(--ease);
-    }
-    .print-btn:hover { background: var(--color-surface); }
+    .print-btn { align-self: flex-start; }
     .divider {
       border-top: 1px solid var(--color-border);
-      padding-top: var(--space-32);
+      padding-top: var(--space-24);
       display: flex;
       flex-direction: column;
       gap: var(--space-12);
@@ -112,10 +98,7 @@ const s = t(locale);
       font-size: var(--text-small);
       color: var(--color-text-muted);
     }
-    .skill-group dd {
-      margin: 0;
-      font-size: var(--text-body);
-    }
+    .skill-group dd { margin: 0; }
     .lang-list {
       list-style: none;
       margin: 0;
@@ -123,7 +106,6 @@ const s = t(locale);
       display: flex;
       flex-direction: column;
       gap: var(--space-4);
-      font-size: var(--text-body);
     }
 
     @media print {
