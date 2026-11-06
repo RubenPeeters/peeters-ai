@@ -1,17 +1,18 @@
-/* White paper, dark text, blue links; distinct hues for graph categories. */
+/* Site aliases onto the Peeters Design System tokens; distinct hues for graph categories. */
 :root {
   /* Surface */
-  --color-bg: #ffffff;
-  --color-surface: #f5f6f8;
-  --color-border: #d7dce2;
+  --color-bg: var(--canvas);
+  --color-surface: var(--surface);
+  --color-border: var(--hairline);
 
   /* Ink */
-  --color-text: #202124;
-  --color-text-muted: #565d66;
+  --color-text: var(--text);
+  --color-text-muted: var(--muted);
 
   /* Accents */
-  --color-accent: #245b9e;
-  --color-accent-hover: #173f70;
+  /* Links use text colour and stay underlined, so colour alone never marks them. */
+  --color-accent: var(--text);
+  --color-accent-hover: var(--text);
   --color-tertiary: #a86452;
 
   /* Knowledge graph */
@@ -26,11 +27,6 @@
   --color-graph-education: #5b7e4c;
   --color-graph-section: #b4474f;
 
-  /* System fonts keep pages close to a plain document. */
-  --font-serif: Georgia, 'Times New Roman', serif;
-  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
-
   /* Body 18px / 1.65 */
   --text-body: 1.125rem;
   --text-tagline: clamp(1.5rem, 1.2rem + 1vw, 1.6875rem);
@@ -40,7 +36,6 @@
   --text-mono: 0.8125rem;
   --text-small: 0.9375rem;
 
-  --leading-tight: 1.04;
   --leading-snug: 1.25;
   --leading-body: 1.65;
 

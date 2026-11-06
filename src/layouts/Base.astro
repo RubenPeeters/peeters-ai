@@ -1,5 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import '~/styles/design/tokens.css';
+import '~/styles/design/components.css';
 import '~/styles/global.css';
 import {
   t,
@@ -52,6 +54,16 @@ const personJsonLd = {
   ],
 };
 
+const colourways: Partial<Record<RouteKey, string>> = {
+  research: 'blue',
+  cv: 'blue',
+  projects: 'green',
+  about: 'green',
+  blog: 'orange',
+  contact: 'orange',
+};
+const colourway = colourways[routeKey];
+
 const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to content';
 ---
 <!doctype html>
@@ -59,12 +71,16 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#edf0e9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141815" media="(prefers-color-scheme: dark)" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={s.siteName} />
@@ -88,7 +104,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
     <ClientRouter />
   </head>
-  <body class:list={[chromeless && 'is-chromeless']}>
+  <body class:list={[chromeless && 'is-chromeless']} data-colourway={colourway}>
     <a href="#main" class="skip-link">{skipToMainLabel}</a>
 
     {chromeless ? (
