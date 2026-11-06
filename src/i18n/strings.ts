@@ -58,7 +58,7 @@ export function pathFor(routeKey: RouteKey, locale: Locale): string {
 }
 
 export function publishedNavRoutes(): RouteKey[] {
-  return (['blog', 'research', 'about'] as RouteKey[]).filter((key) => routes[key].published);
+  return (['blog', 'research', 'projects', 'about', 'cv', 'contact'] as RouteKey[]).filter((key) => routes[key].published);
 }
 
 type TaglineParts = {
@@ -172,11 +172,11 @@ type Strings = {
     label: string;
     en: string;
     nl: string;
+    names: Record<Locale, string>;
   };
   themeSwitch: {
-    label: string;
-    light: string;
-    dark: string;
+    toDark: string;
+    toLight: string;
   };
   footer: {
     builtWith: string;
@@ -236,8 +236,8 @@ const en: Strings = {
   eyebrow: 'PhD candidate · KU Leuven',
   taglineParts: enTagline,
   tagline: joinTagline(enTagline),
-  langSwitch: { label: 'Language', en: 'EN', nl: 'NL' },
-  themeSwitch: { label: 'Theme', light: 'Light', dark: 'Dark' },
+  langSwitch: { label: 'Language', en: 'EN', nl: 'NL', names: { en: 'English', nl: 'Nederlands' } },
+  themeSwitch: { toDark: 'Switch to dark theme', toLight: 'Switch to light theme' },
   footer: { builtWith: 'Built with Astro.', source: 'Source on GitHub' },
   graph: {
     centerName: 'Ruben Peeters',
@@ -433,8 +433,8 @@ const nl: Strings = {
   eyebrow: 'Doctoraatsonderzoeker · KU Leuven',
   taglineParts: nlTagline,
   tagline: joinTagline(nlTagline),
-  langSwitch: { label: 'Taal', en: 'EN', nl: 'NL' },
-  themeSwitch: { label: 'Thema', light: 'Licht', dark: 'Donker' },
+  langSwitch: { label: 'Taal', en: 'EN', nl: 'NL', names: { en: 'English', nl: 'Nederlands' } },
+  themeSwitch: { toDark: 'Schakel naar donker thema', toLight: 'Schakel naar licht thema' },
   footer: { builtWith: 'Gemaakt met Astro.', source: 'Broncode op GitHub' },
   graph: {
     centerName: 'Ruben Peeters',
