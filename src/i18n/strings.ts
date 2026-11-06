@@ -368,7 +368,7 @@ const en: Strings = {
     intro:
       'Side projects: mostly excuses to try something new in Python and TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
-    progressLabel: 'Progress: {n}%',
+    progressLabel: '{n}% done',
     more: 'More on GitHub',
   },
   blog: {
@@ -565,7 +565,7 @@ const nl: Strings = {
     intro:
       'Bijprojecten: vooral excuses om iets nieuws te proberen in Python en TypeScript.',
     labels: { repo: 'Repo', demo: 'Live' },
-    progressLabel: 'Voortgang: {n}%',
+    progressLabel: '{n}% klaar',
     more: 'Meer op GitHub',
   },
   blog: {
