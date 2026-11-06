@@ -1,5 +1,6 @@
 ---
 import Base from '~/layouts/Base.astro';
+import Print from '~/components/Print.astro';
 import { t, type Locale } from '~/i18n/strings';
 
 type Props = {
@@ -9,9 +10,10 @@ type Props = {
   date: Date;
   updated?: Date;
   tags: string[];
+  body: string;
 };
 
-const { locale, title, description, date, updated, tags } = Astro.props;
+const { locale, title, description, date, updated, tags, body } = Astro.props;
 const s = t(locale).blog;
 
 function fmt(d: Date): string {
@@ -22,9 +24,14 @@ function fmt(d: Date): string {
   });
 }
 
+// 200 words a minute, counted on the source, so code and notebook embeds count too.
+const minutes = Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 200));
+
 const blogIndex = locale === 'en' ? '/blog' : '/nl/blog';
 ---
 <Base locale={locale} routeKey="blog" title={title} description={description}>
+  <div class="horizon bleed"><Print kind="hills" /></div>
+  <p class="container reading horizon-caption">y = h + a·sin(fx + φ) · {minutes} {s.minRead}</p>
   <article class="container reading body blog-post">
     <header class="post-header">
       <p class="meta">
@@ -48,6 +55,18 @@ const blogIndex = locale === 'en' ? '/blog' : '/nl/blog';
   </article>
 
   <style>
+    .horizon { height: 150px; }
+    .horizon > :global(.art) {
+      width: 100%;
+      height: auto;
+      left: 0;
+      bottom: 0;
+    }
+    .horizon-caption {
+      margin-block: var(--space-12) 0;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+    }
     .blog-post {
       padding-block: var(--space-32) var(--space-96);
       display: flex;

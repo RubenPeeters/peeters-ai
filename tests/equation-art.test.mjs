@@ -77,3 +77,10 @@ test('section pages open with one header art and no framed print', async () => {
   }
   assert.ok(!(await page('/cv')).includes('equation-art.js'));
 });
+
+test('a blog post opens with the hills horizon, its formula and reading time', async () => {
+  const html = await page('/blog/why-kg-portfolio');
+  assert.match(html, /data-colourway="orange"/);
+  assert.match(html, /<div class="horizon bleed"[^>]*><svg[^>]*class="art"[^>]*data-print="hills"/);
+  assert.match(html, /y = h \+ a·sin\(fx \+ φ\) · \d+ min read/);
+});

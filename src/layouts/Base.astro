@@ -307,6 +307,11 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       .lang-switch.floating a:hover {
         color: var(--color-text);
       }
+      /* On wide screens it sits on the home graph's paper, which stays light in both themes. */
+      @media (min-width: 901px) {
+        .lang-switch.floating a,
+        .lang-switch.floating a:hover { color: var(--line); }
+      }
       .site-footer {
         padding-block: var(--space-48) var(--space-32);
         color: var(--color-text-muted);
