@@ -191,3 +191,10 @@ mark {
 .prose .callout-title { font-weight: 600; color: color-mix(in srgb, var(--callout-color) 60%, var(--color-text)); }
 .prose summary.callout-title { cursor: pointer; }
 .prose summary.callout-title:focus-visible { outline: 2px solid var(--callout-color); outline-offset: 4px; }
+
+/* Shiki renders github-light inline and exposes github-dark as --shiki-dark variables. */
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}

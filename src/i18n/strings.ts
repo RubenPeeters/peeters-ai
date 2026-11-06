@@ -173,6 +173,11 @@ type Strings = {
     en: string;
     nl: string;
   };
+  themeSwitch: {
+    label: string;
+    light: string;
+    dark: string;
+  };
   footer: {
     builtWith: string;
     source: string;
@@ -232,6 +237,7 @@ const en: Strings = {
   taglineParts: enTagline,
   tagline: joinTagline(enTagline),
   langSwitch: { label: 'Language', en: 'EN', nl: 'NL' },
+  themeSwitch: { label: 'Theme', light: 'Light', dark: 'Dark' },
   footer: { builtWith: 'Built with Astro.', source: 'Source on GitHub' },
   graph: {
     centerName: 'Ruben Peeters',
@@ -428,6 +434,7 @@ const nl: Strings = {
   taglineParts: nlTagline,
   tagline: joinTagline(nlTagline),
   langSwitch: { label: 'Taal', en: 'EN', nl: 'NL' },
+  themeSwitch: { label: 'Thema', light: 'Licht', dark: 'Donker' },
   footer: { builtWith: 'Gemaakt met Astro.', source: 'Broncode op GitHub' },
   graph: {
     centerName: 'Ruben Peeters',

@@ -69,11 +69,22 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
 <!doctype html>
 <html lang={locale}>
   <head>
+    <script is:inline>
+      // Runs before first paint so there is no flash; ClientRouter's swap replaces <html> attributes, so reapply after it.
+      const applyTheme = () => {
+        let theme = 'light';
+        try {
+          if (localStorage.getItem('theme') === 'dark') theme = 'dark';
+        } catch {}
+        document.documentElement.dataset.theme = theme;
+      };
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#edf0e9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141815" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#edf0e9" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalUrl} />
@@ -163,6 +174,13 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
               )
             )}
           </nav>
+          <div role="group" aria-label={s.themeSwitch.label} class="theme-switch">
+            {(['light', 'dark'] as const).map((theme) => (
+              <button type="button" data-theme-choice={theme} aria-pressed={theme === 'light' ? 'true' : 'false'}>
+                {s.themeSwitch[theme]}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
     )}
@@ -188,6 +206,17 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         toggle?.addEventListener('click', () => {
           toggle.setAttribute('aria-expanded', String(toggle.getAttribute('aria-expanded') !== 'true'));
         });
+
+        const choices = document.querySelectorAll<HTMLButtonElement>('[data-theme-choice]');
+        const sync = () => choices.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === document.documentElement.dataset.theme)));
+        sync();
+        choices.forEach((b) => b.addEventListener('click', () => {
+          document.documentElement.dataset.theme = b.dataset.themeChoice;
+          try {
+            localStorage.setItem('theme', b.dataset.themeChoice!);
+          } catch {}
+          sync();
+        }));
       });
     </script>
 
@@ -232,7 +261,8 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         padding: 0;
       }
       .site-nav a,
-      .site-header .lang-switch > * {
+      .site-header .lang-switch > *,
+      .theme-switch > button {
         display: inline-block;
         font: 500 14px/20px var(--font-sans);
         color: var(--text);
@@ -244,13 +274,19 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       .site-nav a:hover { background: var(--surface-sunken); }
       .site-nav a[aria-current='page'] { background: var(--btn); color: var(--on-btn); }
       .lang-switch { display: flex; }
-      .site-header .lang-switch {
+      .site-header .lang-switch,
+      .theme-switch {
+        display: flex;
         padding: 2px;
         border-radius: var(--radius-pill);
         background: var(--surface-sunken);
       }
-      .site-header .lang-switch > * { padding: 4px 12px; }
-      .site-header .lang-switch > [aria-current] { background: var(--btn); color: var(--on-btn); }
+      .site-header .lang-switch > *,
+      .theme-switch > button { padding: 4px 12px; }
+      .theme-switch > button { background: none; cursor: pointer; }
+      .site-header .lang-switch > [aria-current],
+      .theme-switch > [aria-pressed='true'] { background: var(--btn); color: var(--on-btn); }
+      .theme-switch > [aria-pressed='false']:hover { text-decoration: underline; }
       .site-header .lang-switch a:hover { color: var(--text); text-decoration: underline; }
       .menu-toggle { display: none; }
       .lang-switch.floating {
