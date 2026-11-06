@@ -1,4 +1,4 @@
-/* Site aliases onto the Peeters Design System tokens; distinct hues for graph categories. */
+/* Site aliases onto the Peeters Design System tokens; print inks for graph categories. */
 :root {
   /* Surface */
   --color-bg: var(--canvas);
@@ -15,17 +15,17 @@
   --color-accent-hover: var(--text);
   --color-tertiary: #a86452;
 
-  /* Knowledge graph */
-  --color-graph-link: #aaa099;
-  --color-graph-person: #245b9e;
-  --color-graph-organization: #9a5c49;
-  --color-graph-skill: #376f68;
-  --color-graph-topic: #48658d;
-  --color-graph-project: #8a6a32;
-  --color-graph-publication: #6b5f91;
-  --color-graph-value: #6e7741;
-  --color-graph-education: #5b7e4c;
-  --color-graph-section: #b4474f;
+  /* Knowledge graph: print inks on the paper ground */
+  --color-graph-link: var(--line);
+  --color-graph-person: var(--ink-orange);
+  --color-graph-organization: var(--ink-yellow);
+  --color-graph-skill: var(--ink-teal);
+  --color-graph-topic: var(--ink-pink);
+  --color-graph-project: var(--ink-lime);
+  --color-graph-publication: var(--ink-blue);
+  --color-graph-value: var(--paper);
+  --color-graph-education: var(--ink-yellow);
+  --color-graph-section: var(--ink-sky);
 
   /* Body 18px / 1.65 */
   --text-body: 1.125rem;
