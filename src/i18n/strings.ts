@@ -163,7 +163,7 @@ type CVCopy = {
 
 type Strings = {
   siteName: string;
-  navigation: { sections: string; backToGraph: string };
+  navigation: { sections: string; backToGraph: string; menu: string };
   eyebrow: string;
   tagline: string;
   taglineParts: TaglineParts;
@@ -225,7 +225,7 @@ const nlTagline: TaglineParts = {
 
 const en: Strings = {
   siteName: 'Ruben Peeters',
-  navigation: { sections: 'Sections', backToGraph: 'Back to the graph' },
+  navigation: { sections: 'Sections', backToGraph: 'Back to the graph', menu: 'Menu' },
   eyebrow: 'PhD candidate · KU Leuven',
   taglineParts: enTagline,
   tagline: joinTagline(enTagline),
@@ -419,7 +419,7 @@ const en: Strings = {
 
 const nl: Strings = {
   siteName: 'Ruben Peeters',
-  navigation: { sections: 'Secties', backToGraph: 'Terug naar de graaf' },
+  navigation: { sections: 'Secties', backToGraph: 'Terug naar de graaf', menu: 'Menu' },
   eyebrow: 'Doctoraatsonderzoeker · KU Leuven',
   taglineParts: nlTagline,
   tagline: joinTagline(nlTagline),
