@@ -63,13 +63,17 @@ test('section pages open with one header art and no framed print', async () => {
     const html = await page(`/${path}`);
     const header = html.match(/<header class="section-header bleed tint0"[\s\S]*?<\/header>/)?.[0] ?? '';
     assert.ok(header.includes(print), path);
-    assert.equal((html.match(/class="art"/g) ?? []).length, 1, path);
+    const cards = path.endsWith('projects') || path.endsWith('projecten') ? projects.length : 0;
+    assert.equal((html.match(/class="art"/g) ?? []).length, 1 + cards, path);
     assert.ok(!/class="print/.test(html), path);
     assert.ok(html.includes('/design/equation-art.js'), path);
   }
   for (const path of ['projects', 'nl/projecten']) {
     const html = await page(`/${path}`);
-    for (const slug of projects) assert.match(html, new RegExp(`class="art mark"[^>]*data-print="(superformula" data-arg="${slug}|spiral)"`), `${path}: ${slug}`);
+    const list = html.match(/<ol class="projects"[\s\S]*?<\/ol>/)?.[0] ?? '';
+    assert.equal((list.match(/<li class="card project bleed tint[0-2]"/g) ?? []).length, projects.length, path);
+    for (const slug of projects) assert.match(list, new RegExp(`class="art"[^>]*data-print="superformula" data-arg="${slug}"`), `${path}: ${slug}`);
+    assert.ok(!/data-print="spiral"/.test(list), path);
   }
   assert.ok(!(await page('/cv')).includes('equation-art.js'));
 });

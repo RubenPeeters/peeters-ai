@@ -4,14 +4,10 @@ type Props = {
   kind: 'rose' | 'lissajous' | 'hills' | 'sunflower' | 'superformula' | 'spiral';
   // sunflower: seed count; spiral: progress 0..1; superformula: seed string
   arg?: string | number;
-  // bleed: the large header art (its .bleed parent places it); mark: the icon-size line mark for lists
-  size?: 'bleed' | 'mark';
-  // only for prints that carry a value; the rest are decorative
-  label?: string;
 };
-const { kind, arg, size = 'bleed', label } = Astro.props;
+const { kind, arg } = Astro.props;
 ---
-<svg viewBox="0 0 240 240" class:list={['art', size === 'mark' && 'mark']} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} data-print={kind} data-arg={arg}></svg>
+<svg viewBox="0 0 240 240" class="art" aria-hidden="true" data-print={kind} data-arg={arg}></svg>
 
 <script>
   type Art = Record<string, (svg: SVGSVGElement, arg?: unknown) => void> & {
