@@ -151,11 +151,9 @@ const clientCopy = {
     height: min(78svh, 48rem);
     min-height: 34rem;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-    border-radius: 4px;
-    background:
-      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--color-surface) 72%, transparent), transparent 62%),
-      color-mix(in srgb, var(--color-bg) 82%, transparent);
+    border: var(--stroke-print) solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--paper);
   }
 
   .kg-canvas {
@@ -230,26 +228,22 @@ const clientCopy = {
   .kg-node[data-group='section'] { color: var(--color-graph-section); cursor: pointer; }
 
   .kg-node circle {
-    fill: color-mix(in srgb, currentColor 20%, var(--color-bg));
-    stroke: currentColor;
-    stroke-width: 1.6;
+    fill: currentColor;
+    stroke: var(--line);
+    stroke-width: var(--stroke-line);
     vector-effect: non-scaling-stroke;
     transition:
       stroke-width var(--dur) var(--ease),
       opacity var(--dur) var(--ease);
   }
 
-  .kg-node[data-group='section'] circle {
-    fill: color-mix(in srgb, currentColor 34%, var(--color-bg));
-    stroke-width: 2.4;
-  }
 
   .kg-node text {
-    fill: var(--color-text);
+    fill: var(--line);
     font: 500 12px/1 var(--font-sans);
     letter-spacing: 0.01em;
     paint-order: stroke;
-    stroke: var(--color-bg);
+    stroke: var(--paper);
     stroke-width: 4px;
     stroke-linejoin: round;
     pointer-events: none;
@@ -267,17 +261,17 @@ const clientCopy = {
   .kg-node:hover circle,
   .kg-node:focus circle,
   .kg-node.is-active circle {
-    stroke-width: 3;
+    stroke-width: calc(var(--stroke-line) * 2);
   }
 
   .kg-node[data-clickable='true'] { cursor: pointer; }
   .kg-node[data-clickable='true'] text {
-    fill: var(--color-accent);
+    fill: var(--line);
     text-decoration: underline;
   }
   .kg-node circle.kg-click-ring {
     fill: none;
-    stroke: var(--color-accent);
+    stroke: var(--line);
     stroke-width: 2;
     pointer-events: none;
   }
@@ -302,7 +296,7 @@ const clientCopy = {
   .kg-tooltip-image[hidden] { display: none; }
 
   .kg-link.is-active {
-    stroke: var(--color-text-muted);
+    stroke: var(--line);
     stroke-width: 1.8;
   }
 
@@ -310,7 +304,7 @@ const clientCopy = {
     position: absolute;
     left: var(--space-16);
     bottom: var(--space-12);
-    color: var(--color-text-muted);
+    color: var(--line);
     font-size: var(--text-small);
   }
 
