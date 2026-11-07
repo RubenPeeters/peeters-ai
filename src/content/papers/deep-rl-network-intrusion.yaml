@@ -1,7 +1,7 @@
 title: "Deep reinforcement learning for network intrusion"
 authors:
   - Ruben Peeters
-venue: "Master's thesis, KU Leuven"
+venue: "Master's thesis, Ghent University"
 year: 2022
 themes:
   - network-security
@@ -11,6 +11,6 @@ citation:
     @mastersthesis{peeters2022deep,
       title={Deep Reinforcement Learning for Network Intrusion},
       author={Peeters, Ruben},
-      school={KU Leuven},
+      school={Ghent University},
       year={2022}
     }
