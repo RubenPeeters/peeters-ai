@@ -26,14 +26,16 @@ const inks = ['ink0', 'ink1', 'ink2'];
         {progress !== undefined && (
           <p class="progress">{s.progressLabel.replace('{n}', String(Math.round(progress * 100)))}</p>
         )}
-        <p class="links">
-          {repo && (
-            <a href={repo} class="btn btn-secondary ext" rel="noopener">{s.labels.repo}</a>
-          )}
-          {demo && (
-            <a href={demo} class="btn btn-secondary ext" rel="noopener">{s.labels.demo}</a>
-          )}
-        </p>
+        {(repo || demo) && (
+          <p class="links">
+            {repo && (
+              <a href={repo} class="btn btn-secondary ext" rel="noopener">{s.labels.repo}</a>
+            )}
+            {demo && (
+              <a href={demo} class="btn btn-secondary ext" rel="noopener">{s.labels.demo}</a>
+            )}
+          </p>
+        )}
       </li>
     );
   })}

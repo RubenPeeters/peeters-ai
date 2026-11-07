@@ -8,7 +8,7 @@ year: 2026
 themes:
   - cultural-heritage
   - knowledge-graphs
-status: accepted
+status: published
 citation:
   bibtex: |
     @inproceedings{peeters2026silos,
