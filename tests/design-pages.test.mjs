@@ -55,6 +55,13 @@ for (const [locale, paths] of Object.entries(pages)) {
     }
   });
 
+  test(`${locale}: a project without repo or demo renders no empty link row`, async () => {
+    const list = (await page(paths.projects)).match(/<ol class="projects"[\s\S]*?<\/ol>/)?.[0] ?? '';
+    const jarvis = list.split('<li class="card project bleed"').find((card) => card.includes('>Jarvis</h3>')) ?? '';
+    assert.ok(jarvis, 'Jarvis card');
+    assert.doesNotMatch(jarvis, /class="links"|<a href/);
+  });
+
   test(`${locale}: reading pages use the reading column`, async () => {
     for (const key of ['research', 'cv', 'about']) {
       assert.match(await page(paths[key]), /<article class="container reading body/, key);

@@ -1,0 +1,10 @@
+title: "forge"
+description:
+  en: "Turns GitHub issues into reviewed pull requests with AI coding agents. This site is built with it."
+  nl: "Zet GitHub-issues om in nagekeken pull requests met AI-codeeragenten. Deze site wordt ermee gebouwd."
+year: 2026
+sortKey: 202610
+tags:
+  - Python
+  - Docker
+  - AI agents

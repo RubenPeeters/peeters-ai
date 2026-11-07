@@ -13,6 +13,8 @@ year: 2025
 themes:
   - biomonitoring
 status: published
+links:
+  doi: "https://doi.org/10.1016/j.ijheh.2025.114669"
 featured: true
 citation:
   bibtex: |

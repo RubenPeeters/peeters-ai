@@ -1,0 +1,10 @@
+title: "Jarvis"
+description:
+  en: "Personal app for tasks, goals and planning."
+  nl: "Persoonlijke app voor taken, doelen en planning."
+year: 2026
+sortKey: 202611
+tags:
+  - TypeScript
+  - Next.js
+  - PostgreSQL

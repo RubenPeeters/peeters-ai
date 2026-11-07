@@ -7,18 +7,18 @@ authors:
   - X. Duan
   - C. Fuhrhop
   - et al.
-venue: "Workshop proceedings"
+venue: "Semantic Web Journal"
 year: 2025
 themes:
   - cultural-heritage
   - knowledge-graphs
-status: preprint
+status: accepted
 featured: true
 citation:
   bibtex: |
-    @inproceedings{peeters2025rights,
+    @article{peeters2025rights,
       title={Rights to Richness: Connecting Cultural Artefacts with Rights and Context},
       author={Peeters, Ruben and Blanco, G. and Botsoglou, G. and Davis, I. and Duan, X. and Fuhrhop, C. and others},
-      booktitle={Workshop Proceedings},
+      journal={Semantic Web},
       year={2025}
     }

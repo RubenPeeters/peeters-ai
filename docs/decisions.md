@@ -1,5 +1,13 @@
 # Decisions
 
+## 2026-11-06: paper statuses and own tools on /projects
+
+Ruben confirmed the current state of his work. Rights to Richness is accepted at
+the Semantic Web Journal. The two DHBenelux 2026 papers (Knowledge-Graph-Driven
+Personalised Recommendation and From Silos to Semantics) were presented there and
+are now listed as published. His own tools (ni-han-bao, Jarvis and forge) are on
+/projects; a project without a public repository shows no repository link.
+
 ## 2026-11-06: what the homepage graph covers
 
 Ruben chose the scope of the graph: published papers that were missing, new
