@@ -281,9 +281,9 @@ const en: Strings = {
     title: 'About',
     intro:
       'I\'m a PhD candidate at KU Leuven, working on knowledge graphs and multimodal ML for cultural heritage.',
-    currently: 'Currently building ArtKB and writing the next paper.',
+    currently: 'Currently working on how language models build knowledge graphs from heritage texts, and where they go wrong.',
     paragraphs: [
-      'My work sits at the intersection of knowledge representation and machine learning, building systems that make heterogeneous data more findable, interoperable, and reusable.',
+      'My work sits at the intersection of knowledge representation and machine learning, building systems that make heterogeneous data more findable, interoperable, and reusable. More recently, that means using language models to build knowledge graphs from text and tables, and building the benchmarks to check them.',
       'Before the PhD, I spent two years as a research software engineer at VITO, working on data interoperability for environmental health studies. That experience shaped how I think about real-world data problems.',
     ],
     educationHeading: 'Education',
@@ -310,6 +310,7 @@ const en: Strings = {
       'I studied industrial engineering with a focus on information science at Ghent University, where I first got interested in how structured data can bridge different systems and domains.',
       'After graduating, I joined VITO as a research software engineer, building tools for data harmonisation in human biomonitoring studies across European research consortia. That work taught me that the gap between data and usable knowledge is where the hardest and most impactful problems live.',
       'In May 2024, I started a PhD at KU Leuven to focus on that gap full-time, specifically at the intersection of knowledge graphs, multimodal machine learning, and cultural heritage.',
+      'Alongside the PhD, I am a teaching assistant for the Web AI course at KU Leuven and supervise master\'s theses.',
     ],
     philosophyHeading: 'What drives the work',
     philosophyParagraph:
@@ -319,19 +320,21 @@ const en: Strings = {
       'Chess: mostly online, occasionally over the board',
       'Sports: both playing and overanalysing the data',
       'Gaming: from strategy to story-driven',
+      'Riftbound: the trading card game, with a Discord bot to keep track of who lent which card to whom',
+      'Philosophy: Plato, Aristotle and the Stoics',
     ],
     skillsHeading: 'Tools & technologies',
     skills: [
       { category: 'Languages', items: 'Python, TypeScript, Java, SPARQL' },
       { category: 'Semantic Web', items: 'RDF, OWL, SHACL, Linked Data, Comunica' },
-      { category: 'ML & Data', items: 'PyTorch, Hugging Face, pandas, Jupyter' },
-      { category: 'Web', items: 'Astro, D3.js, Node.js' },
+      { category: 'ML & Data', items: 'PyTorch, Hugging Face, pandas, Jupyter, LLM APIs (LiteLLM, OpenRouter), Google ADK' },
+      { category: 'Web', items: 'Astro, Next.js, D3.js, Node.js, Supabase, PostgreSQL, Docker' },
     ],
   },
   research: {
     title: 'Research',
     intro:
-      'Most of my research is on knowledge graphs and multimodal ML for cultural heritage, with some work on data interoperability in human biomonitoring.',
+      'Most of my research is on knowledge graphs for cultural heritage: building them, increasingly with language models, checking them against benchmarks, and using them for multimodal retrieval and recommendation. Earlier work covered data interoperability in human biomonitoring.',
     themesHeading: 'Research themes',
     themeLabels: {
       'cultural-heritage': 'Cultural heritage',
@@ -343,7 +346,7 @@ const en: Strings = {
       'cultural-heritage':
         'Heritage institutions hold vast collections of digitised objects (paintings, manuscripts, archaeological finds) that are rich in meaning but often poorly connected. I work on making that cultural knowledge more discoverable and reusable, using knowledge graphs to link objects across collections and multimodal ML to bridge the gap between visual content and structured metadata.',
       'knowledge-graphs':
-        'Knowledge graphs provide a principled way to represent, integrate, and query heterogeneous knowledge. My work focuses on building and using KGs that combine domain expertise with data-driven methods, from ontology design and linked data publishing to knowledge-enhanced retrieval and recommendation.',
+        'Knowledge graphs provide a principled way to represent, integrate, and query heterogeneous knowledge. My work focuses on building and using KGs that combine domain expertise with data-driven methods, from ontology design and linked data publishing to knowledge-enhanced retrieval and recommendation. Lately that includes using language models to turn museum texts and technical tables into knowledge graphs, and measuring where they go wrong.',
       biomonitoring:
         'Human biomonitoring studies generate complex datasets across multiple European research consortia. During my time at VITO, I worked on improving the interoperability of these datasets, harmonising variables, aligning vocabularies, and building tools that let researchers query across study boundaries.',
       'network-security':
@@ -395,6 +398,18 @@ const en: Strings = {
         title: 'PhD Researcher',
         subtitle: 'KU Leuven',
         note: 'Knowledge graphs and multimodal ML for cultural heritage',
+      },
+      {
+        period: '2025 – 2026',
+        title: 'Teaching assistant, Web AI',
+        subtitle: 'KU Leuven',
+        note: 'Course project on building knowledge graphs from heritage texts',
+      },
+      {
+        period: '2026 – present',
+        title: 'Master\'s thesis supervisor',
+        subtitle: 'KU Leuven',
+        note: 'Temporal knowledge graphs with LLMs',
       },
       {
         period: '2022 – 2024',
@@ -479,9 +494,9 @@ const nl: Strings = {
     intro:
       'Ik ben doctoraatsonderzoeker aan KU Leuven en werk op kennisgrafen en multimodale ML voor cultureel erfgoed.',
     currently:
-      'Op dit moment bouw ik aan ArtKB en schrijf ik aan het volgende artikel.',
+      'Momenteel werk ik rond hoe taalmodellen kennisgrafen bouwen uit erfgoedteksten, en waar dat misloopt.',
     paragraphs: [
-      'Mijn werk bevindt zich op het kruispunt van kennisrepresentatie en machine learning: systemen bouwen die heterogene data vindbaarder, interoperabeler en herbruikbaarder maken.',
+      'Mijn werk bevindt zich op het kruispunt van kennisrepresentatie en machine learning: systemen bouwen die heterogene data vindbaarder, interoperabeler en herbruikbaarder maken. Recent betekent dat ook taalmodellen inzetten om kennisgrafen te bouwen uit tekst en tabellen, en de benchmarks bouwen om ze te controleren.',
       'Voor het doctoraat werkte ik twee jaar als research software engineer bij VITO, rond data-interoperabiliteit voor milieugezondheidsonderzoek. Die ervaring heeft mijn kijk op echte dataproblemen gevormd.',
     ],
     educationHeading: 'Opleiding',
@@ -508,6 +523,7 @@ const nl: Strings = {
       'Ik studeerde industrieel ingenieur met focus op informatica aan de Universiteit Gent, waar ik voor het eerst interesse kreeg in hoe gestructureerde data verschillende systemen en domeinen kan verbinden.',
       'Na mijn studies ging ik aan de slag bij VITO als research software engineer, waar ik tools bouwde voor dataharmonisatie in human-biomonitoring-studies over Europese onderzoeksconsortia heen. Dat werk leerde me dat de kloof tussen data en bruikbare kennis de plek is waar de moeilijkste en meest impactvolle problemen zitten.',
       'In mei 2024 begon ik een doctoraat aan KU Leuven om me voltijds op die kloof te richten, specifiek op het snijvlak van kennisgrafen, multimodale machine learning en cultureel erfgoed.',
+      'Naast het doctoraat ben ik assistent voor het vak Web AI aan de KU Leuven en begeleid ik masterproeven.',
     ],
     philosophyHeading: 'Wat het werk drijft',
     philosophyParagraph:
@@ -517,19 +533,21 @@ const nl: Strings = {
       'Schaken: vooral online, af en toe aan het bord',
       'Sport: zowel beoefenen als de data overanalyseren',
       'Gaming: van strategie tot verhalend',
+      'Riftbound: het ruilkaartspel, met een Discordbot die bijhoudt wie welke kaart aan wie uitleende',
+      'Filosofie: Plato, Aristoteles en de stoïcijnen',
     ],
     skillsHeading: 'Tools & technologieën',
     skills: [
       { category: 'Talen', items: 'Python, TypeScript, Java, SPARQL' },
       { category: 'Semantisch Web', items: 'RDF, OWL, SHACL, Linked Data, Comunica' },
-      { category: 'ML & Data', items: 'PyTorch, Hugging Face, pandas, Jupyter' },
-      { category: 'Web', items: 'Astro, D3.js, Node.js' },
+      { category: 'ML & Data', items: 'PyTorch, Hugging Face, pandas, Jupyter, LLM APIs (LiteLLM, OpenRouter), Google ADK' },
+      { category: 'Web', items: 'Astro, Next.js, D3.js, Node.js, Supabase, PostgreSQL, Docker' },
     ],
   },
   research: {
     title: 'Onderzoek',
     intro:
-      'Mijn onderzoek gaat vooral over kennisgrafen en multimodale ML voor cultureel erfgoed, met wat werk rond data-interoperabiliteit in human biomonitoring.',
+      'Het meeste van mijn onderzoek gaat over kennisgrafen voor cultureel erfgoed: ze bouwen, steeds vaker met taalmodellen, ze toetsen aan benchmarks, en ze gebruiken voor multimodale zoekopdrachten en aanbevelingen. Eerder werk ging over data-interoperabiliteit in human biomonitoring.',
     themesHeading: 'Onderzoeksthema\'s',
     themeLabels: {
       'cultural-heritage': 'Cultureel erfgoed',
@@ -541,7 +559,7 @@ const nl: Strings = {
       'cultural-heritage':
         'Erfgoedinstellingen beheren enorme collecties van gedigitaliseerde objecten (schilderijen, manuscripten, archeologische vondsten) die rijk zijn aan betekenis maar vaak slecht verbonden. Ik werk eraan om die culturele kennis vindbaarder en herbruikbaarder te maken, met kennisgrafen om objecten over collecties heen te verbinden en multimodale ML om de kloof tussen visuele inhoud en gestructureerde metadata te overbruggen.',
       'knowledge-graphs':
-        'Kennisgrafen bieden een principiële manier om heterogene kennis te representeren, integreren en bevragen. Mijn werk richt zich op het bouwen en gebruiken van KG\'s die domeinexpertise combineren met datagedreven methoden, van ontologie-ontwerp en linked-data-publicatie tot kennisverrijkte retrieval en aanbevelingssystemen.',
+        'Kennisgrafen bieden een principiële manier om heterogene kennis te representeren, integreren en bevragen. Mijn werk richt zich op het bouwen en gebruiken van KG\'s die domeinexpertise combineren met datagedreven methoden, van ontologie-ontwerp en linked-data-publicatie tot kennisverrijkte retrieval en aanbevelingssystemen. Recent hoort daar ook bij: taalmodellen gebruiken om museumteksten en technische tabellen om te zetten in kennisgrafen, en meten waar dat misloopt.',
       biomonitoring:
         'Human-biomonitoring-studies genereren complexe datasets over meerdere Europese onderzoeksconsortia heen. Tijdens mijn tijd bij VITO werkte ik aan het verbeteren van de interoperabiliteit van deze datasets: variabelen harmoniseren, vocabularia aligneren, en tools bouwen die onderzoekers over studiegrenzen heen laten zoeken.',
       'network-security':
@@ -593,6 +611,18 @@ const nl: Strings = {
         title: 'Doctoraatsonderzoeker',
         subtitle: 'KU Leuven',
         note: 'Kennisgrafen en multimodale ML voor cultureel erfgoed',
+      },
+      {
+        period: '2025 – 2026',
+        title: 'Assistent, Web AI',
+        subtitle: 'KU Leuven',
+        note: 'Vakproject over kennisgrafen bouwen uit erfgoedteksten',
+      },
+      {
+        period: '2026 – heden',
+        title: 'Promotor masterproeven',
+        subtitle: 'KU Leuven',
+        note: 'Temporele kennisgrafen met LLM\'s',
       },
       {
         period: '2022 – 2024',

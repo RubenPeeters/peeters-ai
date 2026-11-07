@@ -13,6 +13,8 @@ themes:
   - cultural-heritage
   - knowledge-graphs
 status: published
+links:
+  doi: "https://doi.org/10.1007/978-3-032-25159-6_26"
 citation:
   bibtex: |
     @inproceedings{duan2026knowledge,

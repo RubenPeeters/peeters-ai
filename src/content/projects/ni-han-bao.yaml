@@ -1,0 +1,11 @@
+title: "ni-han-bao"
+description:
+  en: "Discord bot for a group of friends, with a statistics site and a shared Riftbound card collection."
+  nl: "Discordbot voor een vriendengroep, met een statistiekensite en een gedeelde Riftbound-kaartcollectie."
+repo: "https://github.com/RubenPeeters/ni-han-bao"
+year: 2026
+sortKey: 202610
+tags:
+  - TypeScript
+  - Next.js
+  - Supabase

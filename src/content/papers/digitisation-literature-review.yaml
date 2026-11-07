@@ -7,11 +7,13 @@ authors:
   - Ruben Peeters
   - J. de Koning
   - et al.
-venue: "3D Research Challenges in Cultural Heritage VI"
+venue: "3D Research Challenges in Cultural Heritage VI, Lecture Notes in Computer Science"
 year: 2025
 themes:
   - cultural-heritage
 status: published
+links:
+  doi: "https://doi.org/10.1007/978-3-032-05656-6_10"
 citation:
   bibtex: |
     @incollection{drabczyk2025comprehensive,
