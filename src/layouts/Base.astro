@@ -73,6 +73,7 @@ const navInks: Partial<Record<RouteKey, string>> = {
   cv: 'yellow',
   contact: 'teal',
 };
+const pageInk = navInks[routeKey];
 
 const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to content';
 ---
@@ -125,7 +126,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
     <ClientRouter />
   </head>
-  <body class:list={[chromeless && 'is-chromeless']} data-colourway={colourway}>
+  <body class:list={[chromeless && 'is-chromeless']} data-colourway={colourway} style={pageInk && `--page-ink: var(--ink-${pageInk})`}>
     <a href="#main" class="skip-link">{skipToMainLabel}</a>
 
     {chromeless ? (
