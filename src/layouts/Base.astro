@@ -64,6 +64,16 @@ const colourways: Partial<Record<RouteKey, string>> = {
 };
 const colourway = colourways[routeKey];
 
+// Each section's ink in the header, the same on every page and in both languages.
+const navInks: Partial<Record<RouteKey, string>> = {
+  blog: 'orange',
+  research: 'blue',
+  projects: 'lime',
+  about: 'pink',
+  cv: 'yellow',
+  contact: 'teal',
+};
+
 const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to content';
 ---
 <!doctype html>
@@ -150,6 +160,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
                       <a
                         href={pathFor(key, locale)}
                         aria-current={key === routeKey ? 'page' : undefined}
+                        style={`--nav-ink: var(--ink-${navInks[key]})`}
                       >
                         {routes[key].navLabel[locale]}
                       </a>
@@ -275,8 +286,21 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         border-radius: var(--radius-pill);
       }
       .site-nav a { padding: 6px 14px; }
+      .site-nav a::before {
+        content: '';
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        margin-right: 7px;
+        box-sizing: border-box;
+        border: 1.5px solid var(--line);
+        border-radius: 50%;
+        background: var(--nav-ink);
+      }
+      :global([data-theme='dark']) .site-nav a::before { border-color: var(--text); }
       .site-nav a:hover { background: var(--surface-sunken); }
-      .site-nav a[aria-current='page'] { background: var(--ink3); color: var(--line); }
+      .site-nav a[aria-current='page'] { background: var(--nav-ink); color: var(--line); }
+      .site-nav a[aria-current='page']::before { background: #fff; }
       .lang-link { padding: 8px 4px; }
       .lang-link:hover { color: var(--text); text-decoration: underline; }
       .theme-toggle {
@@ -336,8 +360,8 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
       }
       .site-footer p { max-width: none; }
 
-      /* Below this the six sections no longer fit beside the name on one line. */
-      @media (max-width: 900px) {
+      /* Below this the six sections, with their dots, no longer fit beside the name on one line. */
+      @media (max-width: 1040px) {
         .menu-toggle { display: inline-flex; }
         .site-nav { order: 3; flex-basis: 100%; }
         .site-nav ul { flex-direction: column; padding-bottom: var(--space-8); }
