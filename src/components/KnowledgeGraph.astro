@@ -253,6 +253,7 @@ const clientCopy = {
   .kg-node:focus text {
     opacity: 1;
   }
+  .kg-node.is-label-hidden:not(:hover):not(:focus) text { opacity: 0; }
 
   .kg-node:hover circle,
   .kg-node:focus circle,
@@ -580,6 +581,10 @@ const clientCopy = {
       ?? '';
   }
 
+  function isPriority(node: GraphNode) {
+    return node.weight >= 3 || node.degree >= 6;
+  }
+
   function linkedNode(linkEnd: string | GraphNode) {
     return typeof linkEnd === 'string' ? linkEnd : linkEnd.id;
   }
@@ -603,6 +608,16 @@ const clientCopy = {
     }
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // The viewBox is letterboxed into a stage of any shape, so work with the area actually on screen.
+    const meet = Math.min(svgElement.clientWidth / 1200, svgElement.clientHeight / 720) || 1;
+    const visibleWidth = svgElement.clientWidth / meet || 1200;
+    const visibleHeight = svgElement.clientHeight / meet || 720;
+    // Stretch the landscape cluster layout to the stage's shape, so a tall stage gets a tall graph.
+    const stretch = Math.sqrt(visibleWidth / visibleHeight / (1200 / 720));
+    const clusterFor = (group: string): [number, number] => {
+      const [x, y] = clusterPositions[group] ?? clusterPositions.topic;
+      return [600 + (x - 600) * stretch, 360 + (y - 360) / stretch];
+    };
     try {
       const [ontologyResponse, dataResponse] = await Promise.all([
         fetch('/kg/ontology.ttl'),
@@ -627,7 +642,7 @@ const clientCopy = {
         const group = literalFor(dataQuads, id, GROUP, locale) || 'topic';
         const href = literalFor(dataQuads, id, locale === 'nl' ? PATH_NL : PATH_EN, locale);
         const weight = Number(literalFor(dataQuads, id, WEIGHT, locale) || 1);
-        const cluster = clusterPositions[group] ?? clusterPositions.topic;
+        const cluster = clusterFor(group);
         return {
           id,
           label: literalFor(dataQuads, id, SCHEMA_NAME, locale) || id.split('/').pop() || id,
@@ -701,7 +716,7 @@ const clientCopy = {
         .attr('data-group', (node) => node.group)
         .attr('data-clickable', (node) => String(Boolean(node.href)))
         .attr('data-image', (node) => String(Boolean(node.image)))
-        .attr('data-priority', (node) => node.weight >= 3 || node.degree >= 6 ? 'high' : 'normal')
+        .attr('data-priority', (node) => isPriority(node) ? 'high' : 'normal')
         .attr('tabindex', 0)
         .attr('role', (node) => node.href ? 'link' : 'img')
         .attr('aria-label', (node) => {
@@ -736,8 +751,9 @@ const clientCopy = {
 
       nodeSelection
         .append('text')
-        .attr('x', (node) => node.radius + 7)
-        .attr('y', 4)
+        .attr('x', (node) => node.group === 'person' ? 0 : node.radius + 7)
+        .attr('y', (node) => node.group === 'person' ? node.radius + 18 : 4)
+        .attr('text-anchor', (node) => node.group === 'person' ? 'middle' : null)
         .text((node) => node.href ? `${node.label} →` : node.label);
 
       const simulation = forceSimulation<GraphNode>(nodes)
@@ -751,9 +767,9 @@ const clientCopy = {
           .strength(0.24))
         .force('charge', forceManyBody<GraphNode>().strength((node) => -115 - node.radius * 8))
         .force('center', forceCenter(600, 360).strength(0.045))
-        .force('x', forceX<GraphNode>((node) => (clusterPositions[node.group] ?? clusterPositions.topic)[0]).strength(0.075))
-        .force('y', forceY<GraphNode>((node) => (clusterPositions[node.group] ?? clusterPositions.topic)[1]).strength(0.075))
-        .force('collision', forceCollide<GraphNode>().radius((node) => node.radius + 18).iterations(2))
+        .force('x', forceX<GraphNode>((node) => clusterFor(node.group)[0]).strength(0.075))
+        .force('y', forceY<GraphNode>((node) => clusterFor(node.group)[1]).strength(0.075))
+        .force('collision', forceCollide<GraphNode>().radius((node) => node.radius + (node.group === 'person' ? 40 : 18)).iterations(2))
         .alphaDecay(reduceMotion ? 0.12 : 0.035);
 
       const renderGraph = () => {
@@ -766,24 +782,61 @@ const clientCopy = {
       };
       simulation.on('tick', renderGraph);
 
+      // Greedy label placement: once the layout settles, a label that would overlap another
+      // node or a more important label stays hidden until its node is hovered or focused.
+      const labelRank = (node: GraphNode) =>
+        (node.group === 'person' ? 100 : 0) + (node.group === 'section' ? 50 : 0) + node.weight * 4 + node.degree;
+      function declutterLabels() {
+        const placed: [number, number, number, number][] = [];
+        const ranked = nodeSelection.filter((node) => Boolean(node.href) || isPriority(node)).nodes()
+          .map((element) => [element, select<SVGGElement, GraphNode>(element).datum()] as const)
+          .sort(([, a], [, b]) => labelRank(b) - labelRank(a));
+        for (const [element, node] of ranked) {
+          // The box includes the label's 2px paper-coloured halo; the person's label sits below its node.
+          const width = element.querySelector('text')!.getComputedTextLength() + 4;
+          const left = node.group === 'person' ? (node.x ?? 0) - width / 2 : (node.x ?? 0) + node.radius + 5;
+          const top = (node.y ?? 0) + (node.group === 'person' ? node.radius + 3 : -11);
+          const box: [number, number, number, number] = [left, top, left + width, top + 18];
+          const overlaps = (other: [number, number, number, number]) =>
+            box[0] < other[2] && other[0] < box[2] && box[1] < other[3] && other[1] < box[3];
+          // The margin covers the click ring and the outline, which does not shrink when zoomed out.
+          const blockedByNode = nodes.some((other) => other !== node
+            && overlaps([other.x! - other.radius - 6, other.y! - other.radius - 6, other.x! + other.radius + 6, other.y! + other.radius + 6]));
+          const hidden = placed.some(overlaps) || blockedByNode;
+          element.classList.toggle('is-label-hidden', hidden);
+          if (!hidden) placed.push(box);
+        }
+      }
+      simulation.on('end', declutterLabels);
+      // Refit once the first layout settles; later ends follow a drag and must keep the user's zoom.
+      simulation.on('end.fit', () => {
+        simulation.on('end.fit', null);
+        fitGraph();
+      });
+
       const zoomBehavior = zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.45, 3.2])
         .on('zoom', (event) => viewport.attr('transform', event.transform.toString()));
       svg.call(zoomBehavior);
 
+      // Fits the graph around the person node, so the person stays the visual centre.
       function fitGraph(animate = true) {
-        const xs = nodes.map((node) => node.x ?? 600);
-        const ys = nodes.map((node) => node.y ?? 360);
-        const minX = Math.min(...xs) - 70;
-        const maxX = Math.max(...xs) + 150;
-        const minY = Math.min(...ys) - 70;
-        const maxY = Math.max(...ys) + 70;
-        const graphWidth = Math.max(1, maxX - minX);
-        const graphHeight = Math.max(1, maxY - minY);
-        const scale = Math.min(1.45, 1080 / graphWidth, 620 / graphHeight);
-        const translateX = 600 - ((minX + maxX) / 2) * scale;
-        const translateY = 360 - ((minY + maxY) / 2) * scale;
-        const transform = zoomIdentity.translate(translateX, translateY).scale(scale);
+        const person = nodes.find((node) => node.group === 'person');
+        const centreX = person?.x ?? 600;
+        const centreY = person?.y ?? 360;
+        let left = 1;
+        let right = 1;
+        let height = 1;
+        nodeSelection.each(function (node) {
+          const x = (node.x ?? centreX) - centreX;
+          const labelShown = (node.href || isPriority(node)) && !this.classList.contains('is-label-hidden');
+          const labelWidth = labelShown ? 7 + this.querySelector('text')!.getComputedTextLength() : 0;
+          left = Math.max(left, node.radius - x);
+          right = Math.max(right, x + node.radius + labelWidth);
+          height = Math.max(height, Math.abs((node.y ?? centreY) - centreY) + node.radius);
+        });
+        const scale = Math.min(1.6, (visibleWidth / 2 - 40) / Math.max(left, right), (visibleHeight / 2 - 60) / height);
+        const transform = zoomIdentity.translate(600 - centreX * scale, 360 - centreY * scale).scale(scale);
         const target = animate && !reduceMotion ? svg.transition().duration(450) : svg;
         target.call(zoomBehavior.transform, transform);
       }
@@ -870,6 +923,7 @@ const clientCopy = {
         simulation.stop();
         for (let index = 0; index < 160; index += 1) simulation.tick();
         renderGraph();
+        declutterLabels();
         fitGraph(false);
       } else {
         const fitTimer = window.setTimeout(() => fitGraph(), 1100);
