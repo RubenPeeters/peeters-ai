@@ -40,6 +40,14 @@ for (const [locale, paths] of Object.entries(pages)) {
     }
   });
 
+  test(`${locale}: the bar under the page title takes the page's header ink`, async () => {
+    for (const [key, ink] of Object.entries({ blog: 'orange', research: 'blue', projects: 'lime', about: 'pink', contact: 'teal' })) {
+      const html = await page(key === 'contact' ? contact[locale] : paths[key]);
+      assert.match(html, new RegExp(`<body[^>]*style="--page-ink: var\\(--ink-${ink}\\)"`), key);
+      assert.match(html, /<h1 class="accent-rule/, key);
+    }
+  });
+
   test(`${locale}: at most one primary button per page, and it is on the CV`, async () => {
     for (const [key, path] of Object.entries(paths)) {
       assert.equal(count(await page(path), /btn-primary/g), key === 'cv' ? 1 : 0, path);

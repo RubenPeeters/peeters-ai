@@ -38,3 +38,12 @@ Header links each carry their own ink (dot), the current page is a pill in that
 ink. Writing is orange, Research blue, Projects lime, About pink, CV yellow and
 Contact teal, in both languages, so the menu carries colour on every page
 instead of only on the current one.
+
+## 2026-11-07: the bar under a page title has the page's header ink
+
+The bar under a page title has the page's header ink. Base.astro exposes the
+current page's entry in navInks as `--page-ink` on `<body>`, and the title bar
+uses it, falling back to the colourway's `--ink3` on pages without one. Writing
+is orange, Research blue, Projects lime, About pink and Contact teal, in both
+languages and themes. The colourways, the equation art and the cards keep their
+colours.
