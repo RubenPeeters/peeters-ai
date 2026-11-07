@@ -31,6 +31,15 @@ for (const [locale, paths] of Object.entries(pages)) {
     assert.match(await page(paths.research), new RegExp(`href="${other.home}" class="lang-link"`));
   });
 
+  test(`${locale}: every header link carries its section's ink, the same on every page`, async () => {
+    const inks = { blog: 'orange', research: 'blue', projects: 'lime', about: 'pink', cv: 'yellow', contact: 'teal' };
+    for (const path of [paths.research, contact[locale]]) {
+      const header = (await page(path)).match(/<header class="site-header"[\s\S]*?<\/header>/)?.[0] ?? '';
+      const links = [...header.matchAll(/<li[^>]*>\s*<a href="[^"]+"[^>]*style="--nav-ink: var\(--ink-([a-z]+)\)"[^>]*>/g)].map((m) => m[1]);
+      assert.deepEqual(links, Object.values(inks), path);
+    }
+  });
+
   test(`${locale}: at most one primary button per page, and it is on the CV`, async () => {
     for (const [key, path] of Object.entries(paths)) {
       assert.equal(count(await page(path), /btn-primary/g), key === 'cv' ? 1 : 0, path);
