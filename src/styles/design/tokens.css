@@ -1,4 +1,4 @@
-/* Copied from `RubenPeeters/design` at commit `087a9b9` (087a9b99b53e962039de2ed7bb6fa4df39e63d32). Do not edit here: change the design repo, then re-copy. */
+/* Copied from `RubenPeeters/design` at commit `1ea6d58` (1ea6d58fb6ea6ab71b7c1f3366a92e8f5bfaadde). Do not edit here: change the design repo, then re-copy. */
 /* Peeters Design System: generated from tokens.json by scripts/build-tokens.mjs. Do not edit. */
 
 :root, [data-theme="light"] {
@@ -24,6 +24,18 @@
   --ink-teal: #7fc6c2;
   --ink-yellow: #f4c542;
   --ink-orange: #f26b2e;
+  --soft-blue-0: #a9c4ee;
+  --soft-blue-1: #c9b8ec;
+  --soft-blue-2: #f2b6d3;
+  --soft-blue-3: #fbc4a8;
+  --soft-green-0: #b7d9b0;
+  --soft-green-1: #a8dccb;
+  --soft-green-2: #e6e3a0;
+  --soft-green-3: #f9c9a6;
+  --soft-orange-0: #fbb89a;
+  --soft-orange-1: #f7a9b8;
+  --soft-orange-2: #fbd59a;
+  --soft-orange-3: #d9b9e8;
   --shadow-card: 0 1px 2px rgba(20,30,20,0.05), 0 8px 24px -12px rgba(20,30,20,0.12);
 }
 
@@ -80,7 +92,8 @@
   --radius-pill: 999px;
   --stroke-line: 2.5px;
   --stroke-print: 2px;
-  --font-display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --blur-art: 4px;
+  --font-display: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   --font-sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
 }
@@ -88,30 +101,33 @@
 .display-xl {
   font-family: var(--font-display);
   font-size: 64px;
-  line-height: 0.95;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 
 .display-l {
   font-family: var(--font-display);
   font-size: 40px;
   line-height: 1;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 
 .display-m {
   font-family: var(--font-display);
   font-size: 28px;
   line-height: 1.1;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 
 .display-s {
   font-family: var(--font-display);
   font-size: 22px;
   line-height: 1.1;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 
 .title {

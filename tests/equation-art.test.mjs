@@ -30,7 +30,7 @@ const badge = (art, slug) => {
 };
 
 test('the copy carries the design repo comment', () => {
-  assert.match(source.split('\n')[0], /^\/\* Copied from `RubenPeeters\/design` at commit `087a9b9` \(087a9b99b53e962039de2ed7bb6fa4df39e63d32\)\. Do not edit here/);
+  assert.match(source.split('\n')[0], /^\/\* Copied from `RubenPeeters\/design` at commit `1ea6d58` \(1ea6d58fb6ea6ab71b7c1f3366a92e8f5bfaadde\)\. Do not edit here/);
 });
 
 test('the same slug always gives the same badge, and slugs differ', () => {

@@ -47,3 +47,16 @@ uses it, falling back to the colourway's `--ink3` on pages without one. Writing
 is orange, Research blue, Projects lime, About pink and Contact teal, in both
 languages and themes. The colourways, the equation art and the cards keep their
 colours.
+
+## 2026-11-20: the site follows the design system's quiet register
+
+The design system dropped outlines, halftone and Bagel Fat One and gave each
+colourway four soft inks (RubenPeeters/design#4). The copies in
+`src/styles/design/` and `public/design/` are re-copied from that change, and
+headings use Instrument Sans at weight 600. Each section keeps its own ink in
+the header and under its page title, now the soft ink nearest in hue to the
+poster ink it had: Writing `soft-orange-0`, Research `soft-blue-0`, Projects
+`soft-green-0`, About `soft-blue-2`, CV `soft-green-2` and Contact
+`soft-green-1`. That mapping is Claude's proposal. The nav dots and project
+tiles lose their dark border. The homepage graph keeps its cream ground, dark
+outlines and poster inks: its restyle is not decided.
