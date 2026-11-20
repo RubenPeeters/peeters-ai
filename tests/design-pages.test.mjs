@@ -32,18 +32,18 @@ for (const [locale, paths] of Object.entries(pages)) {
   });
 
   test(`${locale}: every header link carries its section's ink, the same on every page`, async () => {
-    const inks = { blog: 'orange', research: 'blue', projects: 'lime', about: 'pink', cv: 'yellow', contact: 'teal' };
+    const inks = { blog: 'soft-orange-0', research: 'soft-blue-0', projects: 'soft-green-0', about: 'soft-blue-2', cv: 'soft-green-2', contact: 'soft-green-1' };
     for (const path of [paths.research, contact[locale]]) {
       const header = (await page(path)).match(/<header class="site-header"[\s\S]*?<\/header>/)?.[0] ?? '';
-      const links = [...header.matchAll(/<li[^>]*>\s*<a href="[^"]+"[^>]*style="--nav-ink: var\(--ink-([a-z]+)\)"[^>]*>/g)].map((m) => m[1]);
+      const links = [...header.matchAll(/<li[^>]*>\s*<a href="[^"]+"[^>]*style="--nav-ink: var\(--([a-z0-9-]+)\)"[^>]*>/g)].map((m) => m[1]);
       assert.deepEqual(links, Object.values(inks), path);
     }
   });
 
   test(`${locale}: the bar under the page title takes the page's header ink`, async () => {
-    for (const [key, ink] of Object.entries({ blog: 'orange', research: 'blue', projects: 'lime', about: 'pink', contact: 'teal' })) {
+    for (const [key, ink] of Object.entries({ blog: 'soft-orange-0', research: 'soft-blue-0', projects: 'soft-green-0', about: 'soft-blue-2', contact: 'soft-green-1' })) {
       const html = await page(key === 'contact' ? contact[locale] : paths[key]);
-      assert.match(html, new RegExp(`<body[^>]*style="--page-ink: var\\(--ink-${ink}\\)"`), key);
+      assert.match(html, new RegExp(`<body[^>]*style="--page-ink: var\\(--${ink}\\)"`), key);
       assert.match(html, /<h1 class="accent-rule/, key);
     }
   });

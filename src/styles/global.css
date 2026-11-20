@@ -30,11 +30,10 @@ h1, h2, h3 {
   text-wrap: balance;
 }
 
-/* Bagel Fat One ships one weight; anything heavier would be faux bold.
-   Page titles are display-l, section titles display-m (design/tokens.css). */
+/* Page titles are display-l, section titles display-m (design/tokens.css). */
 h1, h2 {
   font-family: var(--font-display);
-  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 h1 {
   font-size: 40px;

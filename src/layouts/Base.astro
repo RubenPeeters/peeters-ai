@@ -64,14 +64,15 @@ const colourways: Partial<Record<RouteKey, string>> = {
 };
 const colourway = colourways[routeKey];
 
-// Each section's ink in the header, the same on every page and in both languages.
+// Each section's ink in the header, the same on every page and in both languages:
+// the soft ink nearest in hue to the poster ink the section had before the quiet register.
 const navInks: Partial<Record<RouteKey, string>> = {
-  blog: 'orange',
-  research: 'blue',
-  projects: 'lime',
-  about: 'pink',
-  cv: 'yellow',
-  contact: 'teal',
+  blog: 'soft-orange-0',
+  research: 'soft-blue-0',
+  projects: 'soft-green-0',
+  about: 'soft-blue-2',
+  cv: 'soft-green-2',
+  contact: 'soft-green-1',
 };
 const pageInk = navInks[routeKey];
 
@@ -102,7 +103,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={s.siteName} />
@@ -126,7 +127,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
     <ClientRouter />
   </head>
-  <body class:list={[chromeless && 'is-chromeless']} data-colourway={colourway} style={pageInk && `--page-ink: var(--ink-${pageInk})`}>
+  <body class:list={[chromeless && 'is-chromeless']} data-colourway={colourway} style={pageInk && `--page-ink: var(--${pageInk})`}>
     <a href="#main" class="skip-link">{skipToMainLabel}</a>
 
     {chromeless ? (
@@ -161,7 +162,7 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
                       <a
                         href={pathFor(key, locale)}
                         aria-current={key === routeKey ? 'page' : undefined}
-                        style={`--nav-ink: var(--ink-${navInks[key]})`}
+                        style={`--nav-ink: var(--${navInks[key]})`}
                       >
                         {routes[key].navLabel[locale]}
                       </a>
@@ -293,12 +294,9 @@ const skipToMainLabel = locale === 'nl' ? 'Spring naar inhoud' : 'Skip to conten
         width: 9px;
         height: 9px;
         margin-right: 7px;
-        box-sizing: border-box;
-        border: 1.5px solid var(--line);
         border-radius: 50%;
         background: var(--nav-ink);
       }
-      :global([data-theme='dark']) .site-nav a::before { border-color: var(--text); }
       .site-nav a:hover { background: var(--surface-sunken); }
       .site-nav a[aria-current='page'] { background: var(--nav-ink); color: var(--line); }
       .site-nav a[aria-current='page']::before { background: #fff; }
